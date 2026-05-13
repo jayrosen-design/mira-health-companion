@@ -59,7 +59,10 @@ export function MiraChat() {
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    // Ignore Enter while the user is composing in an IME (e.g. Japanese, Chinese, Korean).
+    // `isComposing` and keyCode 229 both indicate an active composition.
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return;
+    if (e.key === "Enter" && !e.shiftKey && !e.repeat) {
       e.preventDefault();
       send();
     }
