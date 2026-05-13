@@ -1,5 +1,6 @@
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
+import { isAuthorized } from "@/lib/mira/auth.server";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 type Body = { model?: string; messages?: ChatMessage[] };
@@ -8,6 +9,10 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const sessionSecret = process.env.SESSION_SECRET ?? "";
+        if (!isAuthorized(request, sessionSecret)) {
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
         const apiKey = process.env.AI_API_KEY;
         if (!apiKey) {
           return Response.json({ error: "AI_API_KEY not configured" }, { status: 500 });
