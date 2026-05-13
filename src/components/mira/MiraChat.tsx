@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { Send, ShieldCheck } from "lucide-react";
+import { Send, ShieldCheck, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "./ChatMessage";
 import { ModelSelect } from "./ModelSelect";
+import { PasswordGate } from "./PasswordGate";
 import {
   MIRA_DEFAULT_MODEL,
   MIRA_GREETING,
@@ -14,6 +15,7 @@ import {
 type Msg = { role: "user" | "assistant"; content: string };
 
 export function MiraChat() {
+  const [authState, setAuthState] = useState<"loading" | "out" | "in">("loading");
   const [model, setModel] = useState<MiraModel>(MIRA_DEFAULT_MODEL);
   const [messages, setMessages] = useState<Msg[]>([
     { role: "user", content: MIRA_SYSTEM_PROMPT },
@@ -25,6 +27,30 @@ export function MiraChat() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d: { authenticated?: boolean }) => {
+        if (!cancelled) setAuthState(d.authenticated ? "in" : "out");
+      })
+      .catch(() => {
+        if (!cancelled) setAuthState("out");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const signOut = async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    setMessages([
+      { role: "user", content: MIRA_SYSTEM_PROMPT },
+      { role: "assistant", content: MIRA_GREETING },
+    ]);
+    setAuthState("out");
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -49,6 +75,10 @@ export function MiraChat() {
         body: JSON.stringify({ model, messages: next }),
       });
       const data = (await res.json()) as { content?: string; error?: string };
+      if (res.status === 401) {
+        setAuthState("out");
+        throw new Error("Session expired. Please sign in again.");
+      }
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       setMessages((prev) => [...prev, { role: "assistant", content: data.content ?? "" }]);
     } catch (e) {
@@ -70,6 +100,13 @@ export function MiraChat() {
 
   const visible = messages.slice(1);
 
+  if (authState === "loading") {
+    return <div className="flex h-screen items-center justify-center bg-background" />;
+  }
+  if (authState === "out") {
+    return <PasswordGate onAuthenticated={() => setAuthState("in")} />;
+  }
+
   return (
     <div className="flex h-screen flex-col bg-background">
       <header className="border-b bg-card">
@@ -80,7 +117,18 @@ export function MiraChat() {
             </h1>
             <p className="text-xs text-muted-foreground">HPV vaccine conversation guide</p>
           </div>
-          <ModelSelect value={model} onChange={setModel} disabled={isSending} />
+          <div className="flex items-center gap-2">
+            <ModelSelect value={model} onChange={setModel} disabled={isSending} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={signOut}
+              aria-label="Sign out"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
