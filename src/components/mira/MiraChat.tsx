@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { Send, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Send, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "./ChatMessage";
 import { ModelSelect } from "./ModelSelect";
-import { miraClient, hasApiKey } from "@/lib/mira/client";
 import {
   MIRA_DEFAULT_MODEL,
   MIRA_GREETING,
@@ -44,15 +43,16 @@ export function MiraChat() {
     setInput("");
     setIsSending(true);
     try {
-      const res = await miraClient.chat.completions.create({
-        model,
-        messages: next.map((m) => ({ role: m.role, content: m.content })),
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, messages: next }),
       });
-      const reply = res.choices[0]?.message?.content ?? "";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const data = (await res.json()) as { content?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.content ?? "" }]);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Request failed.";
-      setError(msg);
+      setError(e instanceof Error ? e.message : "Request failed.");
     } finally {
       setIsSending(false);
     }
@@ -65,7 +65,6 @@ export function MiraChat() {
     }
   };
 
-  // Hide the system prompt from view
   const visible = messages.slice(1);
 
   return (
@@ -81,17 +80,6 @@ export function MiraChat() {
           <ModelSelect value={model} onChange={setModel} disabled={isSending} />
         </div>
       </header>
-
-      {!hasApiKey && (
-        <div className="border-b bg-accent/40">
-          <div className="mx-auto flex w-full max-w-3xl items-start gap-2 px-4 py-2 text-xs text-foreground">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-            <span>
-              API key not configured. Set <code className="font-mono">VITE_AI_API_KEY</code> in your hosting environment to enable replies.
-            </span>
-          </div>
-        </div>
-      )}
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6">
