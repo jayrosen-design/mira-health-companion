@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { Send, ShieldCheck, LogOut } from "lucide-react";
+import { Send, ShieldCheck, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "./ChatMessage";
-import { ModelSelect } from "./ModelSelect";
 import { PasswordGate } from "./PasswordGate";
+import { SettingsSidebar } from "./SettingsSidebar";
 import {
   MIRA_DEFAULT_MODEL,
   MIRA_GREETING,
@@ -17,6 +17,8 @@ type Msg = { role: "user" | "assistant"; content: string };
 export function MiraChat() {
   const [authState, setAuthState] = useState<"loading" | "out" | "in">("loading");
   const [model, setModel] = useState<MiraModel>(MIRA_DEFAULT_MODEL);
+  const [systemPrompt, setSystemPrompt] = useState<string>(MIRA_SYSTEM_PROMPT);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
     { role: "user", content: MIRA_SYSTEM_PROMPT },
     { role: "assistant", content: MIRA_GREETING },
@@ -46,7 +48,7 @@ export function MiraChat() {
   const signOut = async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
     setMessages([
-      { role: "user", content: MIRA_SYSTEM_PROMPT },
+      { role: "user", content: systemPrompt },
       { role: "assistant", content: MIRA_GREETING },
     ]);
     setAuthState("out");
@@ -64,7 +66,13 @@ export function MiraChat() {
     const trimmed = input.trim();
     if (!trimmed || isSending) return;
     setError(null);
-    const next: Msg[] = [...messages, { role: "user", content: trimmed }];
+    // Always inject the current system prompt as the first message
+    const rest = messages.slice(1);
+    const next: Msg[] = [
+      { role: "user", content: systemPrompt },
+      ...rest,
+      { role: "user", content: trimmed },
+    ];
     setMessages(next);
     setInput("");
     setIsSending(true);
@@ -118,7 +126,15 @@ export function MiraChat() {
             <p className="text-xs text-muted-foreground">HPV vaccine conversation guide</p>
           </div>
           <div className="flex items-center gap-2">
-            <ModelSelect value={model} onChange={setModel} disabled={isSending} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Settings"
+              title="Settings"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -131,6 +147,16 @@ export function MiraChat() {
           </div>
         </div>
       </header>
+
+      <SettingsSidebar
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        model={model}
+        onModelChange={setModel}
+        systemPrompt={systemPrompt}
+        onSystemPromptChange={setSystemPrompt}
+        disabled={isSending}
+      />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6">
