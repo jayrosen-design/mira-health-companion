@@ -12,11 +12,11 @@ export function buildSessionCookie(secret: string) {
   const payload = `v1.${expiresAt}`;
   const sig = sign(payload, secret);
   const value = `${payload}.${sig}`;
-  return `${COOKIE_NAME}=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${MAX_AGE_SECONDS}`;
+  return `${COOKIE_NAME}=${value}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${MAX_AGE_SECONDS}`;
 }
 
 export function clearSessionCookie() {
-  return `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0`;
 }
 
 export function isAuthorized(request: Request, secret: string): boolean {
