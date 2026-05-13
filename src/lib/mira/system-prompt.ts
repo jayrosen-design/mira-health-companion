@@ -33,6 +33,6 @@ export const MIRA_MODELS = [
   "llama-3.1-70b-instruct",
 ] as const;
 
-export const MIRA_DEFAULT_MODEL = "nemotron-3-super-120b-a12b";
+export const MIRA_DEFAULT_MODEL = "gpt-oss-120b";
 
 export type MiraModel = (typeof MIRA_MODELS)[number];
