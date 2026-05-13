@@ -90,11 +90,18 @@ export function MiraChat() {
             <ChatMessage key={i} role={m.role} content={m.content} />
           ))}
           {isSending && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3" aria-live="polite" aria-label="Mira is typing">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-accent-foreground text-sm font-semibold">
                 M
               </div>
-              <span className="animate-pulse">Mira is typing…</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Mira is typing</span>
+                <span className="flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.3s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.15s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70" />
+                </span>
+              </div>
             </div>
           )}
           {error && (
