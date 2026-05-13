@@ -1,6 +1,7 @@
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { isAuthorized } from "@/lib/mira/auth.server";
+import { checkRateLimit, getClientKey } from "@/lib/mira/rate-limit.server";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 type Body = { model?: string; messages?: ChatMessage[] };
@@ -13,6 +14,25 @@ export const Route = createFileRoute("/api/chat")({
         if (!isAuthorized(request, sessionSecret)) {
           return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        const rl = checkRateLimit(getClientKey(request));
+        if (!rl.allowed) {
+          return new Response(
+            JSON.stringify({
+              error: `Rate limit exceeded. Try again in ${rl.retryAfterSeconds}s.`,
+            }),
+            {
+              status: 429,
+              headers: {
+                "Content-Type": "application/json",
+                "Retry-After": String(rl.retryAfterSeconds),
+                "X-RateLimit-Limit": String(rl.limit),
+                "X-RateLimit-Remaining": "0",
+              },
+            },
+          );
+        }
+
         const apiKey = process.env.AI_API_KEY;
         if (!apiKey) {
           return Response.json({ error: "AI_API_KEY not configured" }, { status: 500 });
