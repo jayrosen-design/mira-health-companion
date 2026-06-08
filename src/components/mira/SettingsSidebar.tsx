@@ -57,8 +57,8 @@ export function SettingsSidebar({
         <SheetHeader>
           <SheetTitle>Developer Settings</SheetTitle>
           <SheetDescription>
-            Prototype controls for model and system prompt testing. Not visible to parent users in
-            the production experience.
+            Developer-only controls. These settings are for prototype testing and would not be
+            visible in the production parent-facing application.
           </SheetDescription>
         </SheetHeader>
 
