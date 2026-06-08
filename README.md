@@ -1,6 +1,19 @@
-# MiraChat – HPV Vaccine Conversation Prototype
+# MiraChat – Digital Twin Conversation Prototype
 
-This prototype demonstrates a possible parent-facing interface for the **Digital Twin MI and HPV pilot**. It simulates a text-based motivational interviewing (MI) conversation about HPV vaccination using the **UF Navigator Toolkit** (`https://api.ai.it.ufl.edu`) and a system prompt.
+MiraChat is a prototype interface for the **Digital Twin MI and HPV pilot**. It simulates a parent-facing, text-based motivational interviewing conversation about HPV vaccination using the **UF Navigator Toolkit** (`https://api.ai.it.ufl.edu`) and a system prompt. It is intended for stakeholder discussion and development testing only.
+
+> This app is separate from the **MIRA Reviewer** prototype. MIRA Reviewer supports blinded response comparison and rating. **MiraChat** demonstrates the interactive digital twin chatbot experience.
+>
+> **Conceptual boundary:** MiraChat is a prototype of the Digital Twin chatbot experience. It is not the MIRA Reviewer evaluation app, not a production clinical tool, and not yet connected to the final trained model, approved RAG knowledge base, study survey database, or production safety monitoring.
+
+## Privacy & security architecture
+
+- Development password gate (shared Navigator Toolkit dev API key protection)
+- Server-side API key only — never exposed to the browser
+- Authenticated `/api/chat` proxy
+- Basic rate limiting
+- No browser or database persistence (no `localStorage` / `sessionStorage` / DB)
+- Refresh clears the chat
 
 It is **not a production clinical tool** and does not yet include:
 
