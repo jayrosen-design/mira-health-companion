@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Send,
   LogOut,
@@ -551,6 +552,12 @@ function TopBanner({
           >
             Research View
           </button>
+          <Link
+            to="/docs"
+            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+          >
+            <BookOpen className="h-3 w-3" /> API Docs
+          </Link>
           <button
             type="button"
             onClick={onDev}
@@ -614,6 +621,14 @@ function TopBanner({
                   onResearch();
                 }}
               />
+              <Link
+                to="/docs"
+                onClick={close}
+                className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground hover:bg-accent"
+              >
+                <BookOpen className="h-4 w-4" />
+                API Docs & Data Model
+              </Link>
               <MenuItem
                 icon={<Code2 className="h-4 w-4" />}
                 label="Developer Settings"
