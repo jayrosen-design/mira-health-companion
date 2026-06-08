@@ -12,9 +12,17 @@ import {
   ClipboardList,
   Home,
   RotateCcw,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ChatMessage } from "./ChatMessage";
 import { PasswordGate } from "./PasswordGate";
 import { SettingsSidebar } from "./SettingsSidebar";
@@ -199,6 +207,8 @@ export function MiraChat() {
           onSignOut={signOut}
           onDev={() => setSettingsOpen(true)}
           onResearch={() => setResearchOpen(true)}
+          onReset={resetChat}
+          canReset={false}
         />
         <WelcomeScreen onStart={startChat} />
         <SettingsSidebar
@@ -229,6 +239,8 @@ export function MiraChat() {
           onSignOut={signOut}
           onDev={() => setSettingsOpen(true)}
           onResearch={() => setResearchOpen(true)}
+          onReset={resetChat}
+          canReset={false}
         />
         <SurveyScreen
           submitted={surveySubmitted}
@@ -256,17 +268,19 @@ export function MiraChat() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-secondary/30">
+    <div className="flex h-[100dvh] flex-col bg-gradient-to-b from-background via-background to-secondary/30">
       <TopBanner
         onHome={() => setPhase("welcome")}
         onSignOut={signOut}
         onDev={() => setSettingsOpen(true)}
         onResearch={() => setResearchOpen(true)}
+        onReset={resetChat}
+        canReset={!isSending && userTurns.length > 0}
       />
 
-      <header className="border-b border-border bg-card/70 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-3">
-          <div className="flex items-center justify-between gap-4">
+      <header className="shrink-0 border-b border-border bg-card/70 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
+          <div className="flex items-center justify-between gap-3">
             <button
               type="button"
               onClick={() => setPhase("welcome")}
@@ -274,15 +288,17 @@ export function MiraChat() {
               title="Back to welcome"
               aria-label="Back to welcome"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <HeartPulse className="h-5 w-5" />
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-9 sm:w-9">
+                <HeartPulse className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
               <div className="min-w-0">
                 <h1 className="truncate text-base font-semibold text-foreground">MI Digital Twin</h1>
-                <p className="text-xs text-muted-foreground">HPV vaccine conversation guide</p>
+                <p className="hidden truncate text-xs text-muted-foreground sm:block">
+                  HPV vaccine conversation guide
+                </p>
               </div>
             </button>
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
               <Pill>Private prototype</Pill>
               <Pill>Educational support</Pill>
               <Pill>AI-assisted</Pill>
@@ -319,9 +335,9 @@ export function MiraChat() {
         model={model}
       />
 
-      <div className="mx-auto flex w-full max-w-5xl flex-1 gap-6 px-4 py-6">
-        <main className="flex min-w-0 flex-1 flex-col gap-4">
-          <div className="flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed text-foreground">
+      <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <div className="hidden items-start gap-2 border-b border-primary/20 bg-primary/5 px-3 py-2 text-xs leading-relaxed text-foreground sm:flex sm:rounded-xl sm:border sm:p-3">
             <Stethoscope className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <p>
               You are chatting with an AI-supported digital twin designed to use motivational
@@ -332,7 +348,7 @@ export function MiraChat() {
 
           <div
             ref={scrollRef}
-            className="flex max-h-[60vh] flex-col gap-4 overflow-y-auto rounded-2xl border border-border bg-card/60 p-4 shadow-sm sm:p-5"
+            className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-card/60 sm:p-5 sm:shadow-sm"
           >
             {visible.map((m, i) => (
               <ChatMessage
@@ -362,35 +378,35 @@ export function MiraChat() {
                 {error}
               </div>
             )}
+
+            {showSummary && <SummaryCard topics={[firstUserMessage]} />}
+
+            {showCompletion && (
+              <CompletionPrompt
+                onSurvey={() => setPhase("survey")}
+                onKeepChatting={() => setDismissedCompletion(true)}
+              />
+            )}
+
+            {/* Concern chips */}
+            {userTurns.length === 0 && (
+              <div className="flex flex-wrap gap-2">
+                {PARENT_CONCERN_CHIPS.map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => sendChip(chip)}
+                    disabled={isSending}
+                    className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:opacity-50"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {showSummary && <SummaryCard topics={[firstUserMessage]} />}
-
-          {showCompletion && (
-            <CompletionPrompt
-              onSurvey={() => setPhase("survey")}
-              onKeepChatting={() => setDismissedCompletion(true)}
-            />
-          )}
-
-          {/* Concern chips */}
-          {userTurns.length === 0 && (
-            <div className="flex flex-wrap gap-2">
-              {PARENT_CONCERN_CHIPS.map((chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  onClick={() => sendChip(chip)}
-                  disabled={isSending}
-                  className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:opacity-50"
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="sticky bottom-3 rounded-2xl border border-border bg-card p-3 shadow-md">
+          <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
             <div className="flex items-end gap-2">
               <Textarea
                 ref={textareaRef}
@@ -416,7 +432,7 @@ export function MiraChat() {
           </div>
 
           {userTurns.length >= 2 && (
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="hidden flex-wrap gap-2 px-3 pt-2 pb-3 sm:flex sm:px-0">
               <Button
                 size="sm"
                 variant="outline"
@@ -443,7 +459,7 @@ export function MiraChat() {
             </div>
           )}
 
-          <footer className="flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/5 p-3 text-[11px] leading-relaxed text-warning-foreground">
+          <footer className="hidden items-start gap-2 rounded-xl border border-warning/30 bg-warning/5 p-3 text-[11px] leading-relaxed text-warning-foreground sm:flex">
             <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <p>
               Do not enter personal health identifiers. For medical advice, talk with your child's
@@ -494,20 +510,31 @@ function TopBanner({
   onSignOut,
   onDev,
   onResearch,
+  onReset,
+  canReset,
 }: {
   onHome: () => void;
   showHome?: boolean;
   onSignOut: () => void;
   onDev: () => void;
   onResearch: () => void;
+  onReset: () => void;
+  canReset: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
   return (
-    <div className="border-b border-border bg-primary/95 text-primary-foreground">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-1.5 text-[11px]">
+    <div className="shrink-0 border-b border-border bg-primary/95 text-primary-foreground">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
-          University research prototype · Not for clinical use
+          <span className="sm:hidden">Research prototype</span>
+          <span className="hidden sm:inline">
+            University research prototype · Not for clinical use
+          </span>
         </span>
-        <div className="flex items-center gap-1">
+
+        {/* Desktop inline actions */}
+        <div className="hidden items-center gap-1 sm:flex">
           {showHome && (
             <button
               type="button"
@@ -539,7 +566,99 @@ function TopBanner({
             Sign out
           </button>
         </div>
+
+        {/* Mobile hamburger */}
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              aria-label="Open menu"
+              className="inline-flex h-7 w-7 items-center justify-center rounded hover:bg-white/10 sm:hidden"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72 sm:w-80">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="mt-6 flex flex-col gap-1">
+              {showHome && (
+                <MenuItem
+                  icon={<Home className="h-4 w-4" />}
+                  label="Welcome"
+                  onClick={() => {
+                    close();
+                    onHome();
+                  }}
+                />
+              )}
+              <MenuItem
+                icon={<RotateCcw className="h-4 w-4" />}
+                label="Reset chat"
+                disabled={!canReset}
+                onClick={() => {
+                  close();
+                  onReset();
+                }}
+              />
+              <div className="my-2 h-px bg-border" />
+              <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Prototype controls
+              </p>
+              <MenuItem
+                icon={<FlaskConical className="h-4 w-4" />}
+                label="Research View"
+                onClick={() => {
+                  close();
+                  onResearch();
+                }}
+              />
+              <MenuItem
+                icon={<Code2 className="h-4 w-4" />}
+                label="Developer Settings"
+                onClick={() => {
+                  close();
+                  onDev();
+                }}
+              />
+              <div className="my-2 h-px bg-border" />
+              <MenuItem
+                icon={<LogOut className="h-4 w-4" />}
+                label="Sign out"
+                onClick={() => {
+                  close();
+                  onSignOut();
+                }}
+              />
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
+  );
+}
+
+function MenuItem({
+  icon,
+  label,
+  onClick,
+  disabled,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="flex items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:opacity-50 disabled:hover:bg-transparent"
+    >
+      <span className="text-muted-foreground">{icon}</span>
+      {label}
+    </button>
   );
 }
