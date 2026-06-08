@@ -11,6 +11,7 @@ import {
   BookOpen,
   ClipboardList,
   Home,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -146,6 +147,18 @@ export function MiraChat() {
     sendText(chip);
   };
 
+  const resetChat = () => {
+    if (isSending) return;
+    setMessages([
+      { role: "user", content: systemPrompt },
+      { role: "assistant", content: MIRA_GREETING },
+    ]);
+    setInput("");
+    setError(null);
+    setShowSummary(false);
+    setDismissedCompletion(false);
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Ignore Enter while the user is composing in an IME (e.g. Japanese, Chinese, Korean).
     // `isComposing` and keyCode 229 both indicate an active composition.
@@ -273,6 +286,16 @@ export function MiraChat() {
               <Pill>Private prototype</Pill>
               <Pill>Educational support</Pill>
               <Pill>AI-assisted</Pill>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={resetChat}
+                disabled={isSending || userTurns.length === 0}
+                className="ml-1 h-7 gap-1.5 text-xs"
+                title="Clear the conversation and start over"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Reset chat
+              </Button>
             </div>
           </div>
           <StepIndicator current={2} />
