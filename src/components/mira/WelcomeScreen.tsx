@@ -31,29 +31,30 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
 
         <section className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Talk through your questions about the HPV vaccine
+            Talk through questions about the HPV vaccine
           </h1>
           <p className="mt-3 text-base text-muted-foreground">
-            This tool is designed to support parents of 9- to 12-year-old children as they consider
-            HPV vaccination. It listens, reflects, and shares information when helpful — at your
-            pace.
+            MiraChat is a prototype of a text-based digital twin designed to support parents as
+            they think through HPV vaccination for their child. The conversation uses motivational
+            interviewing principles: listening, reflecting, supporting autonomy, and sharing
+            information with permission.
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <InfoCard
-              icon={<Info className="h-4 w-4" />}
-              title="AI disclosure"
-              body="You will be interacting with an AI-supported digital twin, not a human clinician."
+              icon={<Lock className="h-4 w-4" />}
+              title="Private prototype"
+              body="Do not enter names, dates of birth, medical record numbers, or other personal identifiers."
             />
             <InfoCard
-              icon={<Lock className="h-4 w-4" />}
-              title="Privacy"
-              body="Please do not enter names, dates of birth, medical record numbers, or other personal identifying information."
+              icon={<Info className="h-4 w-4" />}
+              title="AI-supported conversation"
+              body="You are interacting with an AI prototype, not a human clinician."
             />
             <InfoCard
               icon={<Stethoscope className="h-4 w-4" />}
-              title="Educational only"
-              body="This tool provides educational support and cannot diagnose, prescribe, or replace your child's healthcare provider."
+              title="Educational support"
+              body="This tool does not diagnose, prescribe, or replace your child's healthcare provider."
             />
           </div>
 
@@ -67,7 +68,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
               onClick={() => setShowLearn((v) => !v)}
               className="text-foreground"
             >
-              {showLearn ? "Hide details" : "Learn what this is"}
+              {showLearn ? "Hide details" : "View Prototype Notes"}
             </Button>
           </div>
 

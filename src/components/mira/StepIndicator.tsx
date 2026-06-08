@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const STEPS = ["Start conversation", "Discuss questions", "Complete short survey"] as const;
+const STEPS = ["Invitation", "Chat", "Survey"] as const;
 
 export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
   return (
