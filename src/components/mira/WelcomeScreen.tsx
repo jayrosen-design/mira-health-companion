@@ -17,7 +17,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-              <HeartPulse className="h-3 w-3" /> MI Digital Twin
+              <HeartPulse className="h-3 w-3" /> MiraChat
             </span>
             <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning-foreground">
               Prototype only

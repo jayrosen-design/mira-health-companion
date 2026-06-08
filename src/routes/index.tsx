@@ -5,13 +5,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "MI Digital Twin – HPV Vaccine Conversation Prototype" },
+      { title: "MiraChat – HPV Vaccine Conversation Prototype" },
       {
         name: "description",
         content:
           "A private, text-based motivational interviewing prototype to help parents of 9- to 12-year-olds think through HPV vaccination.",
       },
-      { property: "og:title", content: "MI Digital Twin – HPV Vaccine Conversation Prototype" },
+      { property: "og:title", content: "MiraChat – HPV Vaccine Conversation Prototype" },
       {
         property: "og:description",
         content: "Parent-facing motivational interviewing prototype for the Digital Twin MI and HPV pilot.",

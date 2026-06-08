@@ -292,7 +292,7 @@ export function MiraChat() {
                 <HeartPulse className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
               <div className="min-w-0">
-                <h1 className="truncate text-base font-semibold text-foreground">MI Digital Twin</h1>
+                <h1 className="truncate text-base font-semibold text-foreground">MiraChat</h1>
                 <p className="hidden truncate text-xs text-muted-foreground sm:block">
                   HPV vaccine conversation guide
                 </p>
