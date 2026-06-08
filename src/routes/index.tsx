@@ -5,16 +5,16 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Mira – Health Education Assistant" },
+      { title: "MI Digital Twin – HPV Vaccine Conversation Prototype" },
       {
         name: "description",
         content:
-          "Mira is a conversational AI that supports parents with empathetic, evidence-based education about the HPV vaccine.",
+          "A private, text-based motivational interviewing prototype to help parents of 9- to 12-year-olds think through HPV vaccination.",
       },
-      { property: "og:title", content: "Mira – Health Education Assistant" },
+      { property: "og:title", content: "MI Digital Twin – HPV Vaccine Conversation Prototype" },
       {
         property: "og:description",
-        content: "Empathetic conversational guide for HPV vaccine questions.",
+        content: "Parent-facing motivational interviewing prototype for the Digital Twin MI and HPV pilot.",
       },
     ],
   }),
