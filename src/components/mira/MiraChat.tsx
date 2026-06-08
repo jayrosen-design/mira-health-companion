@@ -295,14 +295,14 @@ export function MiraChat() {
               <div className="min-w-0">
                 <h1 className="truncate text-base font-semibold text-foreground">MiraChat</h1>
                 <p className="hidden truncate text-xs text-muted-foreground sm:block">
-                  HPV vaccine conversation guide
+                  MI Digital Twin Conversation Prototype
                 </p>
               </div>
             </button>
             <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
-              <Pill>Private prototype</Pill>
-              <Pill>Educational support</Pill>
-              <Pill>AI-assisted</Pill>
+              <Pill>Prototype</Pill>
+              <Pill>AI-supported</Pill>
+              <Pill>No data stored</Pill>
               <Button
                 size="sm"
                 variant="outline"
@@ -341,9 +341,8 @@ export function MiraChat() {
           <div className="hidden items-start gap-2 border-b border-primary/20 bg-primary/5 px-3 py-2 text-xs leading-relaxed text-foreground sm:flex sm:rounded-xl sm:border sm:p-3">
             <Stethoscope className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <p>
-              You are chatting with an AI-supported digital twin designed to use motivational
-              interviewing. It listens, reflects, and provides educational information when
-              appropriate. It is not a medical provider.
+              You are chatting with an AI prototype designed to use motivational interviewing. It
+              provides educational support and cannot replace a healthcare provider.
             </p>
           </div>
 
