@@ -53,11 +53,14 @@ export function PasswordGate({ onAuthenticated }: PasswordGateProps) {
           </div>
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-foreground">
-              Sign in to MiraChat
+              MiraChat Prototype
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              A private, text-based motivational interviewing prototype for parents thinking
-              through the HPV vaccine. Enter the access password to continue.
+            <p className="mt-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Restricted development preview
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              This prototype is password-protected to prevent unauthorized use of the development
+              AI API key. Access is limited to the project team for stakeholder review and testing.
             </p>
           </div>
         </div>
@@ -84,11 +87,14 @@ export function PasswordGate({ onAuthenticated }: PasswordGateProps) {
           </p>
         )}
         <Button type="submit" disabled={submitting || !password} className="mt-4 w-full">
-          {submitting ? "Signing in…" : "Sign in"}
+          {submitting ? "Entering…" : "Enter Prototype"}
         </Button>
         <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-          University research prototype. Not for clinical use. Conversations are for stakeholder
-          discussion only and are not stored as protected health information.
+          This is not a production clinical system and should not be used with real patient
+          information. MiraChat is a prototype of the Digital Twin chatbot experience — separate
+          from the MIRA Reviewer evaluation app — and is not yet connected to the final trained
+          model, approved RAG knowledge base, study survey database, or production safety
+          monitoring.
         </p>
       </form>
     </div>
