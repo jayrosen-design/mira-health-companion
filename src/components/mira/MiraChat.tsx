@@ -10,6 +10,7 @@ import {
   FileText,
   BookOpen,
   ClipboardList,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -179,7 +180,13 @@ export function MiraChat() {
   if (phase === "welcome") {
     return (
       <>
-        <TopBanner onSignOut={signOut} onDev={() => setSettingsOpen(true)} onResearch={() => setResearchOpen(true)} />
+        <TopBanner
+          onHome={() => setPhase("welcome")}
+          showHome={false}
+          onSignOut={signOut}
+          onDev={() => setSettingsOpen(true)}
+          onResearch={() => setResearchOpen(true)}
+        />
         <WelcomeScreen onStart={startChat} />
         <SettingsSidebar
           open={settingsOpen}
@@ -204,7 +211,12 @@ export function MiraChat() {
   if (phase === "survey") {
     return (
       <>
-        <TopBanner onSignOut={signOut} onDev={() => setSettingsOpen(true)} onResearch={() => setResearchOpen(true)} />
+        <TopBanner
+          onHome={() => setPhase("welcome")}
+          onSignOut={signOut}
+          onDev={() => setSettingsOpen(true)}
+          onResearch={() => setResearchOpen(true)}
+        />
         <SurveyScreen
           submitted={surveySubmitted}
           onBack={() => setPhase("chat")}
@@ -232,12 +244,23 @@ export function MiraChat() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-secondary/30">
-      <TopBanner onSignOut={signOut} onDev={() => setSettingsOpen(true)} onResearch={() => setResearchOpen(true)} />
+      <TopBanner
+        onHome={() => setPhase("welcome")}
+        onSignOut={signOut}
+        onDev={() => setSettingsOpen(true)}
+        onResearch={() => setResearchOpen(true)}
+      />
 
       <header className="border-b border-border bg-card/70 backdrop-blur">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-3">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              onClick={() => setPhase("welcome")}
+              className="flex items-center gap-3 min-w-0 rounded-lg p-1 -m-1 text-left transition-colors hover:bg-primary/5"
+              title="Back to welcome"
+              aria-label="Back to welcome"
+            >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <HeartPulse className="h-5 w-5" />
               </span>
@@ -245,7 +268,7 @@ export function MiraChat() {
                 <h1 className="truncate text-base font-semibold text-foreground">MI Digital Twin</h1>
                 <p className="text-xs text-muted-foreground">HPV vaccine conversation guide</p>
               </div>
-            </div>
+            </button>
             <div className="flex flex-wrap items-center gap-1.5">
               <Pill>Private prototype</Pill>
               <Pill>Educational support</Pill>
@@ -443,10 +466,14 @@ function Pill({ children }: { children: React.ReactNode }) {
 }
 
 function TopBanner({
+  onHome,
+  showHome = true,
   onSignOut,
   onDev,
   onResearch,
 }: {
+  onHome: () => void;
+  showHome?: boolean;
   onSignOut: () => void;
   onDev: () => void;
   onResearch: () => void;
@@ -458,6 +485,15 @@ function TopBanner({
           University research prototype · Not for clinical use
         </span>
         <div className="flex items-center gap-1">
+          {showHome && (
+            <button
+              type="button"
+              onClick={onHome}
+              className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            >
+              <Home className="h-3 w-3" /> Welcome
+            </button>
+          )}
           <button
             type="button"
             onClick={onResearch}
