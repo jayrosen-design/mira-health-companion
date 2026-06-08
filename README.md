@@ -1,4 +1,4 @@
-# MI Digital Twin – HPV Vaccine Conversation Prototype
+# MiraChat – HPV Vaccine Conversation Prototype
 
 This prototype demonstrates a possible parent-facing interface for the **Digital Twin MI and HPV pilot**. It simulates a text-based motivational interviewing (MI) conversation about HPV vaccination using the **UF Navigator Toolkit** (`https://api.ai.it.ufl.edu`) and a system prompt.
 
