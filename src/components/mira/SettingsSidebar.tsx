@@ -55,9 +55,10 @@ export function SettingsSidebar({
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent side="right" className="flex w-full flex-col gap-6 sm:max-w-lg">
         <SheetHeader>
-          <SheetTitle>Settings</SheetTitle>
+          <SheetTitle>Developer Settings</SheetTitle>
           <SheetDescription>
-            Configure the model and system prompt for this conversation.
+            Prototype controls for model and system prompt testing. Not visible to parent users in
+            the production experience.
           </SheetDescription>
         </SheetHeader>
 
