@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Send,
   LogOut,
