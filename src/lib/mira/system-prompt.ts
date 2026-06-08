@@ -21,7 +21,24 @@ Formatting and Style: Provide brief, conversational text responses (1-2 sentence
 </System_Prompt_Mira>`;
 
 export const MIRA_GREETING =
-  "Hello! I'm glad you're here. What thoughts or questions do you have about the HPV vaccine for your child?";
+  "Hi, I'm here to talk through your questions about the HPV vaccine. You can share what you've heard, what concerns you, or what would help you feel more informed. Whatever you decide is yours to decide.";
+
+export const PARENT_CONCERN_CHIPS = [
+  "I'm worried about side effects.",
+  "Is my child too young?",
+  "Does this encourage sexual activity?",
+  "How effective is the vaccine?",
+  "My doctor hasn't recommended it yet.",
+  "I just want to learn more.",
+] as const;
+
+export const CONVERSATION_GOALS = [
+  "Understand your questions",
+  "Explore what matters to you",
+  "Share information only when helpful",
+  "Support your decision-making",
+  "Encourage follow-up with your child's healthcare provider",
+] as const;
 
 export const MIRA_MODELS = [
   "gpt-oss-120b",
