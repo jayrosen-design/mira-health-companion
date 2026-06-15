@@ -65,12 +65,11 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             <p className="mt-2 text-sm text-muted-foreground">
               As a thank-you, you can receive a <span className="font-medium text-foreground">$20 cash incentive gift card</span> by
               optionally sharing a few additional demographic details through our secure
-              university REDCap form. Participation is voluntary and unrelated to your
-              feedback above.
+              university REDCap form. Participation is voluntary.
             </p>
             <Button asChild size="lg" className="mt-4 w-full gap-2 sm:w-auto">
               <a href={redcapUrl} target="_blank" rel="noopener noreferrer">
-                Continue to demographics form
+                Continue to survey
                 <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
