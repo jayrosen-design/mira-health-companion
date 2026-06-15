@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
+import { useState, useMemo } from "react";
+import { CheckCircle2, ArrowLeft, Gift, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StepIndicator } from "./StepIndicator";
@@ -32,6 +32,14 @@ interface SurveyScreenProps {
 export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [open, setOpen] = useState("");
+  const sessionId = useMemo(
+    () =>
+      (typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2) + Date.now().toString(36)),
+    [],
+  );
+  const redcapUrl = `https://redcap.ctsi.ufl.edu/redcap/?session=${sessionId}`;
 
   if (submitted) {
     return (
@@ -46,6 +54,30 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
           <p className="mt-2 text-sm text-muted-foreground">
             No personal data is stored. You can close this window.
           </p>
+
+          <div className="mt-6 rounded-xl border border-primary/30 bg-primary/5 p-5 text-left">
+            <div className="flex items-center gap-2 text-primary">
+              <Gift className="h-5 w-5" />
+              <h2 className="text-sm font-semibold">
+                Optional: Receive a $20 gift card
+              </h2>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              As a thank-you, you can receive a <span className="font-medium text-foreground">$20 cash incentive gift card</span> by
+              optionally sharing a few additional demographic details through our secure
+              university REDCap form. Participation is voluntary and unrelated to your
+              feedback above.
+            </p>
+            <Button asChild size="lg" className="mt-4 w-full gap-2 sm:w-auto">
+              <a href={redcapUrl} target="_blank" rel="noopener noreferrer">
+                Continue to demographics form
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </Button>
+            <p className="mt-3 break-all text-[11px] text-muted-foreground">
+              Session reference: <span className="font-mono">{sessionId}</span>
+            </p>
+          </div>
         </div>
       </div>
     );
