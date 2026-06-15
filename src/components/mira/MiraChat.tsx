@@ -388,22 +388,7 @@ export function MiraChat() {
               />
             )}
 
-            {/* Concern chips */}
-            {userTurns.length === 0 && (
-              <div className="flex flex-wrap gap-2">
-                {PARENT_CONCERN_CHIPS.map((chip) => (
-                  <button
-                    key={chip}
-                    type="button"
-                    onClick={() => sendChip(chip)}
-                    disabled={isSending}
-                    className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:opacity-50"
-                  >
-                    {chip}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Concern chips removed per design — keep the chat surface uncluttered. */}
           </div>
 
           <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
