@@ -125,6 +125,7 @@ export const Route = createFileRoute("/api/simulate-parent")({
               Authorization: `Bearer ${apiKey}`,
             },
             body: JSON.stringify({ model, messages, temperature: 0.9 }),
+            signal: AbortSignal.timeout(20_000),
           });
           const text = await upstream.text();
           if (!upstream.ok) {
