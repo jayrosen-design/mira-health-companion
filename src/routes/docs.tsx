@@ -525,6 +525,24 @@ function DocsPage() {
 
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Each chat bubble can surface MI-flow metadata inline. Assistant bubbles show the
+            inferred MI technique tag, routing phase/node, supervisor verdict, and any revision or
+            fallback flags. Parent/user bubbles show the AI's read of that turn: detected stance,
+            permission state, concern category, and routing outcome. Developer Settings → Model
+            includes a{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">Show meta chips</code> toggle
+            that defaults to on. Developer Settings and Research View open as non-modal sidebars so
+            the chat stays visible and interactive while inspecting traces, scripts, or supervisor
+            verdicts.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">How the app works</h2>
           </div>
