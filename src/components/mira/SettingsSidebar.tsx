@@ -71,7 +71,7 @@ export function SettingsSidebar({
   };
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange} modal={false}>
+    <Sheet open={open} onOpenChange={handleOpenChange} modal={true}>
       <SheetContent
         side="right"
         hideOverlay
