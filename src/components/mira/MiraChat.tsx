@@ -711,14 +711,22 @@ export function MiraChat() {
             ref={scrollRef}
             className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-card/60 sm:p-5 sm:shadow-sm"
           >
-            {visible.map((m, i) => (
-              <ChatMessage
-                key={i}
-                role={m.role}
-                content={m.content}
-                miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
-              />
-            ))}
+            {visible.map((m, i) => {
+              const ev = assistantMeta.get(i);
+              return (
+                <ChatMessage
+                  key={i}
+                  role={m.role}
+                  content={m.content}
+                  miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
+                  meta={
+                    m.role === "assistant" && ev
+                      ? { state: ev.state, supervisor: ev.supervisor, trace: ev.trace }
+                      : null
+                  }
+                />
+              );
+            })}
             {parentTyping && (
               <div className="flex items-center gap-3 self-end" aria-live="polite" aria-label="Simulated parent is typing">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
