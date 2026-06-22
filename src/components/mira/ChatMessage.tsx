@@ -17,11 +17,13 @@ interface ChatMessageProps {
   content: string;
   miTag?: string | null;
   meta?: ChatMessageMeta | null;
+  showMeta?: boolean;
 }
 
-export function ChatMessage({ role, content, miTag, meta }: ChatMessageProps) {
+export function ChatMessage({ role, content, miTag, meta, showMeta = true }: ChatMessageProps) {
   const isUser = role === "user";
-  const showMeta = !!meta && (meta.state || meta.supervisor || meta.trace);
+  const hasMeta = !!meta && (meta.state || meta.supervisor || meta.trace);
+  const showChips = showMeta && (!!(!isUser && miTag) || hasMeta);
   const verdict = meta?.supervisor?.verdict;
   const verdictClass =
     verdict === "APPROVED"
@@ -49,7 +51,7 @@ export function ChatMessage({ role, content, miTag, meta }: ChatMessageProps) {
         >
           {content}
         </div>
-        {(!!(!isUser && miTag) || showMeta) && (
+        {showChips && (
           <div className="ml-1 flex flex-wrap gap-1 pt-0.5 text-[10px] font-medium uppercase tracking-wide">
             {!isUser && miTag && (
               <span
@@ -59,7 +61,7 @@ export function ChatMessage({ role, content, miTag, meta }: ChatMessageProps) {
                 MI · {miTag}
               </span>
             )}
-            {showMeta && (
+            {hasMeta && (
               <>
                 {meta?.state?.phase && (
                   <span

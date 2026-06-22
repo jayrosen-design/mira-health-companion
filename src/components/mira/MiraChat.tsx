@@ -116,6 +116,7 @@ export function MiraChat() {
   const [error, setError] = useState<string | null>(null);
   const [simulationRunning, setSimulationRunning] = useState(false);
   const [parentTyping, setParentTyping] = useState(false);
+  const [showMeta, setShowMeta] = useState(true);
 
   // Simulated Parent (synthetic test) state — in-memory only.
   const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
@@ -691,6 +692,8 @@ export function MiraChat() {
         disabled={isSending}
         developerMode={developerMode}
         onDeveloperModeChange={setDeveloperMode}
+        showMeta={showMeta}
+        onShowMetaChange={setShowMeta}
       />
       <ResearchView
         open={researchOpen}
@@ -733,6 +736,7 @@ export function MiraChat() {
                   content={m.content}
                   miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
                   meta={meta}
+                  showMeta={showMeta}
                 />
               );
             })}

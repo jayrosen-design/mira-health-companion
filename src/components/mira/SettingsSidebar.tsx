@@ -34,6 +34,8 @@ interface SettingsSidebarProps {
   disabled?: boolean;
   developerMode?: boolean;
   onDeveloperModeChange?: (value: boolean) => void;
+  showMeta?: boolean;
+  onShowMetaChange?: (value: boolean) => void;
 }
 
 export function SettingsSidebar({
@@ -46,6 +48,8 @@ export function SettingsSidebar({
   disabled,
   developerMode = true,
   onDeveloperModeChange,
+  showMeta = true,
+  onShowMetaChange,
 }: SettingsSidebarProps) {
   const [draft, setDraft] = useState(systemPrompt);
 
@@ -104,6 +108,18 @@ export function SettingsSidebar({
               <Switch
                 checked={developerMode}
                 onCheckedChange={(v) => onDeveloperModeChange?.(v)}
+              />
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3">
+              <div className="text-sm">
+                <div className="font-medium">Show meta chips</div>
+                <p className="text-xs text-muted-foreground">
+                  Display MI-flow tags and metadata under each chat bubble.
+                </p>
+              </div>
+              <Switch
+                checked={showMeta}
+                onCheckedChange={(v) => onShowMetaChange?.(v)}
               />
             </div>
           </TabsContent>
