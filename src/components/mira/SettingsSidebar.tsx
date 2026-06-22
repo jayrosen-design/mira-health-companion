@@ -34,6 +34,8 @@ interface SettingsSidebarProps {
   disabled?: boolean;
   developerMode?: boolean;
   onDeveloperModeChange?: (value: boolean) => void;
+  showMeta?: boolean;
+  onShowMetaChange?: (value: boolean) => void;
 }
 
 export function SettingsSidebar({
