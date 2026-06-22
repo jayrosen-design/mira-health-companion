@@ -187,13 +187,35 @@ export function MiraChat() {
   // Play a notification sound when the assistant sends a new message.
   // Skip the initial broad opening (messages.length === 1) so the user isn't
   // surprised by audio on first load.
+  const messageAudioRef = useRef<HTMLAudioElement | null>(null);
+  const lastPlayedCountRef = useRef<number>(0);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const audio = new Audio(messageSoundAsset.url);
+    audio.preload = "auto";
+    messageAudioRef.current = audio;
+  }, []);
   useEffect(() => {
     const last = messages[messages.length - 1];
-    if (last?.role === "assistant" && messages.length > 1) {
-      const audio = new Audio(messageSoundAsset.url);
-      audio.play().catch(() => {
-        // Autoplay may be blocked until the user interacts with the page.
-      });
+    if (
+      last?.role === "assistant" &&
+      messages.length > 1 &&
+      messages.length !== lastPlayedCountRef.current
+    ) {
+      lastPlayedCountRef.current = messages.length;
+      const audio = messageAudioRef.current;
+      if (!audio) return;
+      try {
+        audio.currentTime = 0;
+        const result = audio.play();
+        if (result && typeof result.catch === "function") {
+          result.catch(() => {
+            // Autoplay may be blocked until the user interacts with the page.
+          });
+        }
+      } catch {
+        // Ignore playback errors (e.g. unsupported format, autoplay policy).
+      }
     }
   }, [messages]);
 
