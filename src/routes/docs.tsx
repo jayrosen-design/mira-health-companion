@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BookOpen, Database, Network, ShieldAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Database,
+  MessageSquare,
+  Network,
+  ShieldAlert,
+} from "lucide-react";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
 
 export const Route = createFileRoute("/docs")({
@@ -21,7 +28,7 @@ const flowChart = `flowchart TD
   Web -->|password gate| Auth[/POST /api/auth/login/]
   Auth -->|session cookie| Web
   Web -->|consent + survey| Survey[/POST /api/surveys/]
-  Web -->|user turn| Chat[/POST /api/chat/]
+  Web -->|user turn| Chat[/POST /api/orchestrate/]
   Chat --> Orchestrator{MI Orchestrator}
   Orchestrator -->|system prompt + history| LLM[LLM Provider]
   Orchestrator -->|retrieve facts| RAG[(HPV Knowledge Base)]
@@ -330,6 +337,29 @@ const endpointGroups: { group: string; endpoints: Endpoint[] }[] = [
       },
     ],
   },
+  {
+    group: "Prototype / Testing",
+    endpoints: [
+      {
+        method: "POST",
+        path: "/api/orchestrate",
+        purpose:
+          "Live prototype endpoint that runs the MI Routing Engine, MI Conversation Agent, and Supervisor Agent for a single turn. Returns the approved reply plus (when developerMode is on) a structured developer trace.",
+        auth: "Session",
+        request: `{ "message": "...", "history": [...], "state": {...}, "model": "...", "developerMode": true }`,
+        response: `{ "content": "...", "state": {...}, "supervisor": {...}, "developerTrace": {...} }`,
+      },
+      {
+        method: "POST",
+        path: "/api/simulate-parent",
+        purpose:
+          "Rewrite a scripted simulated-parent turn in the selected persona's natural voice using the Navigator API. The scripted content is used as intent only and is never sent to the MI Agent or Supervisor.",
+        auth: "Session",
+        request: `{ "model": "...", "personaId": "...", "scriptedTurnId": "...", "scriptedContent": "...", "history": [...] }`,
+        response: `{ "content": "natural parent message" }`,
+      },
+    ],
+  },
 ];
 
 function MethodBadge({ method }: { method: Endpoint["method"] }) {
@@ -490,6 +520,24 @@ function DocsPage() {
             INDIVIDUALIZED_MEDICAL_ADVICE, QUESTION_STACKING, EXCESSIVE_LENGTH, PROMPT_LEAKAGE,
             OUT_OF_SCOPE, UNSAFE. No chain-of-thought or hidden reasoning is ever returned to
             the browser.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Each chat bubble can surface MI-flow metadata inline. Assistant bubbles show the
+            inferred MI technique tag, routing phase/node, supervisor verdict, and any revision or
+            fallback flags. Parent/user bubbles show the AI's read of that turn: detected stance,
+            permission state, concern category, and routing outcome. Developer Settings → Model
+            includes a{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">Show meta chips</code> toggle
+            that defaults to on. Developer Settings and Research View open as non-modal sidebars so
+            the chat stays visible and interactive while inspecting traces, scripts, or supervisor
+            verdicts.
           </p>
         </section>
 
