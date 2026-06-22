@@ -115,6 +115,7 @@ export function MiraChat() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [simulationRunning, setSimulationRunning] = useState(false);
+  const [parentTyping, setParentTyping] = useState(false);
 
   // Simulated Parent (synthetic test) state — in-memory only.
   const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
@@ -175,7 +176,7 @@ export function MiraChat() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, isSending]);
+  }, [messages, isSending, parentTyping]);
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -327,8 +328,10 @@ export function MiraChat() {
       // Ask the Navigator API to generate a natural parent message in
       // this persona's voice, using the scripted turn as the INTENT only.
       let parentMessage = turn.content;
+      let usedAi = false;
       try {
         const priorHistory = messagesRef.current;
+        setParentTyping(true);
         const res = await fetch("/api/simulate-parent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -344,10 +347,16 @@ export function MiraChat() {
           const data = (await res.json()) as { content?: string };
           if (data.content && data.content.trim()) {
             parentMessage = data.content.trim();
+            usedAi = true;
           }
         }
       } catch {
         // Network error: fall back to the scripted content verbatim.
+      } finally {
+        setParentTyping(false);
+      }
+      if (!usedAi) {
+        console.warn("[SimulatedParent] Falling back to scripted content for turn", turn.id);
       }
       if (simCtl.current.stop) break;
       const result = await sendText(parentMessage);
@@ -696,6 +705,18 @@ export function MiraChat() {
                 miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
               />
             ))}
+            {parentTyping && (
+              <div className="flex items-center gap-3 self-end" aria-live="polite" aria-label="Simulated parent is typing">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Simulated parent is typing</span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.3s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.15s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70" />
+                  </span>
+                </div>
+              </div>
+            )}
             {isSending && (
               <div className="flex items-center gap-3" aria-live="polite" aria-label="Digital Twin is responding">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-accent-foreground">
