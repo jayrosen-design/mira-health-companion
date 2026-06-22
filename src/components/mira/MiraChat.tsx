@@ -931,7 +931,7 @@ function TopBanner({
     <div className="shrink-0 border-b border-border bg-primary/95 text-primary-foreground">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
-          <span className="sm:hidden">Research prototype</span>
+          <span className="sm:hidden">MiraChat</span>
           <span className="hidden sm:inline">
             University research prototype · Not for clinical use
           </span>
