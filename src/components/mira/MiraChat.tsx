@@ -692,6 +692,8 @@ export function MiraChat() {
         disabled={isSending}
         developerMode={developerMode}
         onDeveloperModeChange={setDeveloperMode}
+        showMeta={showMeta}
+        onShowMetaChange={setShowMeta}
       />
       <ResearchView
         open={researchOpen}
