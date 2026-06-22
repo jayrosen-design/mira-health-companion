@@ -15,6 +15,12 @@ import {
   SIMULATION_SCENARIOS,
   type SimulationScenario,
 } from "@/lib/mira/simulation-scenarios";
+import {
+  SIMULATED_PARENT_SCENARIOS,
+  type SimulatedParentType,
+  type SimulationStatus,
+  type SimulationTurnResult,
+} from "@/lib/mira/simulated-parent-scenarios";
 
 interface ResearchViewProps {
   open: boolean;
@@ -27,6 +33,11 @@ interface ResearchViewProps {
   developerMode?: boolean;
   onRunSimulation?: (scenario: SimulationScenario) => Promise<void> | void;
   simulationRunning?: boolean;
+  simulatedPersona?: SimulatedParentType | null;
+  simStatus?: SimulationStatus;
+  simTurnIndex?: number;
+  simResults?: SimulationTurnResult[];
+  simStartedAt?: number | null;
 }
 
 export function ResearchView({
@@ -40,6 +51,11 @@ export function ResearchView({
   developerMode = true,
   onRunSimulation,
   simulationRunning = false,
+  simulatedPersona = null,
+  simStatus = "idle",
+  simTurnIndex = 0,
+  simResults = [],
+  simStartedAt = null,
 }: ResearchViewProps) {
   const lastEvent = traceEvents[traceEvents.length - 1];
   const [selectedScenario, setSelectedScenario] = useState<string>(
@@ -47,6 +63,19 @@ export function ResearchView({
   );
   const scenario =
     SIMULATION_SCENARIOS.find((s) => s.id === selectedScenario) ?? SIMULATION_SCENARIOS[0];
+  const personaScenario = simulatedPersona
+    ? SIMULATED_PARENT_SCENARIOS[simulatedPersona]
+    : null;
+  const elapsed =
+    simStartedAt && (simStatus === "running" || simStatus === "paused")
+      ? Math.round((Date.now() - simStartedAt) / 1000)
+      : simStartedAt
+        ? Math.round(
+            ((simResults[simResults.length - 1] ? Date.now() : Date.now()) - simStartedAt) /
+              1000,
+          )
+        : 0;
+  const mismatchCount = simResults.filter((r) => r.result === "Review").length;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -59,10 +88,11 @@ export function ResearchView({
         </SheetHeader>
 
         <Tabs defaultValue="routing" className="mt-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="routing">MI Routing</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="simulation">Sim Lab</TabsTrigger>
+            <TabsTrigger value="simparent">Sim Parent</TabsTrigger>
             <TabsTrigger value="meta">Meta</TabsTrigger>
           </TabsList>
 
@@ -195,6 +225,99 @@ export function ResearchView({
                 Reset the chat first if you want a clean run. Synthetic content only.
               </p>
             </div>
+          </TabsContent>
+
+          <TabsContent value="simparent" className="mt-4 flex flex-col gap-3 text-sm">
+            <Section title="Simulated Parent session">
+              <Row k="Mode" v={simulatedPersona ? "Simulated" : "Manual"} />
+              <Row k="Selected scenario" v={personaScenario?.label ?? "—"} />
+              <Row k="Scenario status" v={simStatus} />
+              <Row
+                k="Current scripted turn"
+                v={personaScenario ? `${Math.min(simTurnIndex + 1, personaScenario.turns.length)}` : "—"}
+              />
+              <Row k="Total scripted turns" v={personaScenario ? String(personaScenario.turns.length) : "—"} />
+              <Row
+                k="Current synthetic message"
+                v={
+                  personaScenario
+                    ? `“${personaScenario.turns[Math.min(simTurnIndex, personaScenario.turns.length - 1)]?.content ?? ""}”`
+                    : "—"
+                }
+              />
+              <Row k="Expected phase" v={personaScenario?.turns[simTurnIndex]?.expectedPhase ?? "—"} />
+              <Row k="Actual phase" v={sessionState?.phase ?? "—"} />
+              <Row k="Expected stance" v={personaScenario?.turns[simTurnIndex]?.expectedStance ?? "—"} />
+              <Row k="Actual stance" v={sessionState?.stance ?? "—"} />
+              <Row k="Last outcome" v={sessionState?.outcome ?? "—"} />
+              <Row k="Last verdict" v={lastEvent?.supervisor.verdict ?? "—"} />
+              <Row
+                k="Regeneration used"
+                v={lastEvent?.supervisor.revisionRequested ? "Yes" : "No"}
+              />
+              <Row k="Fallback used" v={lastEvent?.supervisor.fallbackUsed ? "Yes" : "No"} />
+              <Row k="Total mismatches" v={String(mismatchCount)} />
+              <Row k="Elapsed (s)" v={String(elapsed)} />
+            </Section>
+
+            <div className="rounded-xl border border-border bg-card p-3 text-xs">
+              <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Turn-by-turn results
+              </h3>
+              {simResults.length === 0 ? (
+                <p className="text-muted-foreground">
+                  No simulated turns yet. Start the conversation from the welcome page with a
+                  simulated parent selected.
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[640px] text-left text-[11px]">
+                    <thead className="text-muted-foreground">
+                      <tr>
+                        <th className="py-1 pr-2">#</th>
+                        <th className="py-1 pr-2">Synthetic message</th>
+                        <th className="py-1 pr-2">Exp phase</th>
+                        <th className="py-1 pr-2">Act phase</th>
+                        <th className="py-1 pr-2">Exp stance</th>
+                        <th className="py-1 pr-2">Act stance</th>
+                        <th className="py-1 pr-2">Outcome</th>
+                        <th className="py-1 pr-2">Result</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {simResults.map((r, i) => (
+                        <tr key={r.turnId} className="border-t border-border align-top">
+                          <td className="py-1 pr-2">{i + 1}</td>
+                          <td className="py-1 pr-2">“{r.scriptedContent}”</td>
+                          <td className="py-1 pr-2">{r.expectedPhase}</td>
+                          <td className="py-1 pr-2">{r.actualPhase ?? "—"}</td>
+                          <td className="py-1 pr-2">{r.expectedStance}</td>
+                          <td className="py-1 pr-2">{r.actualStance ?? "—"}</td>
+                          <td className="py-1 pr-2">{r.outcome ?? "—"}</td>
+                          <td className="py-1 pr-2">
+                            <Tag
+                              tone={
+                                r.result === "Pass" || r.result === "Closed correctly"
+                                  ? undefined
+                                  : r.result === "Review"
+                                    ? "warn"
+                                    : "danger"
+                              }
+                            >
+                              {r.result}
+                            </Tag>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              Synthetic data. Not eligible for training. Persona and expected values are never sent
+              to the MI Agent or Supervisor.
+            </p>
           </TabsContent>
 
           <TabsContent value="meta" className="mt-4 flex flex-col gap-4 text-sm">
