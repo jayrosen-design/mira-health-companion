@@ -115,6 +115,7 @@ export function MiraChat() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [simulationRunning, setSimulationRunning] = useState(false);
+  const [parentTyping, setParentTyping] = useState(false);
 
   // Simulated Parent (synthetic test) state — in-memory only.
   const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
