@@ -216,6 +216,20 @@ export function MiraChat() {
     setDismissedCompletion(false);
   };
 
+  const runSimulation = async (scenario: SimulationScenario) => {
+    if (simulationRunning) return;
+    setSimulationRunning(true);
+    try {
+      for (const turn of scenario.turns) {
+        if (sessionState.isComplete) break;
+        await sendText(turn);
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    } finally {
+      setSimulationRunning(false);
+    }
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Ignore Enter while the user is composing in an IME (e.g. Japanese, Chinese, Korean).
     // `isComposing` and keyCode 229 both indicate an active composition.
