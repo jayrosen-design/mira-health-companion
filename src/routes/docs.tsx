@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BookOpen, Database, Network, ShieldAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Database,
+  MessageSquare,
+  Network,
+  ShieldAlert,
+} from "lucide-react";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
 
 export const Route = createFileRoute("/docs")({
