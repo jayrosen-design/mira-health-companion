@@ -5,7 +5,7 @@ const STEPS = ["Invitation", "Chat", "Survey"] as const;
 
 export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
   return (
-    <div className="w-full">
+    <div className="hidden w-full sm:block">
       <div className="mb-1 flex items-center justify-between text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-[11px]">
         <span>
           Step {current} of 3: {STEPS[current - 1]}
