@@ -83,6 +83,7 @@ export function ResearchView({
         side="right"
         hideOverlay
         onFocusOutside={(event) => event.preventDefault()}
+        onInteractOutside={(event) => event.preventDefault()}
         className="w-full overflow-y-auto sm:max-w-xl"
       >
         <SheetHeader>
