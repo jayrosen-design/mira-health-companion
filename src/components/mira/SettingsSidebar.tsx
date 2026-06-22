@@ -67,8 +67,12 @@ export function SettingsSidebar({
   };
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right" className="flex w-full flex-col gap-4 overflow-y-auto sm:max-w-xl">
+    <Sheet open={open} onOpenChange={handleOpenChange} modal={false}>
+      <SheetContent
+        side="right"
+        hideOverlay
+        className="flex w-full flex-col gap-4 overflow-y-auto sm:max-w-xl"
+      >
         <SheetHeader>
           <SheetTitle>Developer Settings</SheetTitle>
           <SheetDescription>
