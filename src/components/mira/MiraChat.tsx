@@ -474,6 +474,20 @@ export function MiraChat() {
 
   const visible = messages;
   const userTurns = useMemo(() => visible.filter((m) => m.role === "user"), [visible]);
+  // Map each assistant message index → its TraceEvent (skip the opening greeting).
+  const assistantMeta = useMemo(() => {
+    const map = new Map<number, TraceEvent>();
+    let assistantOrdinal = -1; // first assistant is the broad opening, no trace
+    visible.forEach((m, i) => {
+      if (m.role !== "assistant") return;
+      if (assistantOrdinal >= 0) {
+        const ev = traceEvents[assistantOrdinal];
+        if (ev) map.set(i, ev);
+      }
+      assistantOrdinal += 1;
+    });
+    return map;
+  }, [visible, traceEvents]);
   const showCompletion =
     !dismissedCompletion &&
     (userTurns.length >= 4 || sessionState.isComplete) &&
@@ -697,14 +711,22 @@ export function MiraChat() {
             ref={scrollRef}
             className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-card/60 sm:p-5 sm:shadow-sm"
           >
-            {visible.map((m, i) => (
-              <ChatMessage
-                key={i}
-                role={m.role}
-                content={m.content}
-                miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
-              />
-            ))}
+            {visible.map((m, i) => {
+              const ev = assistantMeta.get(i);
+              return (
+                <ChatMessage
+                  key={i}
+                  role={m.role}
+                  content={m.content}
+                  miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
+                  meta={
+                    m.role === "assistant" && ev
+                      ? { state: ev.state, supervisor: ev.supervisor, trace: ev.trace }
+                      : null
+                  }
+                />
+              );
+            })}
             {parentTyping && (
               <div className="flex items-center gap-3 self-end" aria-live="polite" aria-label="Simulated parent is typing">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
