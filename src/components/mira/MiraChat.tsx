@@ -642,7 +642,7 @@ export function MiraChat() {
         canReset={!isSending && userTurns.length > 0}
       />
 
-      <header className="shrink-0 border-b border-border bg-card/70 backdrop-blur">
+      <header className="hidden shrink-0 border-b border-border bg-card/70 backdrop-blur sm:block">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
           <div className="flex items-center justify-between gap-3">
             <button
