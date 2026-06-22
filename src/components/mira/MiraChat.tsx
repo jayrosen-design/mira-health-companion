@@ -705,6 +705,18 @@ export function MiraChat() {
                 miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
               />
             ))}
+            {parentTyping && (
+              <div className="flex items-center gap-3 self-end" aria-live="polite" aria-label="Simulated parent is typing">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Simulated parent is typing</span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.3s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.15s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70" />
+                  </span>
+                </div>
+              </div>
+            )}
             {isSending && (
               <div className="flex items-center gap-3" aria-live="polite" aria-label="Digital Twin is responding">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-accent-foreground">
