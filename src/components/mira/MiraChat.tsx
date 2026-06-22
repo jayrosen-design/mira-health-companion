@@ -131,6 +131,10 @@ export function MiraChat() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<Msg[]>(messages);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   useEffect(() => {
     let cancelled = false;
@@ -180,8 +184,10 @@ export function MiraChat() {
     if (!trimmed || isSending) return null;
     if (sessionState.isComplete) return null;
     setError(null);
-    const next: Msg[] = [...messages, { role: "user", content: trimmed }];
-    setMessages(next);
+    const prevMessages = messagesRef.current;
+    const userMsg: Msg = { role: "user", content: trimmed };
+    messagesRef.current = [...prevMessages, userMsg];
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsSending(true);
     const startedAt = Date.now();
@@ -191,7 +197,7 @@ export function MiraChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: trimmed,
-          history: messages,
+          history: prevMessages,
           state: sessionState,
           model,
           developerMode,
@@ -204,7 +210,9 @@ export function MiraChat() {
       }
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       const reply = data.content ?? "";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const assistantMsg: Msg = { role: "assistant", content: reply };
+      messagesRef.current = [...messagesRef.current, assistantMsg];
+      setMessages((prev) => [...prev, assistantMsg]);
       if (data.state) setSessionState(data.state);
       if (data.supervisor && data.state) {
         const evt: TraceEvent = {
@@ -219,10 +227,9 @@ export function MiraChat() {
         setTraceEvents((prev) => [...prev, evt]);
       }
       if (data.state?.isComplete) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: RESPECTFUL_CLOSE },
-        ]);
+        const closeMsg: Msg = { role: "assistant", content: RESPECTFUL_CLOSE };
+        messagesRef.current = [...messagesRef.current, closeMsg];
+        setMessages((prev) => [...prev, closeMsg]);
       }
       if (data.state && data.supervisor) {
         return { state: data.state, supervisor: data.supervisor };
