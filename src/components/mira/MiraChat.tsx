@@ -61,6 +61,11 @@ export interface TraceEvent {
 type Msg = { role: "user" | "assistant"; content: string };
 type Phase = "welcome" | "chat" | "survey";
 
+function generateSessionId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `s_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+}
+
 function inferMiTag(text: string): string | null {
   const t = text.toLowerCase();
   if (/would it be (ok|okay)|is it (ok|okay) if|may i share|would you like me to/.test(t))
