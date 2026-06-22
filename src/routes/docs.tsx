@@ -337,6 +337,29 @@ const endpointGroups: { group: string; endpoints: Endpoint[] }[] = [
       },
     ],
   },
+  {
+    group: "Prototype / Testing",
+    endpoints: [
+      {
+        method: "POST",
+        path: "/api/orchestrate",
+        purpose:
+          "Live prototype endpoint that runs the MI Routing Engine, MI Conversation Agent, and Supervisor Agent for a single turn. Returns the approved reply plus (when developerMode is on) a structured developer trace.",
+        auth: "Session",
+        request: `{ "message": "...", "history": [...], "state": {...}, "model": "...", "developerMode": true }`,
+        response: `{ "content": "...", "state": {...}, "supervisor": {...}, "developerTrace": {...} }`,
+      },
+      {
+        method: "POST",
+        path: "/api/simulate-parent",
+        purpose:
+          "Rewrite a scripted simulated-parent turn in the selected persona's natural voice using the Navigator API. The scripted content is used as intent only and is never sent to the MI Agent or Supervisor.",
+        auth: "Session",
+        request: `{ "model": "...", "personaId": "...", "scriptedTurnId": "...", "scriptedContent": "...", "history": [...] }`,
+        response: `{ "content": "natural parent message" }`,
+      },
+    ],
+  },
 ];
 
 function MethodBadge({ method }: { method: Endpoint["method"] }) {
