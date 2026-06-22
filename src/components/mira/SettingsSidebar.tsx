@@ -48,6 +48,8 @@ export function SettingsSidebar({
   disabled,
   developerMode = true,
   onDeveloperModeChange,
+  showMeta = true,
+  onShowMetaChange,
 }: SettingsSidebarProps) {
   const [draft, setDraft] = useState(systemPrompt);
 
