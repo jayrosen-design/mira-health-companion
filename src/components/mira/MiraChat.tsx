@@ -1089,7 +1089,7 @@ function TopBanner({
                 label="Research View"
                 onClick={() => {
                   close();
-                  onResearch();
+                  setTimeout(() => onResearch(), 350);
                 }}
               />
               <Link
@@ -1105,7 +1105,7 @@ function TopBanner({
                 label="Developer Settings"
                 onClick={() => {
                   close();
-                  onDev();
+                  setTimeout(() => onDev(), 350);
                 }}
               />
               <div className="my-2 h-px bg-border" />
