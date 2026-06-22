@@ -75,6 +75,7 @@ export function SettingsSidebar({
       <SheetContent
         side="right"
         hideOverlay
+        onFocusOutside={(event) => event.preventDefault()}
         className="flex w-full flex-col gap-4 overflow-y-auto sm:max-w-xl"
       >
         <SheetHeader>

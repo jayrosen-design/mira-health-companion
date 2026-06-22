@@ -79,7 +79,12 @@ export function ResearchView({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
-      <SheetContent side="right" hideOverlay className="w-full overflow-y-auto sm:max-w-xl">
+      <SheetContent
+        side="right"
+        hideOverlay
+        onFocusOutside={(event) => event.preventDefault()}
+        className="w-full overflow-y-auto sm:max-w-xl"
+      >
         <SheetHeader>
           <SheetTitle>Research View</SheetTitle>
           <SheetDescription>

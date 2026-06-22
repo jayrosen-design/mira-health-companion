@@ -1056,7 +1056,11 @@ function TopBanner({
               <Menu className="h-4 w-4" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-72 sm:w-80">
+          <SheetContent
+            side="right"
+            onCloseAutoFocus={(event) => event.preventDefault()}
+            className="w-72 sm:w-80"
+          >
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
