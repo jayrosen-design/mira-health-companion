@@ -3,13 +3,28 @@ import { ArrowRight, HeartPulse, Info, Lock, ShieldAlert, Stethoscope } from "lu
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./StepIndicator";
 import { PARENT_CONCERN_CHIPS } from "@/lib/mira/system-prompt";
+import { SimulatedParentSelector } from "./SimulatedParentSelector";
+import {
+  SIMULATED_PARENT_SCENARIOS,
+  type SimulatedParentType,
+} from "@/lib/mira/simulated-parent-scenarios";
 
 interface WelcomeScreenProps {
   onStart: (prefill?: string) => void;
+  simulatedPersona: SimulatedParentType | null;
+  onSimulatedPersonaChange: (value: SimulatedParentType | null) => void;
 }
 
-export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
+export function WelcomeScreen({
+  onStart,
+  simulatedPersona,
+  onSimulatedPersonaChange,
+}: WelcomeScreenProps) {
   const [showLearn, setShowLearn] = useState(false);
+
+  const startLabel = simulatedPersona
+    ? `Run ${SIMULATED_PARENT_SCENARIOS[simulatedPersona].id} parent simulation`
+    : "Start conversation";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/40 px-4 py-8">
@@ -59,8 +74,8 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Button size="lg" onClick={() => onStart()} className="gap-2">
-              Start Conversation <ArrowRight className="h-4 w-4" />
+            <Button size="lg" onClick={() => onStart()} className="gap-2 capitalize">
+              {startLabel} <ArrowRight className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -89,6 +104,12 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
           )}
         </section>
 
+        <SimulatedParentSelector
+          value={simulatedPersona}
+          onChange={onSimulatedPersonaChange}
+        />
+
+        {!simulatedPersona && (
         <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Common things parents start with
@@ -109,6 +130,7 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
             ))}
           </div>
         </section>
+        )}
 
         <footer className="flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/5 p-3 text-xs text-warning-foreground">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />

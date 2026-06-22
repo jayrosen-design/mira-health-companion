@@ -18,6 +18,11 @@ import { SHARED_MI_FOUNDATION } from "@/lib/mira/phase-prompts";
 import { SUPERVISOR_SYSTEM_PROMPT } from "@/lib/mira/supervisor-prompt";
 import { ROUTING_NODES } from "@/lib/mira/mi-routing-config";
 import { PROMPT_VERSION, ROUTING_VERSION } from "@/lib/mira/mi-types";
+import {
+  SIMULATED_PARENT_SCENARIOS,
+  SIMULATED_PARENT_VERSION,
+  SIMULATED_PARENT_DEFAULT_DELAY_MS,
+} from "@/lib/mira/simulated-parent-scenarios";
 
 interface SettingsSidebarProps {
   open: boolean;
@@ -73,12 +78,13 @@ export function SettingsSidebar({
         </SheetHeader>
 
         <Tabs defaultValue="model" className="flex flex-col gap-3">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="model">Model</TabsTrigger>
             <TabsTrigger value="foundation">MI</TabsTrigger>
             <TabsTrigger value="phase">Phases</TabsTrigger>
             <TabsTrigger value="supervisor">Supervisor</TabsTrigger>
             <TabsTrigger value="routing">Routing</TabsTrigger>
+            <TabsTrigger value="simparent">Sim Parent</TabsTrigger>
           </TabsList>
 
           <TabsContent value="model" className="flex flex-col gap-3">
@@ -187,6 +193,39 @@ export function SettingsSidebar({
               The active routing configuration is bundled with this prototype build. Changes
               to nodes require a code update.
             </p>
+          </TabsContent>
+
+          <TabsContent value="simparent" className="flex flex-col gap-2 text-xs">
+            <div className="rounded-md border border-border bg-card p-3 text-xs">
+              <div>Scenario version: <span className="font-mono">{SIMULATED_PARENT_VERSION}</span></div>
+              <div>Default response delay: <span className="font-mono">{SIMULATED_PARENT_DEFAULT_DELAY_MS} ms</span></div>
+              <div>Autoplay: <span className="font-mono">enabled</span></div>
+              <div>Stop on mismatch: <span className="font-mono">disabled</span></div>
+            </div>
+            <p className="text-muted-foreground">
+              Synthetic test data. Scripted turns travel through the live orchestration endpoint
+              but persona, expected phase, and expected stance are never sent to the MI Agent or
+              Supervisor. Not eligible for training. In-memory only.
+            </p>
+            <div className="flex flex-col gap-2">
+              {Object.values(SIMULATED_PARENT_SCENARIOS).map((s) => (
+                <details key={s.id} className="rounded-md border border-border bg-card p-2">
+                  <summary className="cursor-pointer text-sm font-medium">
+                    {s.label} <span className="text-muted-foreground">· {s.turns.length} turns</span>
+                  </summary>
+                  <ol className="mt-2 list-decimal space-y-1 pl-4 text-[11px] text-muted-foreground">
+                    {s.turns.map((t) => (
+                      <li key={t.id}>
+                        <span className="font-mono text-[10px] text-foreground">
+                          [{t.expectedPhase}/{t.expectedStance}]
+                        </span>{" "}
+                        “{t.content}”
+                      </li>
+                    ))}
+                  </ol>
+                </details>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
 
