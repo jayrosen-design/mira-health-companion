@@ -110,6 +110,18 @@ export function SettingsSidebar({
                 onCheckedChange={(v) => onDeveloperModeChange?.(v)}
               />
             </div>
+            <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3">
+              <div className="text-sm">
+                <div className="font-medium">Show meta chips</div>
+                <p className="text-xs text-muted-foreground">
+                  Display MI-flow tags and metadata under each chat bubble.
+                </p>
+              </div>
+              <Switch
+                checked={showMeta}
+                onCheckedChange={(v) => onShowMetaChange?.(v)}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="foundation" className="flex flex-col gap-2">
