@@ -59,6 +59,7 @@ import {
   type SupervisorReport,
   type DeveloperTrace,
 } from "@/lib/mira/mi-types";
+import messageSoundAsset from "@/assets/iphone-message.mp3.asset.json";
 
 export interface TraceEvent {
   turn: number;
@@ -182,6 +183,19 @@ export function MiraChat() {
   useEffect(() => {
     textareaRef.current?.focus();
   }, [isSending]);
+
+  // Play a notification sound when the assistant sends a new message.
+  // Skip the initial broad opening (messages.length === 1) so the user isn't
+  // surprised by audio on first load.
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (last?.role === "assistant" && messages.length > 1) {
+      const audio = new Audio(messageSoundAsset.url);
+      audio.play().catch(() => {
+        // Autoplay may be blocked until the user interacts with the page.
+      });
+    }
+  }, [messages]);
 
   const sendText = async (
     text: string,
