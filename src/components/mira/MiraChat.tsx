@@ -214,7 +214,7 @@ export function MiraChat() {
   useEffect(() => {
     const t = typingAudioRef.current;
     if (!t) return;
-    if (parentTyping) {
+    if (isSending) {
       try {
         t.currentTime = 0;
         const r = t.play();
@@ -225,7 +225,7 @@ export function MiraChat() {
     } else {
       stopTypingSound();
     }
-  }, [parentTyping]);
+  }, [isSending]);
   useEffect(() => {
     const last = messages[messages.length - 1];
     if (
