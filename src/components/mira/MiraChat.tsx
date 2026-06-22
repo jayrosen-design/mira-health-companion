@@ -35,6 +35,17 @@ import { SummaryCard } from "./SummaryCard";
 import { ResearchView } from "./ResearchView";
 import { SurveyScreen } from "./SurveyScreen";
 import type { SimulationScenario } from "@/lib/mira/simulation-scenarios";
+import { SimulationControls } from "./SimulationControls";
+import {
+  SIMULATED_PARENT_SCENARIOS,
+  SIMULATED_PARENT_DEFAULT_DELAY_MS,
+  SIMULATED_PARENT_INITIAL_DELAY_MS,
+  SIMULATION_MAX_TURNS,
+  SIMULATED_PARENT_VERSION,
+  type SimulatedParentType,
+  type SimulationStatus,
+  type SimulationTurnResult,
+} from "@/lib/mira/simulated-parent-scenarios";
 import {
   MIRA_DEFAULT_MODEL,
   MIRA_SYSTEM_PROMPT,
@@ -105,6 +116,19 @@ export function MiraChat() {
   const [error, setError] = useState<string | null>(null);
   const [simulationRunning, setSimulationRunning] = useState(false);
 
+  // Simulated Parent (synthetic test) state — in-memory only.
+  const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
+  const [simStatus, setSimStatus] = useState<SimulationStatus>("idle");
+  const [simTurnIndex, setSimTurnIndex] = useState(0);
+  const [simResults, setSimResults] = useState<SimulationTurnResult[]>([]);
+  const [simStartedAt, setSimStartedAt] = useState<number | null>(null);
+  const simCtl = useRef({
+    pause: false,
+    stop: false,
+    step: false,
+    started: false,
+  });
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -125,6 +149,12 @@ export function MiraChat() {
 
   const signOut = async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    stopSimulation("stopped");
+    setSimulatedPersona(null);
+    setSimResults([]);
+    setSimTurnIndex(0);
+    setSimStartedAt(null);
+    setSimStatus("idle");
     setMessages([{ role: "assistant", content: BROAD_OPENING }]);
     setSessionState(createInitialSessionState(generateSessionId()));
     setTraceEvents([]);
@@ -143,10 +173,12 @@ export function MiraChat() {
     textareaRef.current?.focus();
   }, [isSending]);
 
-  const sendText = async (text: string) => {
+  const sendText = async (
+    text: string,
+  ): Promise<{ state: MiSessionState; supervisor: SupervisorReport } | null> => {
     const trimmed = text.trim();
-    if (!trimmed || isSending) return;
-    if (sessionState.isComplete) return;
+    if (!trimmed || isSending) return null;
+    if (sessionState.isComplete) return null;
     setError(null);
     const next: Msg[] = [...messages, { role: "user", content: trimmed }];
     setMessages(next);
@@ -192,8 +224,13 @@ export function MiraChat() {
           { role: "assistant", content: RESPECTFUL_CLOSE },
         ]);
       }
+      if (data.state && data.supervisor) {
+        return { state: data.state, supervisor: data.supervisor };
+      }
+      return null;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed.");
+      return null;
     } finally {
       setIsSending(false);
     }
@@ -207,6 +244,12 @@ export function MiraChat() {
 
   const resetChat = () => {
     if (isSending) return;
+    stopSimulation("stopped");
+    setSimResults([]);
+    setSimTurnIndex(0);
+    setSimStartedAt(null);
+    setSimStatus("idle");
+    simCtl.current.started = false;
     setMessages([{ role: "assistant", content: BROAD_OPENING }]);
     setSessionState(createInitialSessionState(generateSessionId()));
     setTraceEvents([]);
@@ -230,6 +273,146 @@ export function MiraChat() {
     }
   };
 
+  // --- Simulated Parent runner -----------------------------------------
+  const sleep = (ms: number) =>
+    new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+  function stopSimulation(reason: "stopped" | "completed") {
+    simCtl.current.stop = true;
+    simCtl.current.pause = false;
+    simCtl.current.step = false;
+    setSimStatus((s) => (s === "idle" ? s : reason));
+  }
+
+  async function runSimulatedParent(personaId: SimulatedParentType) {
+    const scenario = SIMULATED_PARENT_SCENARIOS[personaId];
+    simCtl.current.stop = false;
+    simCtl.current.pause = false;
+    simCtl.current.step = false;
+    setSimResults([]);
+    setSimTurnIndex(0);
+    setSimStartedAt(Date.now());
+    setSimStatus("running");
+
+    const cap = Math.min(scenario.turns.length, SIMULATION_MAX_TURNS);
+    for (let i = 0; i < cap; i++) {
+      if (simCtl.current.stop) break;
+      setSimTurnIndex(i);
+      // Wait while paused (unless a single-step was requested).
+      while (simCtl.current.pause && !simCtl.current.step && !simCtl.current.stop) {
+        await sleep(100);
+      }
+      if (simCtl.current.stop) break;
+      const wasStep = simCtl.current.step;
+      simCtl.current.step = false;
+      const delay = i === 0 ? SIMULATED_PARENT_INITIAL_DELAY_MS : SIMULATED_PARENT_DEFAULT_DELAY_MS;
+      await sleep(delay);
+      if (simCtl.current.stop) break;
+
+      const turn = scenario.turns[i];
+      const result = await sendText(turn.content);
+      const expectedPhase = turn.expectedPhase;
+      const expectedStance = turn.expectedStance;
+      const actualPhase = result?.state.phase ?? null;
+      const actualStance = result?.state.stance ?? null;
+      const outcome = result?.state.outcome ?? null;
+      const verdict = result?.supervisor.verdict ?? null;
+      const respectfulClose = !!result?.state.isComplete;
+      let resultLabel: SimulationTurnResult["result"] = "Review";
+      if (!result) resultLabel = "Stopped";
+      else if (respectfulClose) resultLabel = "Closed correctly";
+      else if (actualPhase === expectedPhase && actualStance === expectedStance)
+        resultLabel = "Pass";
+
+      setSimResults((prev) => [
+        ...prev,
+        {
+          turnId: turn.id,
+          scenarioId: personaId,
+          scenarioVersion: SIMULATED_PARENT_VERSION,
+          scriptedContent: turn.content,
+          expectedPhase,
+          expectedStance,
+          actualPhase,
+          actualStance,
+          outcome,
+          verdict,
+          regeneration: result?.supervisor.revisionRequested ?? false,
+          fallback: result?.supervisor.fallbackUsed ?? false,
+          result: resultLabel,
+        },
+      ]);
+
+      if (!result) {
+        setSimStatus("stopped");
+        return;
+      }
+      if (result.state.isComplete || result.state.outcome === "CLOSE") {
+        setSimStatus("completed");
+        return;
+      }
+      if (wasStep) {
+        // After single-step, return to paused.
+        simCtl.current.pause = true;
+        setSimStatus("paused");
+      }
+    }
+    if (!simCtl.current.stop) setSimStatus("completed");
+  }
+
+  // Kick off the simulation when we enter chat with a persona selected.
+  useEffect(() => {
+    if (phase !== "chat" || !simulatedPersona) return;
+    if (simCtl.current.started) return;
+    simCtl.current.started = true;
+    void runSimulatedParent(simulatedPersona);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, simulatedPersona]);
+
+  // Cancel automation when leaving the chat phase or on unmount.
+  useEffect(() => {
+    if (phase !== "chat" && simCtl.current.started) {
+      simCtl.current.stop = true;
+      simCtl.current.pause = false;
+      simCtl.current.step = false;
+      simCtl.current.started = false;
+      setSimStatus((s) => (s === "running" || s === "paused" ? "stopped" : s));
+    }
+  }, [phase]);
+
+  useEffect(() => {
+    return () => {
+      simCtl.current.stop = true;
+    };
+  }, []);
+
+  const onSimPause = () => {
+    simCtl.current.pause = true;
+    setSimStatus("paused");
+  };
+  const onSimResume = () => {
+    simCtl.current.pause = false;
+    simCtl.current.step = false;
+    setSimStatus("running");
+  };
+  const onSimNext = () => {
+    simCtl.current.step = true;
+    if (simStatus === "paused") setSimStatus("running");
+  };
+  const onSimStop = () => {
+    simCtl.current.stop = true;
+    simCtl.current.pause = false;
+    simCtl.current.step = false;
+    setSimStatus("stopped");
+  };
+  const onSimSwitchToManual = () => {
+    onSimStop();
+    setSimulatedPersona(null);
+  };
+
+  const simActive = simStatus === "running" || simStatus === "paused";
+  const inputDisabled = isSending || simStatus === "running";
+
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Ignore Enter while the user is composing in an IME (e.g. Japanese, Chinese, Korean).
     // `isComposing` and keyCode 229 both indicate an active composition.
@@ -250,8 +433,18 @@ export function MiraChat() {
   const firstUserMessage = userTurns[0]?.content ?? "";
 
   const startChat = (prefill?: string) => {
+    // Reset chat state for a clean run when starting from welcome.
+    if (messages.length > 1 || userTurns.length > 0) {
+      setMessages([{ role: "assistant", content: BROAD_OPENING }]);
+      setSessionState(createInitialSessionState(generateSessionId()));
+      setTraceEvents([]);
+      setSimResults([]);
+      setSimTurnIndex(0);
+    }
+    simCtl.current.started = false;
+    simCtl.current.stop = false;
     setPhase("chat");
-    if (prefill) {
+    if (prefill && !simulatedPersona) {
       // small delay so chat mounts before sending
       setTimeout(() => sendText(prefill), 50);
     }
@@ -276,7 +469,11 @@ export function MiraChat() {
           onReset={resetChat}
           canReset={false}
         />
-        <WelcomeScreen onStart={startChat} />
+        <WelcomeScreen
+          onStart={startChat}
+          simulatedPersona={simulatedPersona}
+          onSimulatedPersonaChange={setSimulatedPersona}
+        />
         <SettingsSidebar
           open={settingsOpen}
           onOpenChange={setSettingsOpen}
@@ -299,6 +496,11 @@ export function MiraChat() {
           developerMode={developerMode}
           onRunSimulation={runSimulation}
           simulationRunning={simulationRunning}
+          simulatedPersona={simulatedPersona}
+          simStatus={simStatus}
+          simTurnIndex={simTurnIndex}
+          simResults={simResults}
+          simStartedAt={simStartedAt}
         />
       </>
     );
