@@ -328,8 +328,10 @@ export function MiraChat() {
       // Ask the Navigator API to generate a natural parent message in
       // this persona's voice, using the scripted turn as the INTENT only.
       let parentMessage = turn.content;
+      let usedAi = false;
       try {
         const priorHistory = messagesRef.current;
+        setParentTyping(true);
         const res = await fetch("/api/simulate-parent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -345,10 +347,16 @@ export function MiraChat() {
           const data = (await res.json()) as { content?: string };
           if (data.content && data.content.trim()) {
             parentMessage = data.content.trim();
+            usedAi = true;
           }
         }
       } catch {
         // Network error: fall back to the scripted content verbatim.
+      } finally {
+        setParentTyping(false);
+      }
+      if (!usedAi) {
+        console.warn("[SimulatedParent] Falling back to scripted content for turn", turn.id);
       }
       if (simCtl.current.stop) break;
       const result = await sendText(parentMessage);
