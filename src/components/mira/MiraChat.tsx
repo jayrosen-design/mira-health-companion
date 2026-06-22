@@ -59,6 +59,7 @@ import {
   type SupervisorReport,
   type DeveloperTrace,
 } from "@/lib/mira/mi-types";
+import messageSoundAsset from "@/assets/iphone-message.mp3.asset.json";
 
 export interface TraceEvent {
   turn: number;
