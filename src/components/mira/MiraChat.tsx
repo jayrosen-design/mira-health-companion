@@ -60,6 +60,7 @@ import {
   type DeveloperTrace,
 } from "@/lib/mira/mi-types";
 import messageSoundAsset from "@/assets/iphone-message.mp3.asset.json";
+import typingSoundAsset from "@/assets/typing-message.mp3.asset.json";
 
 export interface TraceEvent {
   turn: number;
@@ -188,13 +189,43 @@ export function MiraChat() {
   // Skip the initial broad opening (messages.length === 1) so the user isn't
   // surprised by audio on first load.
   const messageAudioRef = useRef<HTMLAudioElement | null>(null);
+  const typingAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastPlayedCountRef = useRef<number>(0);
   useEffect(() => {
     if (typeof window === "undefined") return;
     const audio = new Audio(messageSoundAsset.url);
     audio.preload = "auto";
     messageAudioRef.current = audio;
+    const typing = new Audio(typingSoundAsset.url);
+    typing.preload = "auto";
+    typing.loop = true;
+    typingAudioRef.current = typing;
   }, []);
+  const stopTypingSound = () => {
+    const t = typingAudioRef.current;
+    if (!t) return;
+    try {
+      t.pause();
+      t.currentTime = 0;
+    } catch {
+      // ignore
+    }
+  };
+  useEffect(() => {
+    const t = typingAudioRef.current;
+    if (!t) return;
+    if (parentTyping) {
+      try {
+        t.currentTime = 0;
+        const r = t.play();
+        if (r && typeof r.catch === "function") r.catch(() => {});
+      } catch {
+        // ignore
+      }
+    } else {
+      stopTypingSound();
+    }
+  }, [parentTyping]);
   useEffect(() => {
     const last = messages[messages.length - 1];
     if (
@@ -203,6 +234,7 @@ export function MiraChat() {
       messages.length !== lastPlayedCountRef.current
     ) {
       lastPlayedCountRef.current = messages.length;
+      stopTypingSound();
       const audio = messageAudioRef.current;
       if (!audio) return;
       try {
