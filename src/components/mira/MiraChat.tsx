@@ -474,6 +474,20 @@ export function MiraChat() {
 
   const visible = messages;
   const userTurns = useMemo(() => visible.filter((m) => m.role === "user"), [visible]);
+  // Map each assistant message index → its TraceEvent (skip the opening greeting).
+  const assistantMeta = useMemo(() => {
+    const map = new Map<number, TraceEvent>();
+    let assistantOrdinal = -1; // first assistant is the broad opening, no trace
+    visible.forEach((m, i) => {
+      if (m.role !== "assistant") return;
+      if (assistantOrdinal >= 0) {
+        const ev = traceEvents[assistantOrdinal];
+        if (ev) map.set(i, ev);
+      }
+      assistantOrdinal += 1;
+    });
+    return map;
+  }, [visible, traceEvents]);
   const showCompletion =
     !dismissedCompletion &&
     (userTurns.length >= 4 || sessionState.isComplete) &&
