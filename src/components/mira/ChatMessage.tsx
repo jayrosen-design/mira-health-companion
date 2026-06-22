@@ -21,7 +21,7 @@ interface ChatMessageProps {
 
 export function ChatMessage({ role, content, miTag, meta }: ChatMessageProps) {
   const isUser = role === "user";
-  const showMeta = !isUser && !!meta && (meta.state || meta.supervisor || meta.trace);
+  const showMeta = !!meta && (meta.state || meta.supervisor || meta.trace);
   const verdict = meta?.supervisor?.verdict;
   const verdictClass =
     verdict === "APPROVED"
