@@ -736,6 +736,7 @@ export function MiraChat() {
                   content={m.content}
                   miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
                   meta={meta}
+                  showMeta={showMeta}
                 />
               );
             })}
