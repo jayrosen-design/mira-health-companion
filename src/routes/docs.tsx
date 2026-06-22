@@ -28,7 +28,7 @@ const flowChart = `flowchart TD
   Web -->|password gate| Auth[/POST /api/auth/login/]
   Auth -->|session cookie| Web
   Web -->|consent + survey| Survey[/POST /api/surveys/]
-  Web -->|user turn| Chat[/POST /api/chat/]
+  Web -->|user turn| Chat[/POST /api/orchestrate/]
   Chat --> Orchestrator{MI Orchestrator}
   Orchestrator -->|system prompt + history| LLM[LLM Provider]
   Orchestrator -->|retrieve facts| RAG[(HPV Knowledge Base)]
