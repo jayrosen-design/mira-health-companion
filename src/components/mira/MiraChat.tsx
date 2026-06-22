@@ -292,6 +292,11 @@ export function MiraChat() {
           surveyCompleted={surveySubmitted}
           messageCount={visible.length}
           model={model}
+          sessionState={sessionState}
+          traceEvents={traceEvents}
+          developerMode={developerMode}
+          onRunSimulation={runSimulation}
+          simulationRunning={simulationRunning}
         />
       </>
     );
@@ -328,6 +333,11 @@ export function MiraChat() {
           surveyCompleted={surveySubmitted}
           messageCount={visible.length}
           model={model}
+          sessionState={sessionState}
+          traceEvents={traceEvents}
+          developerMode={developerMode}
+          onRunSimulation={runSimulation}
+          simulationRunning={simulationRunning}
         />
       </>
     );
@@ -399,6 +409,11 @@ export function MiraChat() {
         surveyCompleted={surveySubmitted}
         messageCount={visible.length}
         model={model}
+        sessionState={sessionState}
+        traceEvents={traceEvents}
+        developerMode={developerMode}
+        onRunSimulation={runSimulation}
+        simulationRunning={simulationRunning}
       />
 
       <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
