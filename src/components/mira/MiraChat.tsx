@@ -36,11 +36,27 @@ import { ResearchView } from "./ResearchView";
 import { SurveyScreen } from "./SurveyScreen";
 import {
   MIRA_DEFAULT_MODEL,
-  MIRA_GREETING,
   MIRA_SYSTEM_PROMPT,
-  PARENT_CONCERN_CHIPS,
   type MiraModel,
 } from "@/lib/mira/system-prompt";
+import { BROAD_OPENING, RESPECTFUL_CLOSE } from "@/lib/mira/phase-prompts";
+import {
+  createInitialSessionState,
+  type MiSessionState,
+  type OrchestrateResponse,
+  type SupervisorReport,
+  type DeveloperTrace,
+} from "@/lib/mira/mi-types";
+
+export interface TraceEvent {
+  turn: number;
+  parentMessage: string;
+  assistantReply: string;
+  state: MiSessionState;
+  supervisor: SupervisorReport;
+  trace?: DeveloperTrace;
+  latencyMs?: number;
+}
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Phase = "welcome" | "chat" | "survey";
@@ -70,10 +86,14 @@ export function MiraChat() {
   const [surveySubmitted, setSurveySubmitted] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
+  const [sessionState, setSessionState] = useState<MiSessionState>(() =>
+    createInitialSessionState(generateSessionId()),
+  );
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "user", content: MIRA_SYSTEM_PROMPT },
-    { role: "assistant", content: MIRA_GREETING },
+    { role: "assistant", content: BROAD_OPENING },
   ]);
+  const [traceEvents, setTraceEvents] = useState<TraceEvent[]>([]);
+  const [developerMode, setDeveloperMode] = useState<boolean>(true);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,10 +118,9 @@ export function MiraChat() {
 
   const signOut = async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
-    setMessages([
-      { role: "user", content: systemPrompt },
-      { role: "assistant", content: MIRA_GREETING },
-    ]);
+    setMessages([{ role: "assistant", content: BROAD_OPENING }]);
+    setSessionState(createInitialSessionState(generateSessionId()));
+    setTraceEvents([]);
     setPhase("welcome");
     setSurveySubmitted(false);
     setShowSummary(false);
@@ -120,29 +139,52 @@ export function MiraChat() {
   const sendText = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || isSending) return;
+    if (sessionState.isComplete) return;
     setError(null);
-    const rest = messages.slice(1);
-    const next: Msg[] = [
-      { role: "user", content: systemPrompt },
-      ...rest,
-      { role: "user", content: trimmed },
-    ];
+    const next: Msg[] = [...messages, { role: "user", content: trimmed }];
     setMessages(next);
     setInput("");
     setIsSending(true);
+    const startedAt = Date.now();
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/orchestrate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model, messages: next }),
+        body: JSON.stringify({
+          message: trimmed,
+          history: messages,
+          state: sessionState,
+          model,
+          developerMode,
+        }),
       });
-      const data = (await res.json()) as { content?: string; error?: string };
+      const data = (await res.json()) as Partial<OrchestrateResponse> & { error?: string };
       if (res.status === 401) {
         setAuthState("out");
         throw new Error("Session expired. Please sign in again.");
       }
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.content ?? "" }]);
+      const reply = data.content ?? "";
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      if (data.state) setSessionState(data.state);
+      if (data.supervisor && data.state) {
+        const evt: TraceEvent = {
+          turn: data.state.turnCount,
+          parentMessage: trimmed,
+          assistantReply: reply,
+          state: data.state,
+          supervisor: data.supervisor,
+          trace: data.developerTrace,
+          latencyMs: Date.now() - startedAt,
+        };
+        setTraceEvents((prev) => [...prev, evt]);
+      }
+      if (data.state?.isComplete) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: RESPECTFUL_CLOSE },
+        ]);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed.");
     } finally {
@@ -158,10 +200,9 @@ export function MiraChat() {
 
   const resetChat = () => {
     if (isSending) return;
-    setMessages([
-      { role: "user", content: systemPrompt },
-      { role: "assistant", content: MIRA_GREETING },
-    ]);
+    setMessages([{ role: "assistant", content: BROAD_OPENING }]);
+    setSessionState(createInitialSessionState(generateSessionId()));
+    setTraceEvents([]);
     setInput("");
     setError(null);
     setShowSummary(false);
@@ -178,10 +219,13 @@ export function MiraChat() {
     }
   };
 
-  const visible = messages.slice(1);
+  const visible = messages;
   const userTurns = useMemo(() => visible.filter((m) => m.role === "user"), [visible]);
   const showCompletion =
-    !dismissedCompletion && userTurns.length >= 4 && !isSending && phase === "chat";
+    !dismissedCompletion &&
+    (userTurns.length >= 4 || sessionState.isComplete) &&
+    !isSending &&
+    phase === "chat";
   const firstUserMessage = userTurns[0]?.content ?? "";
 
   const startChat = (prefill?: string) => {
