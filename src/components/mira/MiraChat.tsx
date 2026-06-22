@@ -544,6 +544,11 @@ export function MiraChat() {
           developerMode={developerMode}
           onRunSimulation={runSimulation}
           simulationRunning={simulationRunning}
+          simulatedPersona={simulatedPersona}
+          simStatus={simStatus}
+          simTurnIndex={simTurnIndex}
+          simResults={simResults}
+          simStartedAt={simStartedAt}
         />
       </>
     );
@@ -622,6 +627,11 @@ export function MiraChat() {
         developerMode={developerMode}
         onRunSimulation={runSimulation}
         simulationRunning={simulationRunning}
+        simulatedPersona={simulatedPersona}
+        simStatus={simStatus}
+        simTurnIndex={simTurnIndex}
+        simResults={simResults}
+        simStartedAt={simStartedAt}
       />
 
       <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
@@ -680,21 +690,46 @@ export function MiraChat() {
           </div>
 
           <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
+            {simulatedPersona && simActive && (
+              <SimulationControls
+                status={simStatus}
+                personaLabel={SIMULATED_PARENT_SCENARIOS[simulatedPersona].label}
+                turnIndex={simTurnIndex}
+                totalTurns={SIMULATED_PARENT_SCENARIOS[simulatedPersona].turns.length}
+                onPause={onSimPause}
+                onResume={onSimResume}
+                onNext={onSimNext}
+                onStop={onSimStop}
+                onSwitchToManual={onSimSwitchToManual}
+              />
+            )}
+            {simulatedPersona && isSending && (
+              <p
+                aria-live="polite"
+                className="mb-2 text-[11px] text-muted-foreground"
+              >
+                Simulated parent is preparing a response…
+              </p>
+            )}
             <div className="flex items-end gap-2">
               <Textarea
                 ref={textareaRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="Share a thought or question…"
+                placeholder={
+                  simStatus === "running"
+                    ? "Automated simulation in progress…"
+                    : "Share a thought or question…"
+                }
                 rows={1}
-                disabled={isSending}
+                disabled={inputDisabled}
                 className="max-h-40 min-h-[48px] resize-none border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
                 autoFocus
               />
               <Button
                 onClick={send}
-                disabled={isSending || !input.trim()}
+                disabled={inputDisabled || !input.trim()}
                 size="icon"
                 aria-label="Send message"
                 className="h-10 w-10"
