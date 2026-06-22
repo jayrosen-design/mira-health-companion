@@ -51,7 +51,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
         >
           {content}
         </div>
-        {(!!(!isUser && miTag) || showMeta) && (
+        {showChips && (
           <div className="ml-1 flex flex-wrap gap-1 pt-0.5 text-[10px] font-medium uppercase tracking-wide">
             {!isUser && miTag && (
               <span
@@ -61,7 +61,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
                 MI · {miTag}
               </span>
             )}
-            {showMeta && (
+            {hasMeta && (
               <>
                 {meta?.state?.phase && (
                   <span
