@@ -176,7 +176,7 @@ export function MiraChat() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, isSending]);
+  }, [messages, isSending, parentTyping]);
 
   useEffect(() => {
     textareaRef.current?.focus();
