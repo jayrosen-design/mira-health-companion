@@ -113,6 +113,56 @@ const erChart = `erDiagram
     timestamptz created_at
   }`;
 
+const dualAgentChart = `flowchart TD
+  Parent([Parent]) --> Browser[MiraChat Browser]
+  Browser -->|POST /api/orchestrate| Server[Server Orchestrator]
+  Server --> Router{MI Routing Engine}
+  Router -->|stance + permission + node| PhasePrompt[Phase Prompt Assembler]
+  PhasePrompt --> Conv[MI Conversation Agent]
+  Conv -->|candidate reply| Sup[Supervisor Agent]
+  Sup -->|APPROVED| Server
+  Sup -->|REVISE once| Conv
+  Sup -->|BLOCK or unsafe| Fallback[Controlled Fallback]
+  Fallback --> Server
+  Server -->|approved reply only| Browser
+  MockRAG[(Mock Approved Content)] --> PhasePrompt`;
+
+const phaseSequenceChart = `sequenceDiagram
+  participant P as Parent
+  participant E as Routing Engine
+  participant C as MI Conversation Agent
+  participant S as Supervisor Agent
+  P->>E: Turn 1 (broad opening reply)
+  E->>C: Phase 1 prompt
+  C->>S: Candidate reply
+  S->>P: Approved reply
+  P->>E: Turn 2 (HPV concern)
+  E->>C: Phase 2 prompt (reflect + seek permission)
+  C->>S: Candidate reply
+  S->>P: Approved reply
+  P->>E: Permission GRANTED
+  E->>C: Phase 3 prompt + mock-approved source
+  C->>S: Candidate reply
+  S->>P: Approved reply
+  P->>E: Discusses next step
+  E->>C: Phase 4 prompt
+  C->>S: Candidate reply
+  S->>P: Approved reply
+  E->>P: Phase 5 close`;
+
+const routingLoopChart = `flowchart LR
+  In[Parent message] --> Stance[Classify stance]
+  In --> Perm[Detect permission]
+  In --> Concern[Detect concern category]
+  In --> Hard{Refuse / advice / injection?}
+  Hard -->|yes| Fallback[Controlled fallback]
+  Hard -->|no| Node[Select routing node]
+  Stance --> Node
+  Perm --> Node
+  Concern --> Node
+  Node --> Outcome[Outcome + next phase]
+  Outcome --> Out[Updated MiSessionState]`;
+
 interface Endpoint {
   method: "GET" | "POST" | "PATCH" | "DELETE";
   path: string;
@@ -319,21 +369,22 @@ function DocsPage() {
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-              <BookOpen className="h-3 w-3" /> API Docs & Data Model
+              <BookOpen className="h-3 w-3" /> MIDT Docs · API & Architecture
             </span>
             <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning-foreground">
-              Planned · not yet implemented
+              Prototype · routing & supervisor live
             </span>
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            MiraChat – API & Data Model (planning doc)
+            MiraChat – MIDT routing & dual-agent prototype
           </h1>
           <p className="max-w-3xl text-base text-muted-foreground">
-            This page sketches the production API surface and database schema that would back a
-            real MiraChat deployment. Today's prototype only uses{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/auth/login</code> and{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/chat</code>; everything
-            else below is a target spec for the grant build-out.
+            MiraChat now demonstrates the configuration-driven MI Routing Engine and dual-agent
+            (MI Conversation Agent + Supervisor Agent) architecture proposed for MIDT. Today's
+            prototype implements{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/orchestrate</code>{" "}
+            with mock approved content. The endpoints below remain a planning artifact for the
+            production build-out.
           </p>
         </header>
 
@@ -341,12 +392,105 @@ function DocsPage() {
           <div className="flex items-start gap-2">
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground" />
             <p>
-              <strong>Prototype boundary.</strong> Production versions would require approved model
-              training, RAG grounding to verified HPV vaccine content, safety monitoring,
-              authentication, study data storage, IRB-aligned consent language, and an
-              institution-approved deployment.
+              <strong>Prototype boundary.</strong> MiraChat is a prototype of the Digital Twin
+              chatbot experience. It is not the MIRA Reviewer evaluation app, not a production
+              clinical tool, and not yet connected to the final trained model, approved RAG
+              knowledge base, study survey database, or production safety monitoring. Phase 2
+              through Phase 5 content remains draft and configuration-driven.
             </p>
           </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">MIDT dual-agent architecture</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The MI Routing Engine selects a phase + node and assembles a phase-specific prompt
+            for the MI Conversation Agent. The Supervisor Agent reviews every candidate reply
+            before it is returned to the parent.
+          </p>
+          <MermaidDiagram chart={dualAgentChart} />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Five-phase conversation flow</h2>
+          </div>
+          <MermaidDiagram chart={phaseSequenceChart} />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Routing decision loop</h2>
+          </div>
+          <MermaidDiagram chart={routingLoopChart} />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Prototype orchestrate API</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">POST /api/orchestrate</code>{" "}
+            accepts the parent message plus the in-memory routing state and returns the approved
+            reply, the updated state, the supervisor verdict, and (when developerMode is on) a
+            structured developer trace.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-2 text-[11px]">
+{`Request
+{
+  "message": "...",
+  "history": [{ "role": "user|assistant", "content": "..." }],
+  "state": {
+    "sessionId": "...",
+    "phase": "P1",
+    "nodeId": "P1-OPEN",
+    "stance": "UNKNOWN",
+    "permissionState": "UNKNOWN",
+    "turnCount": 0,
+    "isComplete": false,
+    "routingVersion": "routing-draft-0.1",
+    "promptVersion": "mi-playbook-draft-0.1"
+  },
+  "model": "...",
+  "developerMode": true
+}`}
+            </pre>
+            <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-2 text-[11px]">
+{`Response
+{
+  "content": "approved parent-facing reply",
+  "state": { /* MiSessionState */ },
+  "supervisor": {
+    "verdict": "APPROVED" | "REVISE" | "BLOCK",
+    "requiredMoves": ["CR","SEEK"],
+    "observedMoves": ["CR","SEEK"],
+    "violations": [],
+    "fallbackUsed": false,
+    "revisionRequested": false
+  },
+  "developerTrace": {
+    "previousNode": "P1-OPEN",
+    "selectedNode": "P1-HPV-EARLY-01",
+    "selectedOutcome": "MOVE-P2",
+    "classificationConfidence": 0.82
+  }
+}`}
+            </pre>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Supervisor verdicts: APPROVED, REVISE, BLOCK. Violation categories: PERSUADE,
+            CONFRONT, PREMATURE_INFORMATION, NO_PERMISSION, UNSUPPORTED_MEDICAL_CLAIM,
+            INDIVIDUALIZED_MEDICAL_ADVICE, QUESTION_STACKING, EXCESSIVE_LENGTH, PROMPT_LEAKAGE,
+            OUT_OF_SCOPE, UNSAFE. No chain-of-thought or hidden reasoning is ever returned to
+            the browser.
+          </p>
         </section>
 
         <section className="flex flex-col gap-3">
