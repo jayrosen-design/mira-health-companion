@@ -135,6 +135,10 @@ export function MiraChat() {
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+  const sessionStateRef = useRef<MiSessionState>(sessionState);
+  useEffect(() => {
+    sessionStateRef.current = sessionState;
+  }, [sessionState]);
 
   useEffect(() => {
     let cancelled = false;
@@ -182,7 +186,7 @@ export function MiraChat() {
   ): Promise<{ state: MiSessionState; supervisor: SupervisorReport } | null> => {
     const trimmed = text.trim();
     if (!trimmed || isSending) return null;
-    if (sessionState.isComplete) return null;
+    if (sessionStateRef.current.isComplete) return null;
     setError(null);
     const prevMessages = messagesRef.current;
     const userMsg: Msg = { role: "user", content: trimmed };
@@ -198,7 +202,7 @@ export function MiraChat() {
         body: JSON.stringify({
           message: trimmed,
           history: prevMessages,
-          state: sessionState,
+          state: sessionStateRef.current,
           model,
           developerMode,
         }),
@@ -213,7 +217,10 @@ export function MiraChat() {
       const assistantMsg: Msg = { role: "assistant", content: reply };
       messagesRef.current = [...messagesRef.current, assistantMsg];
       setMessages((prev) => [...prev, assistantMsg]);
-      if (data.state) setSessionState(data.state);
+      if (data.state) {
+        sessionStateRef.current = data.state;
+        setSessionState(data.state);
+      }
       if (data.supervisor && data.state) {
         const evt: TraceEvent = {
           turn: data.state.turnCount,
