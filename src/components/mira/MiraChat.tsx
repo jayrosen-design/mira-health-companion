@@ -285,6 +285,8 @@ export function MiraChat() {
           systemPrompt={systemPrompt}
           onSystemPromptChange={setSystemPrompt}
           disabled={isSending}
+          developerMode={developerMode}
+          onDeveloperModeChange={setDeveloperMode}
         />
         <ResearchView
           open={researchOpen}
@@ -326,6 +328,8 @@ export function MiraChat() {
           systemPrompt={systemPrompt}
           onSystemPromptChange={setSystemPrompt}
           disabled={isSending}
+          developerMode={developerMode}
+          onDeveloperModeChange={setDeveloperMode}
         />
         <ResearchView
           open={researchOpen}
@@ -402,6 +406,8 @@ export function MiraChat() {
         systemPrompt={systemPrompt}
         onSystemPromptChange={setSystemPrompt}
         disabled={isSending}
+        developerMode={developerMode}
+        onDeveloperModeChange={setDeveloperMode}
       />
       <ResearchView
         open={researchOpen}
