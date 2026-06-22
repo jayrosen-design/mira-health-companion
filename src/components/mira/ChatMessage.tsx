@@ -17,9 +17,10 @@ interface ChatMessageProps {
   content: string;
   miTag?: string | null;
   meta?: ChatMessageMeta | null;
+  showMeta?: boolean;
 }
 
-export function ChatMessage({ role, content, miTag, meta }: ChatMessageProps) {
+export function ChatMessage({ role, content, miTag, meta, showMeta = true }: ChatMessageProps) {
   const isUser = role === "user";
   const showMeta = !!meta && (meta.state || meta.supervisor || meta.trace);
   const verdict = meta?.supervisor?.verdict;
