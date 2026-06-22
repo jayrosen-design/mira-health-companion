@@ -24,7 +24,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ChatMessage } from "./ChatMessage";
+import { ChatMessage, type ChatMessageMeta } from "./ChatMessage";
 import { PasswordGate } from "./PasswordGate";
 import { SettingsSidebar } from "./SettingsSidebar";
 import { WelcomeScreen } from "./WelcomeScreen";
@@ -474,17 +474,30 @@ export function MiraChat() {
 
   const visible = messages;
   const userTurns = useMemo(() => visible.filter((m) => m.role === "user"), [visible]);
-  // Map each assistant message index → its TraceEvent (skip the opening greeting).
-  const assistantMeta = useMemo(() => {
-    const map = new Map<number, TraceEvent>();
+  // Map each visible message to its MI-flow metadata: assistant messages get the
+  // full trace (including supervisor/quality signals); user messages get the AI's
+  // read of the parent after that turn (stance, permission, concern, route).
+  const messageMeta = useMemo(() => {
+    const map = new Map<number, ChatMessageMeta>();
     let assistantOrdinal = -1; // first assistant is the broad opening, no trace
+    let userOrdinal = 0;
     visible.forEach((m, i) => {
-      if (m.role !== "assistant") return;
-      if (assistantOrdinal >= 0) {
-        const ev = traceEvents[assistantOrdinal];
-        if (ev) map.set(i, ev);
+      if (m.role === "assistant") {
+        if (assistantOrdinal >= 0) {
+          const ev = traceEvents[assistantOrdinal];
+          if (ev) map.set(i, { state: ev.state, supervisor: ev.supervisor, trace: ev.trace });
+        }
+        assistantOrdinal += 1;
+      } else {
+        const ev = traceEvents[userOrdinal];
+        if (ev) {
+          // Omit latency and supervisor verdict from the user-side meta; those
+          // describe the assistant reply, not the parent's turn.
+          const userTrace = ev.trace ? { ...ev.trace, latencyMs: undefined } : undefined;
+          map.set(i, { state: ev.state, trace: userTrace });
+        }
+        userOrdinal += 1;
       }
-      assistantOrdinal += 1;
     });
     return map;
   }, [visible, traceEvents]);
@@ -712,18 +725,14 @@ export function MiraChat() {
             className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-card/60 sm:p-5 sm:shadow-sm"
           >
             {visible.map((m, i) => {
-              const ev = assistantMeta.get(i);
+              const meta = messageMeta.get(i) ?? null;
               return (
                 <ChatMessage
                   key={i}
                   role={m.role}
                   content={m.content}
                   miTag={m.role === "assistant" ? inferMiTag(m.content) : null}
-                  meta={
-                    m.role === "assistant" && ev
-                      ? { state: ev.state, supervisor: ev.supervisor, trace: ev.trace }
-                      : null
-                  }
+                  meta={meta}
                 />
               );
             })}
