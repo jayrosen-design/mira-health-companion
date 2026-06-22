@@ -35,6 +35,7 @@ It is **not a production clinical tool** and does not yet include:
 - **Mock survey** with optional REDCap incentive hand-off
 - **Research View** with MI Routing trace, turn-by-turn event timeline, supervisor verdict + violations, mock source IDs, latency, and a **Simulation Lab** (synthetic scenarios for willing/ambivalent/opposed/refusal/medical-advice/permission/prompt-injection/repeat/vague)
 - **Tabbed Developer Settings** (model, MI foundation, phase nodes, supervisor prompt, routing config) with a `Show developer routing inspector` toggle and reset
+- **Simulated Parent mode** (optional, synthetic test only) — pick Willing/Open, Questioning/Ambivalent, or Opposed/Resistant on the welcome page to auto-play a scripted parent conversation through the live `/api/orchestrate` route. The MI Agent and Supervisor still process every turn; persona and expected phase/stance are never sent to either agent. Includes Pause / Resume / Send next / Stop / Switch to manual controls, a Research View turn-by-turn expected-vs-actual results table, and a Developer Settings preview of the three scripts. In-memory only, not training data.
 - **Password gate** + server-side Navigator Toolkit API proxy + rate limiting
 - **API Docs page** (`/docs`) with MIDT dual-agent architecture, five-phase sequence, routing decision loop (Mermaid), and the orchestrate request/response schema
 
