@@ -34,6 +34,7 @@ import { CompletionPrompt } from "./CompletionPrompt";
 import { SummaryCard } from "./SummaryCard";
 import { ResearchView } from "./ResearchView";
 import { SurveyScreen } from "./SurveyScreen";
+import type { SimulationScenario } from "@/lib/mira/simulation-scenarios";
 import {
   MIRA_DEFAULT_MODEL,
   MIRA_SYSTEM_PROMPT,
