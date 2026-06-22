@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiOrchestrateRouteImport } from './routes/api/orchestrate'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
@@ -24,6 +25,11 @@ const DocsRoute = DocsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOrchestrateRoute = ApiOrchestrateRouteImport.update({
+  id: '/api/orchestrate',
+  path: '/api/orchestrate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/docs': typeof DocsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/orchestrate': typeof ApiOrchestrateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/docs': typeof DocsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/orchestrate': typeof ApiOrchestrateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/docs': typeof DocsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/orchestrate': typeof ApiOrchestrateRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/docs'
     | '/api/chat'
+    | '/api/orchestrate'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/me'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/docs'
     | '/api/chat'
+    | '/api/orchestrate'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/me'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/docs'
     | '/api/chat'
+    | '/api/orchestrate'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/me'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DocsRoute: typeof DocsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiOrchestrateRoute: typeof ApiOrchestrateRoute
   ApiAuthLoginRoute: typeof ApiAuthLoginRoute
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthMeRoute: typeof ApiAuthMeRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/orchestrate': {
+      id: '/api/orchestrate'
+      path: '/api/orchestrate'
+      fullPath: '/api/orchestrate'
+      preLoaderRoute: typeof ApiOrchestrateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DocsRoute: DocsRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiOrchestrateRoute: ApiOrchestrateRoute,
   ApiAuthLoginRoute: ApiAuthLoginRoute,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthMeRoute: ApiAuthMeRoute,

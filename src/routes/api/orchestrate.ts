@@ -78,7 +78,7 @@ function parseSupervisor(raw: string): {
       : [];
     const violations = (Array.isArray(obj.violations) ? obj.violations : [])
       .filter((s: unknown): s is string => typeof s === "string")
-      .filter((s): s is SupervisorViolation =>
+      .filter((s: string): s is SupervisorViolation =>
         (KNOWN_VIOLATIONS as string[]).includes(s),
       );
     return {
