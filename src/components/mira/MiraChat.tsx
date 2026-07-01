@@ -119,6 +119,7 @@ export function MiraChat() {
   const [simulationRunning, setSimulationRunning] = useState(false);
   const [parentTyping, setParentTyping] = useState(false);
   const [showMeta, setShowMeta] = useState(true);
+  const [showSimControls, setShowSimControls] = useState(true);
 
   // Simulated Parent (synthetic test) state — in-memory only.
   const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
@@ -279,8 +280,10 @@ export function MiraChat() {
       });
       const data = (await res.json()) as Partial<OrchestrateResponse> & { error?: string };
       if (res.status === 401) {
-        setAuthState("out");
-        throw new Error("Session expired. Please sign in again.");
+        // Don't blow away the whole app to the login screen mid-turn — that
+        // wipes an active simulated-parent run and its state. Surface the
+        // error inline; the user can sign in again from the menu.
+        throw new Error("Session expired. Please sign in again from the menu.");
       }
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       const reply = data.content ?? "";
