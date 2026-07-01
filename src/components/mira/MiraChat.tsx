@@ -915,7 +915,7 @@ export function MiraChat() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder={
-                  simStatus === "running"
+                  simStatus === "running" && showSimControls
                     ? "Automated simulation in progress…"
                     : "Share a thought or question…"
                 }
