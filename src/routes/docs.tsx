@@ -459,7 +459,7 @@ function DocsPage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="architecture" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">MIDT dual-agent architecture</h2>
@@ -472,7 +472,7 @@ function DocsPage() {
           <MermaidDiagram chart={dualAgentChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="phase-flow" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Five-phase conversation flow</h2>
@@ -480,7 +480,7 @@ function DocsPage() {
           <MermaidDiagram chart={phaseSequenceChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="routing-loop" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Routing decision loop</h2>
@@ -488,7 +488,7 @@ function DocsPage() {
           <MermaidDiagram chart={routingLoopChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="orchestrate-api" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Prototype orchestrate API</h2>
@@ -551,7 +551,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="performance-radar" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Radar className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Performance Radar</h2>
@@ -625,7 +625,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="chat-ui" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
@@ -643,7 +643,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="session-state" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Session state contract (MiSessionState)</h2>
@@ -696,7 +696,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="routing-node" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Routing node schema</h2>
@@ -734,7 +734,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="developer-trace" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Developer trace fields</h2>
@@ -760,7 +760,7 @@ function DocsPage() {
           </pre>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="sim-lab" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Simulation Lab catalog</h2>
@@ -806,7 +806,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="sim-parent" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Simulated Parent scenarios</h2>
@@ -873,7 +873,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="versioning" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <ShieldAlert className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Versioning &amp; session pinning</h2>
@@ -899,7 +899,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="prod-boundary" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">From prototype to production</h2>
@@ -944,7 +944,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </div>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="how-it-works" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">How the app works</h2>
@@ -956,7 +956,7 @@ SIMULATION_MAX_TURNS              = 12`}
           <MermaidDiagram chart={flowChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="db-schema" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Database schema</h2>
@@ -970,7 +970,7 @@ SIMULATION_MAX_TURNS              = 12`}
           <MermaidDiagram chart={erChart} />
         </section>
 
-        <section className="flex flex-col gap-4">
+        <section id="api-endpoints" className="scroll-mt-24 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">API endpoints</h2>
