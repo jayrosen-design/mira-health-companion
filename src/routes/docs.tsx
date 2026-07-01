@@ -171,6 +171,33 @@ const routingLoopChart = `flowchart LR
   Node --> Outcome[Outcome + next phase]
   Outcome --> Out[Updated MiSessionState]`;
 
+const prodBoundaryChart = `flowchart LR
+  subgraph Prototype["Prototype (today)"]
+    P1[Password gate]
+    P2[In-memory MiSessionState]
+    P3[Mock approved content]
+    P4[Navigator Toolkit LLM]
+    P5[No persistence]
+    P6[Simulated Parent + Sim Lab]
+    P7[Meta chips visible]
+  end
+  subgraph Production["Production (planned)"]
+    Q1[SSO / magic-link + IRB consent]
+    Q2[Postgres + RLS session store]
+    Q3[Approved RAG corpus + citations]
+    Q4[Trained MIDT model + evals gate]
+    Q5[Audit log + safety event pipeline]
+    Q6[Removed from parent build]
+    Q7[Hidden from parent build]
+  end
+  P1 --> Q1
+  P2 --> Q2
+  P3 --> Q3
+  P4 --> Q4
+  P5 --> Q5
+  P6 --> Q6
+  P7 --> Q7`;
+
 interface Endpoint {
   method: "GET" | "POST" | "PATCH" | "DELETE";
   path: string;
