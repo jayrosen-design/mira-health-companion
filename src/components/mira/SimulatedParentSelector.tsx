@@ -1,4 +1,4 @@
-import { CheckCircle2, HelpCircle, ShieldAlert, X, FlaskConical } from "lucide-react";
+import { CheckCircle2, HelpCircle, ShieldAlert, X, FlaskConical, Circle } from "lucide-react";
 import {
   SIMULATED_PARENT_SCENARIOS,
   type SimulatedParentType,
@@ -9,7 +9,7 @@ interface SimulatedParentSelectorProps {
   onChange: (value: SimulatedParentType | null) => void;
 }
 
-const ICONS: Record<SimulatedParentType, React.ReactNode> = {
+const PERSONA_ICONS: Record<SimulatedParentType, React.ReactNode> = {
   willing: <CheckCircle2 className="h-4 w-4" />,
   ambivalent: <HelpCircle className="h-4 w-4" />,
   opposed: <ShieldAlert className="h-4 w-4" />,
@@ -20,9 +20,9 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
   return (
     <section
       aria-label="Optional simulated parent test"
-      className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+      className="rounded-2xl border border-border bg-accent/5 p-6 shadow-sm"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 rounded-full border border-accent/50 bg-accent/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
@@ -33,15 +33,15 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
             </h2>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
-            Select a parent type to watch MiraChat conduct an automated test conversation. Leave
-            all options unselected to type your own responses.
+            Choose one parent type to run an automated test conversation, or leave all options
+            unselected to type your own responses.
           </p>
         </div>
         {value && (
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground hover:bg-secondary"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground hover:bg-secondary"
           >
             <X className="h-3 w-3" /> Clear selection
           </button>
@@ -60,31 +60,50 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
               aria-label={`${s.label} — ${s.description}`}
               onClick={() => onChange(selected ? null : id)}
               className={[
-                "group flex h-full flex-col gap-2 rounded-xl border p-4 text-left transition-colors",
+                "group flex h-full min-h-[4.5rem] flex-col gap-2 rounded-xl border p-4 text-left transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 selected
-                  ? "border-primary bg-primary/5 ring-1 ring-primary"
-                  : "border-border bg-background hover:border-primary/40 hover:bg-primary/5",
+                  ? "border-primary bg-card ring-1 ring-primary"
+                  : "border-border bg-card hover:border-primary/40 hover:bg-accent/10",
               ].join(" ")}
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <span
-                    className={`flex h-6 w-6 items-center justify-center rounded-full ${
-                      selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-                    }`}
-                  >
-                    {ICONS[id]}
-                  </span>
-                  {s.label}
+              <div className="flex items-start gap-3">
+                <span
+                  className={[
+                    "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors",
+                    selected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30 bg-background text-transparent group-hover:border-primary/60",
+                  ].join(" ")}
+                  aria-hidden="true"
+                >
+                  {selected ? (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Circle className="h-2 w-2 text-muted-foreground/40 group-hover:text-primary/40" />
+                  )}
                 </span>
-                {selected && (
-                  <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-                    Synthetic
-                  </span>
-                )}
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                      <span
+                        className={`flex h-6 w-6 items-center justify-center rounded-full ${
+                          selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+                        }`}
+                      >
+                        {PERSONA_ICONS[id]}
+                      </span>
+                      {s.label}
+                    </span>
+                    {selected && (
+                      <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+                        Selected
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs leading-relaxed text-muted-foreground">{s.description}</p>
+                </div>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">{s.description}</p>
             </button>
           );
         })}
