@@ -634,8 +634,8 @@ export function MiraChat() {
           onHome={() => setPhase("welcome")}
           showHome={false}
           onSignOut={signOut}
-          onDev={() => setSettingsOpen(true)}
-          onResearch={() => setResearchOpen(true)}
+          onDev={openSettings}
+          onResearch={openResearch}
           onReset={resetChat}
           canReset={false}
         />
@@ -682,8 +682,8 @@ export function MiraChat() {
         <TopBanner
           onHome={() => setPhase("welcome")}
           onSignOut={signOut}
-          onDev={() => setSettingsOpen(true)}
-          onResearch={() => setResearchOpen(true)}
+          onDev={openSettings}
+          onResearch={openResearch}
           onReset={resetChat}
           canReset={false}
         />
@@ -729,8 +729,8 @@ export function MiraChat() {
       <TopBanner
         onHome={() => setPhase("welcome")}
         onSignOut={signOut}
-        onDev={() => setSettingsOpen(true)}
-        onResearch={() => setResearchOpen(true)}
+        onDev={openSettings}
+        onResearch={openResearch}
         onReset={resetChat}
         canReset={!isSending && userTurns.length > 0}
       />
@@ -984,10 +984,10 @@ export function MiraChat() {
               Stakeholder views — hidden from parents.
             </p>
             <div className="mt-3 flex flex-col gap-2">
-              <Button size="sm" variant="outline" onClick={() => setResearchOpen(true)} className="justify-start gap-2">
+              <Button size="sm" variant="outline" onClick={openResearch} className="justify-start gap-2">
                 <FlaskConical className="h-3.5 w-3.5" /> Research View
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setSettingsOpen(true)} className="justify-start gap-2">
+              <Button size="sm" variant="outline" onClick={openSettings} className="justify-start gap-2">
                 <Code2 className="h-3.5 w-3.5" /> Developer Settings
               </Button>
               <Button size="sm" variant="ghost" onClick={signOut} className="justify-start gap-2 text-muted-foreground">
