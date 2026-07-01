@@ -106,19 +106,14 @@ export function WelcomeScreen({
             onChange={onSimulatedPersonaChange}
           />
           <div className="mt-6">
-            <Button
-              size="lg"
-              onClick={() => onStart()}
-              className="gap-2 capitalize"
-              disabled={!simulatedPersona}
-            >
+            <Button size="lg" onClick={() => onStart()} className="gap-2 capitalize">
               {startLabel} <ArrowRight className="h-4 w-4" />
             </Button>
-            {!simulatedPersona && (
-              <p className="mt-2 text-sm text-muted-foreground">
-                Select a parent persona above to start, or choose “Start as yourself” to chat normally.
-              </p>
-            )}
+            <p className="mt-2 text-sm text-muted-foreground">
+              {simulatedPersona
+                ? "MiraChat will run the selected parent scenario automatically."
+                : "Leave all options unselected to type your own responses."}
+            </p>
           </div>
         </section>
       </div>
