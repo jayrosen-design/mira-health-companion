@@ -2,12 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   BookOpen,
+  ChevronRight,
   Database,
   MessageSquare,
   Network,
   Radar,
   ShieldAlert,
 } from "lucide-react";
+import { useState } from "react";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
 
 export const Route = createFileRoute("/docs")({
@@ -406,6 +408,10 @@ function MethodBadge({ method }: { method: Endpoint["method"] }) {
   );
 }
 
+function endpointSlug(method: string, path: string) {
+  return `ep-${method.toLowerCase()}-${path.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
 function DocsPage() {
   return <DocsPageInner />;
 }
@@ -450,6 +456,7 @@ const TOC_GROUPS: { label: string; items: { id: string; label: string }[] }[] = 
 ];
 
 function DocsSidebar() {
+  const [endpointsOpen, setEndpointsOpen] = useState(true);
   return (
     <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 overflow-y-auto rounded-2xl border border-border bg-card/60 p-4 text-sm lg:block">
       <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -462,13 +469,59 @@ function DocsSidebar() {
               {group.label}
             </div>
             {group.items.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className="rounded px-2 py-1 text-[13px] text-foreground/80 hover:bg-secondary hover:text-foreground"
-              >
-                {item.label}
-              </a>
+              item.id === "api-endpoints" ? (
+                <div key={item.id} className="flex flex-col">
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setEndpointsOpen((v) => !v)}
+                      className="flex h-6 w-6 items-center justify-center rounded hover:bg-secondary"
+                      aria-label={endpointsOpen ? "Collapse endpoints" : "Expand endpoints"}
+                    >
+                      <ChevronRight
+                        className={`h-3.5 w-3.5 transition-transform ${endpointsOpen ? "rotate-90" : ""}`}
+                      />
+                    </button>
+                    <a
+                      href={`#${item.id}`}
+                      className="flex-1 rounded px-1 py-1 text-[13px] text-foreground/80 hover:bg-secondary hover:text-foreground"
+                    >
+                      {item.label}
+                    </a>
+                  </div>
+                  {endpointsOpen && (
+                    <div className="mt-1 flex flex-col gap-2 border-l border-border pl-3">
+                      {endpointGroups.map((eg) => (
+                        <div key={eg.group} className="flex flex-col gap-0.5">
+                          <div className="px-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70">
+                            {eg.group}
+                          </div>
+                          {eg.endpoints.map((ep) => (
+                            <a
+                              key={ep.method + ep.path}
+                              href={`#${endpointSlug(ep.method, ep.path)}`}
+                              className="flex items-center gap-1.5 rounded px-1 py-0.5 text-[11px] text-foreground/75 hover:bg-secondary hover:text-foreground"
+                            >
+                              <span className="font-mono text-[9px] font-semibold uppercase text-muted-foreground">
+                                {ep.method}
+                              </span>
+                              <span className="truncate font-mono">{ep.path}</span>
+                            </a>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="rounded px-2 py-1 text-[13px] text-foreground/80 hover:bg-secondary hover:text-foreground"
+                >
+                  {item.label}
+                </a>
+              )
             ))}
           </div>
         ))}
@@ -1055,7 +1108,11 @@ SIMULATION_MAX_TURNS              = 12`}
               </div>
               <ul className="divide-y divide-border">
                 {group.endpoints.map((ep) => (
-                  <li key={ep.method + ep.path} className="flex flex-col gap-2 px-4 py-3">
+                  <li
+                    key={ep.method + ep.path}
+                    id={endpointSlug(ep.method, ep.path)}
+                    className="scroll-mt-24 flex flex-col gap-2 px-4 py-3"
+                  >
                     <div className="flex flex-wrap items-center gap-2">
                       <MethodBadge method={ep.method} />
                       <code className="font-mono text-sm font-medium text-foreground">
