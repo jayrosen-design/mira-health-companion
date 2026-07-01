@@ -5,6 +5,7 @@ import {
   Database,
   MessageSquare,
   Network,
+  Radar,
   ShieldAlert,
 } from "lucide-react";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
