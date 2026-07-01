@@ -119,6 +119,7 @@ export function MiraChat() {
   const [simulationRunning, setSimulationRunning] = useState(false);
   const [parentTyping, setParentTyping] = useState(false);
   const [showMeta, setShowMeta] = useState(true);
+  const [showSimControls, setShowSimControls] = useState(true);
 
   // Simulated Parent (synthetic test) state — in-memory only.
   const [simulatedPersona, setSimulatedPersona] = useState<SimulatedParentType | null>(null);
@@ -279,8 +280,10 @@ export function MiraChat() {
       });
       const data = (await res.json()) as Partial<OrchestrateResponse> & { error?: string };
       if (res.status === 401) {
-        setAuthState("out");
-        throw new Error("Session expired. Please sign in again.");
+        // Don't blow away the whole app to the login screen mid-turn — that
+        // wipes an active simulated-parent run and its state. Surface the
+        // error inline; the user can sign in again from the menu.
+        throw new Error("Session expired. Please sign in again from the menu.");
       }
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       const reply = data.content ?? "";
@@ -483,7 +486,22 @@ export function MiraChat() {
     if (phase !== "chat" || !simulatedPersona) return;
     if (simCtl.current.started) return;
     simCtl.current.started = true;
-    void runSimulatedParent(simulatedPersona);
+    // Wrap so an uncaught error inside the runner can't bubble past React
+    // and force a page reload back to the login screen.
+    runSimulatedParent(simulatedPersona).catch((err) => {
+      console.error("[SimulatedParent] Runner crashed:", err);
+      simCtl.current.stop = true;
+      simCtl.current.pause = false;
+      simCtl.current.step = false;
+      simCtl.current.started = false;
+      setParentTyping(false);
+      setSimStatus("stopped");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The simulated parent runner stopped unexpectedly.",
+      );
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, simulatedPersona]);
 
@@ -762,6 +780,8 @@ export function MiraChat() {
         onDeveloperModeChange={setDeveloperMode}
         showMeta={showMeta}
         onShowMetaChange={setShowMeta}
+        showSimControls={showSimControls}
+        onShowSimControlsChange={setShowSimControls}
       />
       <ResearchView
         open={researchOpen}
@@ -855,7 +875,8 @@ export function MiraChat() {
 
           <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
             {simulatedPersona && simActive && (
-              <SimulationControls
+              showSimControls ? (
+                <SimulationControls
                 status={simStatus}
                 personaLabel={SIMULATED_PARENT_SCENARIOS[simulatedPersona].label}
                 turnIndex={simTurnIndex}
@@ -865,7 +886,12 @@ export function MiraChat() {
                 onNext={onSimNext}
                 onStop={onSimStop}
                 onSwitchToManual={onSimSwitchToManual}
-              />
+                />
+              ) : (
+                <p className="mb-2 text-[11px] text-muted-foreground">
+                  Simulated parent ({SIMULATED_PARENT_SCENARIOS[simulatedPersona].label}) is running in the background. Turn {Math.min(simTurnIndex + 1, SIMULATED_PARENT_SCENARIOS[simulatedPersona].turns.length)} of {SIMULATED_PARENT_SCENARIOS[simulatedPersona].turns.length}. Player hidden via developer settings.
+                </p>
+              )
             )}
             {simulatedPersona && isSending && (
               <p

@@ -36,6 +36,8 @@ interface SettingsSidebarProps {
   onDeveloperModeChange?: (value: boolean) => void;
   showMeta?: boolean;
   onShowMetaChange?: (value: boolean) => void;
+  showSimControls?: boolean;
+  onShowSimControlsChange?: (value: boolean) => void;
 }
 
 export function SettingsSidebar({
@@ -50,6 +52,8 @@ export function SettingsSidebar({
   onDeveloperModeChange,
   showMeta = true,
   onShowMetaChange,
+  showSimControls = true,
+  onShowSimControlsChange,
 }: SettingsSidebarProps) {
   const [draft, setDraft] = useState(systemPrompt);
 
@@ -122,6 +126,19 @@ export function SettingsSidebar({
               <Switch
                 checked={showMeta}
                 onCheckedChange={(v) => onShowMetaChange?.(v)}
+              />
+            </div>
+            <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3">
+              <div className="text-sm">
+                <div className="font-medium">Show simulated parent player</div>
+                <p className="text-xs text-muted-foreground">
+                  Hides the bottom Pause/Resume/Next/Stop bar for cleaner screenshots.
+                  Active simulations keep running in the background.
+                </p>
+              </div>
+              <Switch
+                checked={showSimControls}
+                onCheckedChange={(v) => onShowSimControlsChange?.(v)}
               />
             </div>
           </TabsContent>
