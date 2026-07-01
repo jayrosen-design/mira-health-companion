@@ -29,7 +29,7 @@ export const SIMULATION_MAX_TURNS = 12;
 export const SIMULATED_PARENT_SCENARIOS: Record<SimulatedParentType, SimulatedParentScenario> = {
   willing: {
     id: "willing",
-    label: "Willing / Open",
+    label: "Willing",
     description: "Generally trusts preventive care and is open to learning more.",
     startingStance: "WILLING",
     turns: [
@@ -44,7 +44,7 @@ export const SIMULATED_PARENT_SCENARIOS: Record<SimulatedParentType, SimulatedPa
   },
   ambivalent: {
     id: "ambivalent",
-    label: "Questioning / Ambivalent",
+    label: "Ambivalent",
     description: "Values preventive care but has mixed feelings and wants more information.",
     startingStance: "AMBIV",
     turns: [
@@ -59,7 +59,7 @@ export const SIMULATED_PARENT_SCENARIOS: Record<SimulatedParentType, SimulatedPa
   },
   opposed: {
     id: "opposed",
-    label: "Opposed / Resistant",
+    label: "Opposed",
     description: "Is skeptical of vaccines, does not want pressure, and may choose not to continue.",
     startingStance: "OPPOSED",
     turns: [
