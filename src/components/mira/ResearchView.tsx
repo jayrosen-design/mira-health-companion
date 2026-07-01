@@ -426,3 +426,145 @@ function Tag({
     </span>
   );
 }
+
+function PerformanceRadarTab({
+  traceEvents,
+  simResults,
+}: {
+  traceEvents: TraceEvent[];
+  simResults: SimulationTurnResult[];
+}) {
+  const metrics = computeRadarMetrics(traceEvents, simResults);
+  const data = RADAR_AXES.map((a) => ({
+    axis: a.short,
+    MIDT: metrics.midt[a.key] ?? 0,
+    Supervisor: metrics.supervisor[a.key] ?? 0,
+    Parent: metrics.parent[a.key] ?? 0,
+  }));
+  const empty = traceEvents.length === 0;
+
+  return (
+    <>
+      <p className="text-xs text-muted-foreground">
+        QUEST-style 5-axis evaluation of the MIDT, Supervisor, and simulated Parent agents. Scores
+        are 0–100 heuristic proxies derived from the routing trace — not a validated MITI/Ragas
+        evaluator.
+      </p>
+
+      <div className="rounded-xl border border-border bg-card p-3">
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={data} outerRadius="75%">
+              <PolarGrid stroke="hsl(var(--border))" />
+              <PolarAngleAxis
+                dataKey="axis"
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              />
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, 100]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+              />
+              <Radar
+                name="MIDT"
+                dataKey="MIDT"
+                stroke="hsl(var(--primary))"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.25}
+              />
+              <Radar
+                name="Supervisor"
+                dataKey="Supervisor"
+                stroke="hsl(var(--success, 142 71% 45%))"
+                fill="hsl(var(--success, 142 71% 45%))"
+                fillOpacity={0.2}
+              />
+              <Radar
+                name="Parent"
+                dataKey="Parent"
+                stroke="hsl(var(--warning, 38 92% 50%))"
+                fill="hsl(var(--warning, 38 92% 50%))"
+                fillOpacity={0.2}
+              />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+        {empty && (
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            No turns yet. Start the conversation to populate metrics.
+          </p>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-3">
+        <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          Per-agent scores
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[520px] text-left text-[11px]">
+            <thead className="text-muted-foreground">
+              <tr>
+                <th className="py-1 pr-2">Axis</th>
+                <th className="py-1 pr-2">MIDT</th>
+                <th className="py-1 pr-2">Supervisor</th>
+                <th className="py-1 pr-2">Parent</th>
+                <th className="py-1 pr-2">Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              {RADAR_AXES.map((a) => (
+                <tr key={a.key} className="border-t border-border align-top">
+                  <td className="py-1 pr-2 font-medium">{a.label}</td>
+                  <Cell v={metrics.midt[a.key]} />
+                  <Cell v={metrics.supervisor[a.key]} />
+                  <Cell v={metrics.parent[a.key]} />
+                  <td className="py-1 pr-2 text-muted-foreground">{a.target}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-3 text-xs">
+        <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          Raw metrics
+        </h3>
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-1">
+          <Row k="Turns" v={String(metrics.raw.turnCount)} />
+          <Row k="R:Q ratio" v={fmtRaw(metrics.raw.rqRatio, "ratio")} />
+          <Row k="% Complex reflections" v={fmtRaw(metrics.raw.percentComplexReflections, "pct")} />
+          <Row k="Faithfulness" v={fmtRaw(metrics.raw.faithfulness, "pct")} />
+          <Row k="Unsupported sentence ratio" v={fmtRaw(metrics.raw.unsupportedSentenceRatio, "pct")} />
+          <Row k="Restraint (clean turns)" v={fmtRaw(metrics.raw.restraintRate, "pct")} />
+          <Row k="Revision rate" v={fmtRaw(metrics.raw.revisionRate, "pct")} />
+          <Row k="Fallback rate" v={fmtRaw(metrics.raw.fallbackRate, "pct")} />
+          <Row k="Answer relevancy (parent)" v={fmtRaw(metrics.raw.answerRelevancy, "pct")} />
+          <Row k="Context precision (parent)" v={fmtRaw(metrics.raw.contextPrecision, "pct")} />
+          <Row k="TTFT (min latency)" v={fmtRaw(metrics.raw.ttftMs, "ms")} />
+          <Row k="Avg latency" v={fmtRaw(metrics.raw.avgLatencyMs, "ms")} />
+          <Row k="RAG source hits" v={String(metrics.raw.ragHits)} />
+        </dl>
+      </div>
+
+      <p className="text-[10px] text-muted-foreground">
+        Prototype metrics computed client-side from the routing trace. Not a validated
+        MITI/Ragas evaluator; do not use for clinical or grant reporting without human review.
+      </p>
+    </>
+  );
+}
+
+function Cell({ v }: { v: number | null }) {
+  const score = fmtScore(v);
+  const tone =
+    v == null
+      ? "text-muted-foreground"
+      : v >= 75
+        ? "text-success-foreground"
+        : v >= 50
+          ? "text-foreground"
+          : "text-destructive";
+  return <td className={`py-1 pr-2 font-mono ${tone}`}>{score}</td>;
+}
