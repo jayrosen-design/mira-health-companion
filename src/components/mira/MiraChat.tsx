@@ -881,9 +881,8 @@ export function MiraChat() {
           </div>
 
           <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
-            {simulatedPersona && simActive && (
-              showSimControls ? (
-                <SimulationControls
+            {simulatedPersona && simActive && showSimControls && (
+              <SimulationControls
                 status={simStatus}
                 personaLabel={SIMULATED_PARENT_SCENARIOS[simulatedPersona].label}
                 turnIndex={simTurnIndex}
@@ -893,14 +892,9 @@ export function MiraChat() {
                 onNext={onSimNext}
                 onStop={onSimStop}
                 onSwitchToManual={onSimSwitchToManual}
-                />
-              ) : (
-                <p className="mb-2 text-[11px] text-muted-foreground">
-                  Simulated parent ({SIMULATED_PARENT_SCENARIOS[simulatedPersona].label}) is running in the background. Turn {Math.min(simTurnIndex + 1, SIMULATED_PARENT_SCENARIOS[simulatedPersona].turns.length)} of {SIMULATED_PARENT_SCENARIOS[simulatedPersona].turns.length}. Player hidden via developer settings.
-                </p>
-              )
+              />
             )}
-            {simulatedPersona && isSending && (
+            {simulatedPersona && isSending && showSimControls && (
               <p
                 aria-live="polite"
                 className="mb-2 text-[11px] text-muted-foreground"
