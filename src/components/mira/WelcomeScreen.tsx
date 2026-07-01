@@ -83,7 +83,7 @@ export function WelcomeScreen({
               <p className="mt-2 text-sm text-muted-foreground">
                 {simulatedPersona
                   ? "MiraChat will run the selected parent scenario automatically."
-                  : "Leave all options unselected to type your own responses."}
+                  : "Click the button above to start a real conversation with MiraChat."}
               </p>
             </div>
           </section>
