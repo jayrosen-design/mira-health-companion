@@ -101,6 +101,14 @@ export function MiraChat() {
   const [systemPrompt, setSystemPrompt] = useState<string>(MIRA_SYSTEM_PROMPT);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [researchOpen, setResearchOpen] = useState(false);
+  const openSettings = () => {
+    setResearchOpen(false);
+    setSettingsOpen(true);
+  };
+  const openResearch = () => {
+    setSettingsOpen(false);
+    setResearchOpen(true);
+  };
   const [phase, setPhase] = useState<Phase>("welcome");
   const [surveySubmitted, setSurveySubmitted] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
