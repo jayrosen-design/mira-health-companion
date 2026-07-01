@@ -407,6 +407,77 @@ function MethodBadge({ method }: { method: Endpoint["method"] }) {
 }
 
 function DocsPage() {
+  return <DocsPageInner />;
+}
+
+const TOC_GROUPS: { label: string; items: { id: string; label: string }[] }[] = [
+  {
+    label: "Architecture",
+    items: [
+      { id: "architecture", label: "MIDT dual-agent architecture" },
+      { id: "phase-flow", label: "Five-phase conversation flow" },
+      { id: "routing-loop", label: "Routing decision loop" },
+      { id: "how-it-works", label: "How the app works" },
+    ],
+  },
+  {
+    label: "Contracts & schemas",
+    items: [
+      { id: "session-state", label: "MiSessionState" },
+      { id: "routing-node", label: "RoutingNode schema" },
+      { id: "developer-trace", label: "DeveloperTrace" },
+      { id: "orchestrate-api", label: "Orchestrate API" },
+      { id: "db-schema", label: "Database schema" },
+    ],
+  },
+  {
+    label: "Evaluation & tooling",
+    items: [
+      { id: "performance-radar", label: "Performance Radar" },
+      { id: "sim-lab", label: "Simulation Lab" },
+      { id: "sim-parent", label: "Simulated Parent" },
+      { id: "chat-ui", label: "Chat UI & overlays" },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { id: "versioning", label: "Versioning & pinning" },
+      { id: "prod-boundary", label: "Prototype → Production" },
+      { id: "api-endpoints", label: "API endpoints" },
+    ],
+  },
+];
+
+function DocsSidebar() {
+  return (
+    <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 overflow-y-auto rounded-2xl border border-border bg-card/60 p-4 text-sm lg:block">
+      <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        On this page
+      </div>
+      <nav className="flex flex-col gap-4">
+        {TOC_GROUPS.map((group) => (
+          <div key={group.label} className="flex flex-col gap-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">
+              {group.label}
+            </div>
+            {group.items.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="rounded px-2 py-1 text-[13px] text-foreground/80 hover:bg-secondary hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
+    </aside>
+  );
+}
+
+function DocsPageInner() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
       <div className="border-b border-border bg-primary/95 text-primary-foreground">
