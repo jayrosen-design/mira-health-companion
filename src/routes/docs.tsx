@@ -599,6 +599,10 @@ function DocsPage() {
         </section>
 
         <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
+          </div>
           <p className="text-sm text-muted-foreground">
             Each chat bubble can surface MI-flow metadata inline. Assistant bubbles show the
             inferred MI technique tag, routing phase/node, supervisor verdict, and any revision or
