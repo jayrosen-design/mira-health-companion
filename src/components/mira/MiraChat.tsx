@@ -1042,6 +1042,12 @@ function TopBanner({
               <Home className="h-3 w-3" /> Welcome
             </button>
           )}
+          <Link
+            to="/docs"
+            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+          >
+            <BookOpen className="h-3 w-3" /> API Docs
+          </Link>
           <button
             type="button"
             onClick={onResearch}
@@ -1049,12 +1055,6 @@ function TopBanner({
           >
             Research View
           </button>
-          <Link
-            to="/docs"
-            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
-          >
-            <BookOpen className="h-3 w-3" /> API Docs
-          </Link>
           <button
             type="button"
             onClick={onDev}
