@@ -21,6 +21,22 @@ import {
   type SimulationStatus,
   type SimulationTurnResult,
 } from "@/lib/mira/simulated-parent-scenarios";
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import {
+  RADAR_AXES,
+  computeRadarMetrics,
+  fmtRaw,
+  fmtScore,
+  type AgentScores,
+} from "@/lib/mira/performance-metrics";
 
 interface ResearchViewProps {
   open: boolean;
@@ -94,11 +110,12 @@ export function ResearchView({
         </SheetHeader>
 
         <Tabs defaultValue="routing" className="mt-4">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6">
             <TabsTrigger value="routing">MI Routing</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="simulation">Sim Lab</TabsTrigger>
             <TabsTrigger value="simparent">Sim Parent</TabsTrigger>
+            <TabsTrigger value="radar">Radar</TabsTrigger>
             <TabsTrigger value="meta">Meta</TabsTrigger>
           </TabsList>
 
