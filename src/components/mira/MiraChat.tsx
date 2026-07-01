@@ -257,7 +257,6 @@ export function MiraChat() {
   ): Promise<{ state: MiSessionState; supervisor: SupervisorReport } | null> => {
     const trimmed = text.trim();
     if (!trimmed || isSending) return null;
-    if (sessionStateRef.current.isComplete) return null;
     setError(null);
     const prevMessages = messagesRef.current;
     const userMsg: Msg = { role: "user", content: trimmed };
