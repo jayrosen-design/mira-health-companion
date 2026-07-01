@@ -423,7 +423,9 @@ function DocsPage() {
         </div>
       </div>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-8 sm:py-10">
+      <div className="mx-auto flex w-full max-w-6xl gap-6 px-4 py-8 sm:py-10">
+        <DocsSidebar />
+        <main className="flex min-w-0 flex-1 flex-col gap-10">
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
@@ -1024,7 +1026,8 @@ SIMULATION_MAX_TURNS              = 12`}
           This document is a planning artifact for stakeholder discussion. Schemas and endpoints
           will be refined alongside IRB review and engineering scoping.
         </footer>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
