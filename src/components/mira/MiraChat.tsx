@@ -486,7 +486,22 @@ export function MiraChat() {
     if (phase !== "chat" || !simulatedPersona) return;
     if (simCtl.current.started) return;
     simCtl.current.started = true;
-    void runSimulatedParent(simulatedPersona);
+    // Wrap so an uncaught error inside the runner can't bubble past React
+    // and force a page reload back to the login screen.
+    runSimulatedParent(simulatedPersona).catch((err) => {
+      console.error("[SimulatedParent] Runner crashed:", err);
+      simCtl.current.stop = true;
+      simCtl.current.pause = false;
+      simCtl.current.step = false;
+      simCtl.current.started = false;
+      setParentTyping(false);
+      setSimStatus("stopped");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The simulated parent runner stopped unexpectedly.",
+      );
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, simulatedPersona]);
 
