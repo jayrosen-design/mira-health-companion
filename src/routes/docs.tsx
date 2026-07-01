@@ -1108,7 +1108,11 @@ SIMULATION_MAX_TURNS              = 12`}
               </div>
               <ul className="divide-y divide-border">
                 {group.endpoints.map((ep) => (
-                  <li key={ep.method + ep.path} className="flex flex-col gap-2 px-4 py-3">
+                  <li
+                    key={ep.method + ep.path}
+                    id={endpointSlug(ep.method, ep.path)}
+                    className="scroll-mt-24 flex flex-col gap-2 px-4 py-3"
+                  >
                     <div className="flex flex-wrap items-center gap-2">
                       <MethodBadge method={ep.method} />
                       <code className="font-mono text-sm font-medium text-foreground">
