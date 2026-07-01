@@ -39,6 +39,9 @@ export interface RadarMetrics {
   midt: AgentScores;
   supervisor: AgentScores;
   parent: AgentScores;
+  midtFilled: AgentScores;
+  supervisorFilled: AgentScores;
+  parentFilled: AgentScores;
   raw: {
     rqRatio: number | null;
     percentComplexReflections: number | null;
@@ -202,10 +205,47 @@ export function computeRadarMetrics(
     efficiency: efficiencyScore,
   };
 
+  // ---- Filled variants: every agent gets a value on every axis for the radar shape.
+  // These use best-effort proxies so the polygons render as real pentagons.
+  const idle = n === 0 && sr === 0;
+  const base = (v: number | null, fallback: number) => (v == null ? fallback : v);
+
+  // MIDT cross-axis proxies
+  const midtSafety = n > 0 ? clamp(100 - (violations / Math.max(1, n)) * 100) : 50;
+  const midtFilled: AgentScores = {
+    expression: base(expressionMidt, idle ? 50 : 50),
+    safety: midtSafety,
+    grounded: base(groundedMidt, 60),
+    relevancy: base(relevancyMidt, 50),
+    efficiency: base(efficiencyScore, 70),
+  };
+
+  // Supervisor cross-axis proxies
+  const supRevisionRate = n > 0 ? revisions / n : 0;
+  const supFilled: AgentScores = {
+    expression: n > 0 ? clamp((1 - supRevisionRate) * 100) : 50,
+    safety: base(safetyScore, 50),
+    grounded: n > 0 ? clamp(100 - fallbacks / Math.max(1, n) * 100) : 60,
+    relevancy: n > 0 ? clamp((1 - supRevisionRate) * 100) : 50,
+    efficiency: base(efficiencyScore, 70),
+  };
+
+  // Parent cross-axis proxies
+  const parentFilled: AgentScores = {
+    expression: sr > 0 ? clamp((stanceMatch ?? 0) * 100) : 50,
+    safety: sr > 0 ? 100 : 50,
+    grounded: sr > 0 ? clamp((stanceMatch ?? 0) * 100) : 50,
+    relevancy: base(relevancyParent, 50),
+    efficiency: 90,
+  };
+
   return {
     midt,
     supervisor,
     parent,
+    midtFilled,
+    supervisorFilled: supFilled,
+    parentFilled,
     raw: {
       rqRatio,
       percentComplexReflections,
