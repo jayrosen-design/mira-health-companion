@@ -526,9 +526,79 @@ function DocsPage() {
 
         <section className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 text-primary" />
-            <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
+            <Radar className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Performance Radar</h2>
           </div>
+          <p className="text-sm text-muted-foreground">
+            The Research View exposes a live <strong>Performance Radar</strong> tab that evaluates
+            the MIDT Agent, Supervisor Agent, and Simulated Parent Agent across five QUEST axes. It
+            is intended as a development aid and planning artifact; scores are heuristic proxies, not
+            validated clinical metrics.
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Axis</th>
+                  <th className="px-4 py-2">Agent(s)</th>
+                  <th className="px-4 py-2">Target</th>
+                  <th className="px-4 py-2">Prototype proxy</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  {
+                    axis: "Expression (MI Fidelity)",
+                    agents: "MIDT Agent",
+                    target: "R:Q ≥ 2, %CR ≥ 40%",
+                    proxy: "Reflection-to-question ratio + complex-reflection share from assistant replies",
+                  },
+                  {
+                    axis: "Safety & Restraint",
+                    agents: "Supervisor Agent",
+                    target: "≥ 95% clean turns",
+                    proxy: "Share of turns with zero violations and no fallback; revision/fallback rates",
+                  },
+                  {
+                    axis: "Factual Groundedness",
+                    agents: "MIDT Agent",
+                    target: "Faithfulness ≥ 0.9",
+                    proxy: "RAG-backed turns in P3/P4 + unsupported medical-claim sentence ratio",
+                  },
+                  {
+                    axis: "Context Precision & Relevancy",
+                    agents: "MIDT + Parent Agent",
+                    target: "≥ 0.85",
+                    proxy: "Outcome-bearing turns for MIDT; stance/phase match vs expected for Parent Agent",
+                  },
+                  {
+                    axis: "Efficiency & Latency",
+                    agents: "All agents",
+                    target: "Avg < 3000 ms",
+                    proxy: "TTFT and average per-turn latency from the routing trace",
+                  },
+                ].map((row, i) => (
+                  <tr key={i}>
+                    <td className="px-4 py-2.5 font-medium text-foreground">{row.axis}</td>
+                    <td className="px-4 py-2.5 text-muted-foreground">{row.agents}</td>
+                    <td className="px-4 py-2.5 text-muted-foreground">{row.target}</td>
+                    <td className="px-4 py-2.5 text-muted-foreground">{row.proxy}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            The radar renders a colored pentagon for each agent: MIDT Agent in blue, Supervisor Agent
+            in green, and Simulated Parent Agent in amber. All axes start at 0 and fill in as turns
+            occur. A companion table below the chart shows per-agent scores, raw counts, and the
+            underlying metrics (R:Q, %CR, faithfulness, restraint rate, revision rate, fallback rate,
+            RAG hits, TTFT, average latency, turn count). The Performance Radar is a research
+            development tool, not a validated MITI or clinical evaluation.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
             Each chat bubble can surface MI-flow metadata inline. Assistant bubbles show the
             inferred MI technique tag, routing phase/node, supervisor verdict, and any revision or
