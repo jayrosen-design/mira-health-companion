@@ -407,6 +407,77 @@ function MethodBadge({ method }: { method: Endpoint["method"] }) {
 }
 
 function DocsPage() {
+  return <DocsPageInner />;
+}
+
+const TOC_GROUPS: { label: string; items: { id: string; label: string }[] }[] = [
+  {
+    label: "Architecture",
+    items: [
+      { id: "architecture", label: "MIDT dual-agent architecture" },
+      { id: "phase-flow", label: "Five-phase conversation flow" },
+      { id: "routing-loop", label: "Routing decision loop" },
+      { id: "how-it-works", label: "How the app works" },
+    ],
+  },
+  {
+    label: "Contracts & schemas",
+    items: [
+      { id: "session-state", label: "MiSessionState" },
+      { id: "routing-node", label: "RoutingNode schema" },
+      { id: "developer-trace", label: "DeveloperTrace" },
+      { id: "orchestrate-api", label: "Orchestrate API" },
+      { id: "db-schema", label: "Database schema" },
+    ],
+  },
+  {
+    label: "Evaluation & tooling",
+    items: [
+      { id: "performance-radar", label: "Performance Radar" },
+      { id: "sim-lab", label: "Simulation Lab" },
+      { id: "sim-parent", label: "Simulated Parent" },
+      { id: "chat-ui", label: "Chat UI & overlays" },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { id: "versioning", label: "Versioning & pinning" },
+      { id: "prod-boundary", label: "Prototype → Production" },
+      { id: "api-endpoints", label: "API endpoints" },
+    ],
+  },
+];
+
+function DocsSidebar() {
+  return (
+    <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 overflow-y-auto rounded-2xl border border-border bg-card/60 p-4 text-sm lg:block">
+      <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        On this page
+      </div>
+      <nav className="flex flex-col gap-4">
+        {TOC_GROUPS.map((group) => (
+          <div key={group.label} className="flex flex-col gap-1">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80">
+              {group.label}
+            </div>
+            {group.items.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="rounded px-2 py-1 text-[13px] text-foreground/80 hover:bg-secondary hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        ))}
+      </nav>
+    </aside>
+  );
+}
+
+function DocsPageInner() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
       <div className="border-b border-border bg-primary/95 text-primary-foreground">
@@ -423,7 +494,9 @@ function DocsPage() {
         </div>
       </div>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-8 sm:py-10">
+      <div className="mx-auto flex w-full max-w-6xl gap-6 px-4 py-8 sm:py-10">
+        <DocsSidebar />
+        <main className="flex min-w-0 flex-1 flex-col gap-10">
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
@@ -459,7 +532,7 @@ function DocsPage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="architecture" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">MIDT dual-agent architecture</h2>
@@ -472,7 +545,7 @@ function DocsPage() {
           <MermaidDiagram chart={dualAgentChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="phase-flow" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Five-phase conversation flow</h2>
@@ -480,7 +553,7 @@ function DocsPage() {
           <MermaidDiagram chart={phaseSequenceChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="routing-loop" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Routing decision loop</h2>
@@ -488,7 +561,7 @@ function DocsPage() {
           <MermaidDiagram chart={routingLoopChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="orchestrate-api" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Prototype orchestrate API</h2>
@@ -551,7 +624,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="performance-radar" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Radar className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Performance Radar</h2>
@@ -625,7 +698,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="chat-ui" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Chat UI & developer overlays</h2>
@@ -643,7 +716,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="session-state" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Session state contract (MiSessionState)</h2>
@@ -696,7 +769,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="routing-node" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Routing node schema</h2>
@@ -734,7 +807,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="developer-trace" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Developer trace fields</h2>
@@ -760,7 +833,7 @@ function DocsPage() {
           </pre>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="sim-lab" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Simulation Lab catalog</h2>
@@ -806,7 +879,7 @@ function DocsPage() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="sim-parent" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Simulated Parent scenarios</h2>
@@ -873,7 +946,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="versioning" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <ShieldAlert className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Versioning &amp; session pinning</h2>
@@ -899,7 +972,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </p>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="prod-boundary" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">From prototype to production</h2>
@@ -944,7 +1017,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </div>
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="how-it-works" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Network className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">How the app works</h2>
@@ -956,7 +1029,7 @@ SIMULATION_MAX_TURNS              = 12`}
           <MermaidDiagram chart={flowChart} />
         </section>
 
-        <section className="flex flex-col gap-3">
+        <section id="db-schema" className="scroll-mt-24 flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">Database schema</h2>
@@ -970,7 +1043,7 @@ SIMULATION_MAX_TURNS              = 12`}
           <MermaidDiagram chart={erChart} />
         </section>
 
-        <section className="flex flex-col gap-4">
+        <section id="api-endpoints" className="scroll-mt-24 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h2 className="text-xl font-semibold tracking-tight">API endpoints</h2>
@@ -1024,7 +1097,8 @@ SIMULATION_MAX_TURNS              = 12`}
           This document is a planning artifact for stakeholder discussion. Schemas and endpoints
           will be refined alongside IRB review and engineering scoping.
         </footer>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
