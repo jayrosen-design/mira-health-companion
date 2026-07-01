@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ArrowRight, HeartPulse, Info, Lock, ShieldAlert, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./StepIndicator";
-import { PARENT_CONCERN_CHIPS } from "@/lib/mira/system-prompt";
 import { SimulatedParentSelector } from "./SimulatedParentSelector";
 import {
   SIMULATED_PARENT_SCENARIOS,
