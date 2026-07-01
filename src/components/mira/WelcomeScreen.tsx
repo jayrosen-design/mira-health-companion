@@ -73,10 +73,7 @@ export function WelcomeScreen({
             />
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Button size="lg" onClick={() => onStart()} className="gap-2 capitalize">
-              {startLabel} <ArrowRight className="h-4 w-4" />
-            </Button>
+          <div className="mt-6">
             <Button
               variant="ghost"
               size="lg"
@@ -104,41 +101,27 @@ export function WelcomeScreen({
           )}
         </section>
 
-        <SimulatedParentSelector
-          value={simulatedPersona}
-          onChange={onSimulatedPersonaChange}
-        />
-
-        {!simulatedPersona && (
         <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Common things parents start with
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Pick one to start, or write your own once the conversation opens.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {PARENT_CONCERN_CHIPS.map((chip) => (
-              <button
-                key={chip}
-                type="button"
-                onClick={() => onStart(chip)}
-                className="rounded-full border border-border bg-background px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5"
-              >
-                {chip}
-              </button>
-            ))}
+          <SimulatedParentSelector
+            value={simulatedPersona}
+            onChange={onSimulatedPersonaChange}
+          />
+          <div className="mt-6">
+            <Button
+              size="lg"
+              onClick={() => onStart()}
+              className="gap-2 capitalize"
+              disabled={!simulatedPersona}
+            >
+              {startLabel} <ArrowRight className="h-4 w-4" />
+            </Button>
+            {!simulatedPersona && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                Select a parent persona above to start, or choose “Start as yourself” to chat normally.
+              </p>
+            )}
           </div>
         </section>
-        )}
-
-        <footer className="flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/5 p-3 text-xs text-warning-foreground">
-          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
-          <p>
-            If this is an emergency, call 911 or contact your healthcare provider. This tool cannot
-            respond to emergencies.
-          </p>
-        </footer>
       </div>
     </div>
   );
