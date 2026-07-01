@@ -1101,15 +1101,14 @@ function TopBanner({
                   }}
                 />
               )}
-              <MenuItem
-                icon={<RotateCcw className="h-4 w-4" />}
-                label="Reset chat"
-                disabled={!canReset}
-                onClick={() => {
-                  close();
-                  onReset();
-                }}
-              />
+              <Link
+                to="/docs"
+                onClick={close}
+                className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground hover:bg-accent"
+              >
+                <BookOpen className="h-4 w-4" />
+                API Docs
+              </Link>
               <div className="my-2 h-px bg-border" />
               <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Prototype controls
@@ -1122,14 +1121,6 @@ function TopBanner({
                   setTimeout(() => onResearch(), 350);
                 }}
               />
-              <Link
-                to="/docs"
-                onClick={close}
-                className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground hover:bg-accent"
-              >
-                <BookOpen className="h-4 w-4" />
-                API Docs & Data Model
-              </Link>
               <MenuItem
                 icon={<Code2 className="h-4 w-4" />}
                 label="Developer Settings"
@@ -1139,6 +1130,15 @@ function TopBanner({
                 }}
               />
               <div className="my-2 h-px bg-border" />
+              <MenuItem
+                icon={<RotateCcw className="h-4 w-4" />}
+                label="Reset chat"
+                disabled={!canReset}
+                onClick={() => {
+                  close();
+                  onReset();
+                }}
+              />
               <MenuItem
                 icon={<LogOut className="h-4 w-4" />}
                 label="Sign out"
