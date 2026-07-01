@@ -501,11 +501,12 @@ function DocsSidebar() {
                               key={ep.method + ep.path}
                               href={`#${endpointSlug(ep.method, ep.path)}`}
                               className="flex items-center gap-1.5 rounded px-1 py-0.5 text-[11px] text-foreground/75 hover:bg-secondary hover:text-foreground"
+                              title={`${ep.method} ${ep.path}`}
                             >
                               <span className="font-mono text-[9px] font-semibold uppercase text-muted-foreground">
                                 {ep.method}
                               </span>
-                              <span className="truncate font-mono">{ep.path}</span>
+                              <span className="truncate">{ep.path.split('/').pop() || ep.path}</span>
                             </a>
                           ))}
                         </div>
