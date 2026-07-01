@@ -82,9 +82,6 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
           );
         })}
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground">
-        Scripts represent simplified test profiles — not every real parent.
-      </p>
     </section>
   );
 }
