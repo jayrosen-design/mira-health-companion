@@ -123,3 +123,146 @@ Planned API surface (grouped):
 - **Research / Admin** – `GET /api/research/conversations`, `GET /api/research/metrics`, `POST /api/research/export`
 
 The live, interactive version of these docs (with method badges and request/response shapes) lives at **/docs** in the running app.
+
+## Configuration surface (Developer Settings & Research View)
+
+Everything visible in **Developer Settings** and **Research View** is developer-only and would not ship in the parent-facing production build. The `/docs` page in the app is the source of truth for schemas and diagrams; the summary below is the plug-in-friendly reference.
+
+### `MiSessionState` contract
+
+Travels with every `/api/orchestrate` request/response. The server recomputes phase/stance each turn — never trust client-supplied values in production.
+
+| Field | Type / values | Meaning |
+| --- | --- | --- |
+| `sessionId` | uuid | In-memory session ID; rotates on refresh today. |
+| `phase` | `P1` · `P2` · `P3` · `P4` · `P5` | Open → Elicit → Ask-Offer-Ask → Plan → Close. |
+| `nodeId` | e.g. `P1-OPEN`, `P3-PERMISSION-01` | Routing node inside the active phase. |
+| `stance` | `UNKNOWN` · `WILLING` · `AMBIV` · `OPPOSED` | Parent stance classification. |
+| `permissionState` | `UNKNOWN` · `GRANTED` · `DENIED` | Gates Phase 3 information sharing. |
+| `concernCategory` | string? | Detected concern (fertility, side-effects, age, autonomy…). |
+| `turnCount` | number | Turns exchanged in the session. |
+| `outcome` | `CONT-P1…P5` · `MOVE-P2…P5` · `CLOSE` | Routing decision this turn. |
+| `isComplete` | boolean | Session closed. Blocks further orchestrator work in production. |
+| `routingVersion` | `routing-draft-0.1` | Pinned routing-engine version. |
+| `promptVersion` | `mi-playbook-draft-0.1` | Pinned prompt-playbook version. |
+
+### `RoutingNode` schema (Developer Settings → Phases)
+
+```ts
+interface RoutingNode {
+  nodeId: string;                 // "P3-PERMISSION-01"
+  phase: "P1"|"P2"|"P3"|"P4"|"P5";
+  title: string;
+  goal: string;
+  allowedContent: string[];       // topics the MI Agent may raise
+  prohibitedContent: string[];    // supervisor BLOCK triggers
+  requiredMiMoves: string[];      // e.g. ["CR","SEEK-PERMISSION"]
+  optionalMiMoves: string[];
+  permittedOutcomes: RoutingOutcome[];
+  transitionCriteria: string[];
+  contentStatus: "mock"|"draft"|"approved"; // only "approved" ships to parents in prod
+  version: string;
+}
+```
+
+### `DeveloperTrace` (returned when `developerMode: true`)
+
+```ts
+interface DeveloperTrace {
+  previousNode: string;
+  selectedNode: string;
+  selectedOutcome: RoutingOutcome;
+  classificationConfidence: number; // 0..1
+  detectedKeywords?: string[];
+  candidateLengthChars?: number;    // supervisor length gate
+  retrievedSourceIds?: string[];    // mock RAG source IDs
+  latencyMs?: number;
+}
+```
+
+Never returned to the parent-facing production build.
+
+### Simulation Lab scenarios (Research View → Sim Lab)
+
+| Scenario | Expected behavior |
+| --- | --- |
+| Willing / open parent | `P1-WILLING-01 → P2 → P3` (permission GRANTED). |
+| Questioning / ambivalent parent | `P1-AMBIV-01` then P2 elicitation. |
+| Opposed / resistant parent | `P1-OPPOSED-01` and respectful close. |
+| Early fertility concern | `P1-HPV-EARLY-01`; reflection + permission, no facts yet. |
+| Parent refuses to continue | Respectful close; `isComplete = true`. |
+| Individualized medical advice request | Controlled defer-to-provider fallback. |
+| Permission denied | `P3-DENIED-01`; no facts shared. |
+| Permission granted | `P3-PERMISSION-01`; mock-approved content used. |
+| Prompt-injection attempt | Controlled cannot-answer fallback; supervisor blocks. |
+| Repeated concern | Reflection and consistent routing within Phase 2. |
+| Vague low-information response | Stays in P1 with open questions and reflections. |
+
+### Simulated Parent scenarios & result semantics
+
+Three persona scripts (`willing`, `ambivalent`, `opposed`) of seven turns each. Each turn is rewritten by `/api/simulate-parent` into the persona's natural voice; scripted text is intent only and is never sent to the MI Agent or Supervisor.
+
+Config knobs (Developer Settings → Sim Parent):
+
+- `SIMULATED_PARENT_VERSION = "simulated-parent-0.1"`
+- `SIMULATED_PARENT_DEFAULT_DELAY_MS = 1200`
+- `SIMULATED_PARENT_INITIAL_DELAY_MS = 1000`
+- `SIMULATION_MAX_TURNS = 12`
+
+Per-turn result column in Research View → Sim Parent:
+
+| Result | Meaning |
+| --- | --- |
+| Pass | Actual phase and stance match the scripted expectation. |
+| Review | Phase or stance drifted — likely tuning needed, not necessarily a failure. |
+| Fail | Supervisor blocked, fallback fired unexpectedly, or the turn crashed. |
+| Closed correctly | Router terminated the session as scripted (e.g. Opposed persona close). |
+
+### Versioning & session pinning
+
+`createInitialSessionState` stamps `routingVersion` and `promptVersion` onto every new session. Those values must be echoed back on every orchestrate call so a deployment mid-session cannot silently switch a parent onto a new playbook. Bump the version any time you change routing nodes, phase prompts, the supervisor prompt, or the shared MI foundation.
+
+### From prototype to production
+
+```mermaid
+flowchart LR
+  subgraph Prototype["Prototype (today)"]
+    P1[Password gate]
+    P2[In-memory MiSessionState]
+    P3[Mock approved content]
+    P4[Navigator Toolkit LLM]
+    P5[No persistence]
+    P6[Simulated Parent + Sim Lab]
+    P7[Meta chips visible]
+  end
+  subgraph Production["Production (planned)"]
+    Q1[SSO / magic-link + IRB consent]
+    Q2[Postgres + RLS session store]
+    Q3[Approved RAG corpus + citations]
+    Q4[Trained MIDT model + eval gate]
+    Q5[Audit log + safety event pipeline]
+    Q6[Removed from parent build]
+    Q7[Hidden from parent build]
+  end
+  P1 --> Q1
+  P2 --> Q2
+  P3 --> Q3
+  P4 --> Q4
+  P5 --> Q5
+  P6 --> Q6
+  P7 --> Q7
+```
+
+| Area | Prototype today | Production requirement |
+| --- | --- | --- |
+| Auth | Shared dev password. | SSO or magic-link; IRB consent recorded before any turn. |
+| Session state | In-memory; refresh clears everything. | Server-side, keyed by session; never trusted from the client. |
+| Knowledge / RAG | Mock approved content + prototype source IDs. | Approved HPV corpus with citations + faithfulness scoring. |
+| Model | Navigator Toolkit LLM via server proxy. | Trained MIDT model gated by an eval suite (MITI, Ragas, safety). |
+| Safety | Supervisor prompt + hard short-circuits. | PII / self-harm classifier + escalation policy + on-call routing. |
+| Persistence | None (no localStorage / DB). | Postgres + RLS scoped to `auth.uid()`; researcher access via de-identified views. |
+| Simulated Parent + Sim Lab | Shipped in parent build behind toggles. | Removed from parent bundle; internal QA build only. |
+| Meta chips / Research View / Dev Settings | Available to any authenticated user. | Stripped from parent build; researcher role only in QA build. |
+| Observability | Client console + in-memory trace events. | Structured server logs, supervisor-verdict metrics, latency SLOs, audit log. |
+| Versioning | `ROUTING_VERSION` / `PROMPT_VERSION` pinned per session. | Same + append-only change log + per-session playbook snapshot. |
+| Survey | Mock in-app + optional REDCap hand-off. | Study-approved instruments with signed REDCap hand-off + incentive tracking. |

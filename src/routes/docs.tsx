@@ -171,6 +171,33 @@ const routingLoopChart = `flowchart LR
   Node --> Outcome[Outcome + next phase]
   Outcome --> Out[Updated MiSessionState]`;
 
+const prodBoundaryChart = `flowchart LR
+  subgraph Prototype["Prototype (today)"]
+    P1[Password gate]
+    P2[In-memory MiSessionState]
+    P3[Mock approved content]
+    P4[Navigator Toolkit LLM]
+    P5[No persistence]
+    P6[Simulated Parent + Sim Lab]
+    P7[Meta chips visible]
+  end
+  subgraph Production["Production (planned)"]
+    Q1[SSO / magic-link + IRB consent]
+    Q2[Postgres + RLS session store]
+    Q3[Approved RAG corpus + citations]
+    Q4[Trained MIDT model + evals gate]
+    Q5[Audit log + safety event pipeline]
+    Q6[Removed from parent build]
+    Q7[Hidden from parent build]
+  end
+  P1 --> Q1
+  P2 --> Q2
+  P3 --> Q3
+  P4 --> Q4
+  P5 --> Q5
+  P6 --> Q6
+  P7 --> Q7`;
+
 interface Endpoint {
   method: "GET" | "POST" | "PATCH" | "DELETE";
   path: string;
@@ -614,6 +641,307 @@ function DocsPage() {
             the chat stays visible and interactive while inspecting traces, scripts, or supervisor
             verdicts.
           </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Database className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Session state contract (MiSessionState)</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The Research View → MI Routing tab renders the live{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">MiSessionState</code> object.
+            It travels with every <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/orchestrate</code>{" "}
+            request and response. The server never trusts client-supplied phase/stance blindly —
+            the routing engine recomputes them each turn. In production this object must be
+            persisted server-side and keyed by session, not sent from the browser.
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Field</th>
+                  <th className="px-4 py-2">Type / values</th>
+                  <th className="px-4 py-2">Meaning</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ["sessionId", "uuid", "In-memory session identifier. Rotates on refresh (no persistence today)."],
+                  ["phase", "P1 · P2 · P3 · P4 · P5", "Open → Elicit concerns → Ask-Offer-Ask (with permission) → Plan / next step → Close."],
+                  ["nodeId", "e.g. P1-OPEN, P1-HPV-EARLY-01, P3-PERMISSION-01", "Selected routing node inside the active phase."],
+                  ["stance", "UNKNOWN · WILLING · AMBIV · OPPOSED", "Parent stance classified from the latest turn + running signal."],
+                  ["permissionState", "UNKNOWN · GRANTED · DENIED", "Whether the parent has explicitly permitted information sharing (gates P3 facts)."],
+                  ["concernCategory", "string?", "Detected concern (e.g. fertility, side-effects, age, autonomy). Optional."],
+                  ["turnCount", "number", "Turns exchanged in this session."],
+                  ["outcome", "CONT-P1…P5 · MOVE-P2…P5 · CLOSE", "Routing decision produced this turn."],
+                  ["isComplete", "boolean", "Session closed (P5 or hard short-circuit). Blocks further orchestrator work in production."],
+                  ["routingVersion", "e.g. routing-draft-0.1", "Pinned routing-engine version for this session (audit trail)."],
+                  ["promptVersion", "e.g. mi-playbook-draft-0.1", "Pinned prompt-playbook version for this session (audit trail)."],
+                ].map(([f, t, m]) => (
+                  <tr key={f}>
+                    <td className="px-4 py-2 font-mono text-xs text-foreground">{f}</td>
+                    <td className="px-4 py-2 font-mono text-[11px] text-muted-foreground">{t}</td>
+                    <td className="px-4 py-2 text-sm text-muted-foreground">{m}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Supervisor short-circuits: refusal → respectful close; individualized medical advice
+            → defer-to-provider; prompt-injection → controlled cannot-answer. Each sets{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">outcome=CLOSE</code> or a
+            fallback and is logged as a supervisor violation.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Routing node schema</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Developer Settings → Phases lists every configured{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">RoutingNode</code>. Nodes are
+            static configuration bundled with the build; adding, renaming, or removing a node
+            requires a code change and a bumped{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">ROUTING_VERSION</code>. Each
+            node contributes a slice of the assembled phase prompt sent to the MI Conversation
+            Agent and gives the Supervisor Agent its required/prohibited checklist.
+          </p>
+          <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-3 text-[11px]">
+{`interface RoutingNode {
+  nodeId: string;              // e.g. "P3-PERMISSION-01"
+  phase: "P1"|"P2"|"P3"|"P4"|"P5";
+  title: string;               // human label shown in dev tools
+  goal: string;                // what the node is trying to accomplish this turn
+  allowedContent: string[];    // topics the MI Agent MAY discuss at this node
+  prohibitedContent: string[]; // topics that trigger a supervisor BLOCK
+  requiredMiMoves: string[];   // e.g. ["CR","SEEK-PERMISSION"] — supervisor checks these
+  optionalMiMoves: string[];   // e.g. ["OQ","AF"]
+  permittedOutcomes: RoutingOutcome[]; // which transitions this node may emit
+  transitionCriteria: string[];        // heuristic hints used by the router
+  contentStatus: "mock"|"draft"|"approved"; // gates production release
+  version: string;             // per-node change tracking
+}`}
+          </pre>
+          <p className="text-xs text-muted-foreground">
+            In production, only nodes with{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">contentStatus === "approved"</code>{" "}
+            should ship to parents. Today every node is <code className="rounded bg-muted px-1 py-0.5 text-xs">mock</code>{" "}
+            or <code className="rounded bg-muted px-1 py-0.5 text-xs">draft</code>.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Developer trace fields</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            When <code className="rounded bg-muted px-1 py-0.5 text-xs">developerMode: true</code>{" "}
+            is set on <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/orchestrate</code>,
+            the response includes a <code className="rounded bg-muted px-1 py-0.5 text-xs">developerTrace</code>{" "}
+            object surfaced across Research View tabs and chat meta chips. It is never returned in
+            the parent-facing production build.
+          </p>
+          <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-3 text-[11px]">
+{`interface DeveloperTrace {
+  previousNode: string;             // node before this turn
+  selectedNode: string;             // node chosen this turn
+  selectedOutcome: RoutingOutcome;  // routing decision emitted
+  classificationConfidence: number; // 0..1 stance/concern classifier confidence
+  detectedKeywords?: string[];      // stance / concern keywords matched
+  candidateLengthChars?: number;    // MI Agent draft length (supervisor length gate)
+  retrievedSourceIds?: string[];    // mock RAG source IDs (prototype only)
+  latencyMs?: number;               // orchestrate turn latency
+}`}
+          </pre>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Simulation Lab catalog</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Research View → Sim Lab ships synthetic scenarios that drive scripted parent turns
+            through the live orchestrator. They are the primary regression harness for routing
+            and supervisor behavior.
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Scenario</th>
+                  <th className="px-4 py-2">Expected behavior</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ["Willing / open parent", "Routes P1-WILLING-01 → P2 → P3 (permission GRANTED)."],
+                  ["Questioning / ambivalent parent", "Routes through P1-AMBIV-01 then P2 elicitation."],
+                  ["Opposed / resistant parent", "Routes to P1-OPPOSED-01 and respectful close."],
+                  ["Early fertility concern", "Routes to P1-HPV-EARLY-01; reflection + permission, no facts yet."],
+                  ["Parent refuses to continue", "Triggers respectful close; isComplete = true."],
+                  ["Individualized medical advice request", "Controlled defer-to-provider fallback."],
+                  ["Permission denied", "P3-DENIED-01; no facts shared."],
+                  ["Permission granted", "P3-PERMISSION-01; mock-approved content used."],
+                  ["Prompt-injection attempt", "Controlled cannot-answer fallback; supervisor blocks."],
+                  ["Repeated concern", "Reflection and consistent routing within Phase 2."],
+                  ["Vague low-information response", "Stays in P1 with open questions and reflections."],
+                ].map(([s, e]) => (
+                  <tr key={s}>
+                    <td className="px-4 py-2 font-medium text-foreground">{s}</td>
+                    <td className="px-4 py-2 text-sm text-muted-foreground">{e}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Sim Lab scripts are synthetic. No participant data is generated, and scripted content
+            is never used as training data.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Simulated Parent scenarios</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The optional Simulated Parent mode uses three persona scripts (Willing, Ambivalent,
+            Opposed) of seven turns each. Each scripted turn is rewritten by{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/simulate-parent</code>{" "}
+            in the persona's natural voice — the scripted text is intent only, never sent to the
+            MI Agent or Supervisor. Configuration lives in Developer Settings → Sim Parent.
+          </p>
+          <pre className="overflow-x-auto rounded-md border border-border bg-muted/40 p-3 text-[11px]">
+{`interface SimulatedParentScenario {
+  id: "willing" | "ambivalent" | "opposed";
+  label: string;
+  description: string;
+  startingStance: ParentStance;
+  turns: SimulatedParentTurn[]; // 7 scripted turns
+}
+
+interface SimulatedParentTurn {
+  id: string;
+  expectedPhase: "P1"|"P2"|"P3"|"P4"|"P5";
+  expectedStance: ParentStance;
+  content: string; // scripted intent, rewritten before send
+}
+
+SIMULATED_PARENT_VERSION          = "simulated-parent-0.1"
+SIMULATED_PARENT_DEFAULT_DELAY_MS = 1200
+SIMULATED_PARENT_INITIAL_DELAY_MS = 1000
+SIMULATION_MAX_TURNS              = 12`}
+          </pre>
+          <p className="text-sm text-muted-foreground">
+            Research View → Sim Parent renders a per-turn results table comparing expected vs.
+            actual routing:
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Result</th>
+                  <th className="px-4 py-2">Meaning</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ["Pass", "Actual phase and stance match the scripted expectation for this turn."],
+                  ["Review", "Phase or stance drifted from the expected value — likely tuning needed, not necessarily a failure."],
+                  ["Fail", "Supervisor blocked, fallback fired unexpectedly, or the turn crashed."],
+                  ["Closed correctly", "Router terminated the session as scripted (e.g. respectful close for Opposed persona)."],
+                ].map(([r, m]) => (
+                  <tr key={r}>
+                    <td className="px-4 py-2 font-medium text-foreground">{r}</td>
+                    <td className="px-4 py-2 text-sm text-muted-foreground">{m}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Simulated Parent is developer-only. The player UI (Pause / Resume / Next / Stop /
+            Switch to manual) can be hidden via Developer Settings → Model → “Show simulated
+            parent player” without stopping an active run.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Versioning &amp; session pinning</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Every session captures the active{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">routingVersion</code> and{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">promptVersion</code> the first
+            time <code className="rounded bg-muted px-1 py-0.5 text-xs">createInitialSessionState</code>{" "}
+            runs. Those values must be echoed back on every subsequent orchestrate call so a
+            deployment mid-session does not silently switch a parent onto a new playbook.
+            Prototype defaults today:
+          </p>
+          <ul className="ml-6 list-disc text-sm text-muted-foreground">
+            <li><code className="rounded bg-muted px-1 py-0.5 text-xs">ROUTING_VERSION = "routing-draft-0.1"</code></li>
+            <li><code className="rounded bg-muted px-1 py-0.5 text-xs">PROMPT_VERSION = "mi-playbook-draft-0.1"</code></li>
+            <li><code className="rounded bg-muted px-1 py-0.5 text-xs">SIMULATED_PARENT_VERSION = "simulated-parent-0.1"</code></li>
+          </ul>
+          <p className="text-xs text-muted-foreground">
+            Bump the version any time you change routing nodes, phase prompts, supervisor prompt,
+            or the shared MI foundation. In production these are the audit-log join key for
+            comparing outcomes across playbook revisions.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Network className="h-4 w-4 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">From prototype to production</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Map of what needs to be replaced or removed to plug MiraChat into a production study
+            deployment. Left column is what ships in this prototype; right column is what a
+            production build requires.
+          </p>
+          <MermaidDiagram chart={prodBoundaryChart} />
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-2">Area</th>
+                  <th className="px-4 py-2">Prototype today</th>
+                  <th className="px-4 py-2">Production requirement</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ["Auth", "Shared dev password gate.", "SSO or magic-link; IRB-aligned consent recorded before any turn."],
+                  ["Session state", "In-memory MiSessionState; refresh clears everything.", "Server-side persistence keyed by session; state never trusted from the client."],
+                  ["Knowledge / RAG", "Mock approved content, prototype source IDs.", "Approved HPV corpus with citations and faithfulness scoring."],
+                  ["Model", "Navigator Toolkit LLM via server proxy.", "Trained MIDT model gated by an eval suite (MITI, Ragas, safety)."],
+                  ["Safety", "Supervisor prompt + hard short-circuits.", "Additional PII/self-harm classifier + escalation policy + on-call routing."],
+                  ["Persistence", "None; no localStorage / DB.", "Postgres with RLS scoped to auth.uid(); researcher access via de-identified views."],
+                  ["Simulated Parent + Sim Lab", "Shipped in the parent build behind toggles.", "Removed from parent bundle; kept in an internal QA build only."],
+                  ["Meta chips / Research View / Dev Settings", "Available to any authenticated user.", "Stripped from the parent build; gated to researcher role in the QA build."],
+                  ["Observability", "Client-side console + in-memory trace events.", "Structured server logs, supervisor-verdict metrics, latency SLOs, audit log."],
+                  ["Versioning", "ROUTING_VERSION / PROMPT_VERSION pinned per session.", "Same, plus append-only change log and per-session playbook snapshot."],
+                  ["Survey", "Mock in-app + optional REDCap hand-off.", "Study-approved instruments with signed REDCap hand-off and incentive tracking."],
+                ].map((row) => (
+                  <tr key={row[0]}>
+                    <td className="px-4 py-2 font-medium text-foreground">{row[0]}</td>
+                    <td className="px-4 py-2 text-sm text-muted-foreground">{row[1]}</td>
+                    <td className="px-4 py-2 text-sm text-muted-foreground">{row[2]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section className="flex flex-col gap-3">
