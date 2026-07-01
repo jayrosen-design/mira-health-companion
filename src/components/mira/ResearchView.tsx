@@ -343,9 +343,6 @@ export function ResearchView({
             </p>
           </TabsContent>
 
-          <TabsContent value="meta" className="mt-4 flex flex-col gap-4 text-sm">
-          </TabsContent>
-
           <TabsContent value="radar" className="mt-4 flex flex-col gap-4 text-sm">
             <PerformanceRadarTab
               traceEvents={traceEvents}
@@ -353,7 +350,7 @@ export function ResearchView({
             />
           </TabsContent>
 
-          <TabsContent value="meta-real" className="mt-4 flex flex-col gap-4 text-sm">
+          <TabsContent value="meta" className="mt-4 flex flex-col gap-4 text-sm">
             <Section title="Session meta">
               <Row k="Active model" v={model} />
               <Row k="Messages exchanged" v={String(messageCount)} />
