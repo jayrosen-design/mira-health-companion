@@ -780,6 +780,8 @@ export function MiraChat() {
         onDeveloperModeChange={setDeveloperMode}
         showMeta={showMeta}
         onShowMetaChange={setShowMeta}
+        showSimControls={showSimControls}
+        onShowSimControlsChange={setShowSimControls}
       />
       <ResearchView
         open={researchOpen}
