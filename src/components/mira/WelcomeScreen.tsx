@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, HeartPulse, Info, Lock, ShieldAlert, Stethoscope } from "lucide-react";
+import { ArrowRight, HeartPulse, Info, Lock, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./StepIndicator";
 import { SimulatedParentSelector } from "./SimulatedParentSelector";
