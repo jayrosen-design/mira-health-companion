@@ -1,90 +1,69 @@
-# Mira — HPV Vaccine MI Chatbot
+# Performance Radar tab in Research View
 
-A single-page React chat app for "Mira," an empathetic conversational AI for HPV vaccine education. All chat state stays in React memory — nothing is written to localStorage, sessionStorage, cookies, or any database. No backend, no Lovable Cloud.
+Add a new **Performance Radar** tab to `ResearchView.tsx` that visualizes live evaluation metrics for the three agents (MIDT Conversational Agent, Supervisor Agent, Simulated Parent Agent) across a 5-axis QUEST-style framework, shown as both a table and an overlapping pentagon radar chart.
 
-## Scope
+## Five evaluation axes
 
-- One conversation, no thread list, no history persistence (per PHI constraint).
-- Direct browser → `https://api.ai.it.ufl.edu` calls via the `openai` npm package using `dangerouslyAllowBrowser: true`.
-- API key read from `import.meta.env.VITE_AI_API_KEY` with a clear in-UI warning if missing.
+Each axis is normalized 0–100 for radar plotting; the table shows the raw metric alongside the normalized score.
 
-## Files
-
-- `src/routes/index.tsx` — replaces the placeholder with `<MiraChat />`, sets SEO head (title "Mira – Health Education Assistant", meta description, single H1 in page).
-- `src/components/mira/MiraChat.tsx` — main chat container: header, messages, input, model state, send logic.
-- `src/components/mira/ChatMessage.tsx` — message bubble (user vs Mira styling).
-- `src/components/mira/ModelSelect.tsx` — header dropdown (shadcn `Select`).
-- `src/lib/mira/system-prompt.ts` — exports the full Mira system prompt string verbatim.
-- `src/lib/mira/client.ts` — builds the `openai` client (browser mode) and a `sendChat({ model, messages })` helper.
-- `src/styles.css` — add a couple of soft, clinical-feeling semantic tokens (calm teal/blue accent, warm surface) in `oklch`. No hardcoded colors in components.
-
-Install: `openai` via `bun add openai`.
+1. **Expression Style (MI Fidelity)** — MIDT Agent
+   - Reflection-to-Question ratio (R:Q)
+   - % Complex Reflections (%CR)
+2. **Safety & Restraint** — Supervisor Agent
+   - Block/Revise rate on unsafe candidates
+   - Anti-sycophancy / prohibited-content interception count
+3. **Factual Groundedness** — MIDT Agent
+   - Ragas-style Faithfulness proxy
+   - Unsupported Sentence Ratio (USR)
+4. **Context Precision & Relevancy** — Parent Agent / shared retrieval
+   - Answer Relevancy
+   - Context Precision (mock RAG source match)
+5. **Efficiency & Latency** — Full orchestration
+   - Time-to-First-Token (TTFT)
+   - Average end-to-end response time (ms)
 
 ## UI
 
-- Header (sticky top): left = "Mira – Health Education Assistant" with a small subtitle "Health Education Assistant"; right = model `Select`.
-- Chat window: scrollable, auto-scroll to bottom on new messages, max-width centered column, generous spacing.
-  - Mira: no background bubble, just text on surface with a small avatar/initial.
-  - User: filled bubble using `--primary` / `--primary-foreground` aligned right.
-  - "Mira is typing…" shimmer while awaiting response.
-- Input: `Textarea` + send `Button`. Enter sends, Shift+Enter inserts newline. Disabled while sending. Auto-focus on mount and after each send.
-- Footer note (small, muted): "Conversations are not stored. Refreshing this page clears the chat."
+New tab `"radar"` added to the `TabsList` in `src/components/mira/ResearchView.tsx` (grid becomes 6 columns; on mobile it wraps). Contents:
 
-## Models (dropdown options, exact strings)
+- **Pentagon radar chart** — three overlapping polygons (MIDT / Supervisor / Parent) with a shared 0–100 scale and a legend. Built with `recharts` `RadarChart` (already in the shadcn `chart.tsx` stack; no new dependency).
+- **Metrics table** — rows per axis, columns: Axis · MIDT · Supervisor · Parent · Target. Each cell shows the normalized score plus the raw metric in muted text.
+- **Session summary strip** — turn count, avg latency, revision rate, fallback rate, RAG source hits.
+- Footer note: "Prototype metrics computed client-side from routing trace. Not a validated MITI/Ragas evaluator."
 
-```
-gpt-oss-120b
-nemotron-3-super-120b-a12b   ← default
-gpt-oss-20b
-llama-3.3-70b-instruct
-llama-3.1-nemotron-nano-8B-v1
-llama-3.1-8b-instruct
-llama-3.1-70b-instruct
-```
+## Metrics computation (client-side, no backend changes)
 
-## Chat logic
+New helper `src/lib/mira/performance-metrics.ts` that derives per-agent scores from data already available in `MiraChat.tsx`:
 
-State (all in `useState`, never persisted):
-- `model: string` (default `nemotron-3-super-120b-a12b`)
-- `messages: { role: "user" | "assistant"; content: string }[]`
-- `input: string`, `isSending: boolean`, `error: string | null`
+- Input: `traceEvents: TraceEvent[]`, `messages`, `simResults`, `sessionState`.
+- **MIDT axes**:
+  - R:Q — count reflections (heuristic: assistant sentences without `?` that echo parent content keywords) vs. questions (sentences ending in `?`).
+  - %CR — share of reflections longer than N tokens / containing a meaning-adding clause (heuristic).
+  - Faithfulness — % of assistant turns where `trace.retrievedSourceIds` is non-empty when the node's `allowedContent` requires info.
+  - USR — % assistant sentences containing numeric/medical claims not backed by a retrieved source id.
+- **Supervisor axes**:
+  - Restraint — (# REVISE + BLOCK verdicts + violations intercepted) / total turns.
+  - Anti-sycophancy — share of turns where prohibited content was flagged and removed after revision.
+- **Parent axes** (only when a simulated persona ran):
+  - Answer Relevancy — share of `simResults` where `actualStance` matches `expectedStance`.
+  - Context Precision — share where `actualPhase` matches `expectedPhase`.
+- **Efficiency axes**:
+  - TTFT proxy — min `latencyMs` across turns.
+  - Avg response — mean `latencyMs`.
+  - Normalized inversely: `score = clamp(100 - (latency / target) * 100)` against target 3000 ms.
 
-Initial `messages`:
-1. `{ role: "user", content: SYSTEM_PROMPT }` — sent as `user` role per the spec's OSS-compatibility note.
-2. `{ role: "assistant", content: "Hello! I'm glad you're here. What thoughts or questions do you have about the HPV vaccine for your child?" }`
+Each raw metric is mapped to 0–100 with documented target thresholds constant in the helper.
 
-UI rendering skips the first message (system prompt) so the user only sees Mira's greeting.
+## Wiring
 
-On send:
-1. Append `{ role: "user", content: input }`.
-2. Call `client.chat.completions.create({ model, messages: [...all messages including system prompt] })`.
-3. Append assistant reply from `response.choices[0].message`.
-4. On error (network/401/429/etc.) show an inline error banner with the message; keep the user's text so they can retry.
+- `ResearchView` gains no new required props — it already receives `traceEvents`, `simResults`, `sessionState`. Compute metrics inside the tab with `useMemo`.
+- Empty state when `traceEvents.length === 0`: show placeholder text and a flat pentagon at 0.
+- Radar chart colors reuse semantic tokens (`--primary`, `--warning`, `--success`) — no hardcoded hex.
 
-## API client
+## Files touched
 
-```ts
-// src/lib/mira/client.ts
-import OpenAI from "openai";
+- `src/components/mira/ResearchView.tsx` — new `Performance Radar` tab, radar chart + table components (kept inline to avoid new files unless the JSX exceeds ~150 lines, in which case split into `PerformanceRadarTab.tsx`).
+- `src/lib/mira/performance-metrics.ts` — new; pure functions + types for metric derivation and normalization.
+- `README.md` and `src/routes/docs.tsx` — brief mention of the new tab and the five axes.
 
-export const miraClient = new OpenAI({
-  apiKey: import.meta.env.VITE_AI_API_KEY ?? "missing-key",
-  baseURL: "https://api.ai.it.ufl.edu",
-  dangerouslyAllowBrowser: true,
-});
-```
-
-If `VITE_AI_API_KEY` is missing, show a dismissible banner: "API key not configured. Set `VITE_AI_API_KEY` in your hosting environment."
-
-## Privacy / security notes
-
-- No `localStorage`, `sessionStorage`, `IndexedDB`, cookies, or DB writes anywhere.
-- No analytics or logging of message content.
-- Refresh = full reset (intentional).
-- The key is exposed to the browser by design of this spec; I'll add a short comment in `client.ts` noting that for production PHI use this should be proxied through a server-side route.
-
-## Out of scope
-
-- Threads / conversation history UI.
-- Authentication, RAG backend, file uploads, image input.
-- AI Elements install (single-conversation, no-persistence, custom clinical styling — building lightweight primitives directly is appropriate here; will note this exception in the implementation).
+No backend, schema, or orchestrator changes.
