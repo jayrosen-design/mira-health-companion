@@ -408,6 +408,10 @@ function MethodBadge({ method }: { method: Endpoint["method"] }) {
   );
 }
 
+function endpointSlug(method: string, path: string) {
+  return `ep-${method.toLowerCase()}-${path.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
 function DocsPage() {
   return <DocsPageInner />;
 }
