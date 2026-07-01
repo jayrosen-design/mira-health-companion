@@ -437,11 +437,14 @@ function PerformanceRadarTab({
   const metrics = computeRadarMetrics(traceEvents, simResults);
   const data = RADAR_AXES.map((a) => ({
     axis: a.short,
-    MIDT: metrics.midt[a.key] ?? 0,
-    Supervisor: metrics.supervisor[a.key] ?? 0,
-    Parent: metrics.parent[a.key] ?? 0,
+    MIDT: metrics.midtFilled[a.key] ?? 0,
+    Supervisor: metrics.supervisorFilled[a.key] ?? 0,
+    Parent: metrics.parentFilled[a.key] ?? 0,
   }));
   const empty = traceEvents.length === 0;
+  const MIDT_COLOR = "#2563eb";
+  const SUP_COLOR = "#16a34a";
+  const PARENT_COLOR = "#f59e0b";
 
   return (
     <>
@@ -449,6 +452,9 @@ function PerformanceRadarTab({
         QUEST-style 5-axis evaluation of the MIDT, Supervisor, and simulated Parent agents. Scores
         are 0–100 heuristic proxies derived from the routing trace — not a validated MITI/Ragas
         evaluator.
+      </p>
+      <p className="text-[11px] text-muted-foreground">
+        Turn {metrics.raw.turnCount} · updates live as the conversation progresses.
       </p>
 
       <div className="rounded-xl border border-border bg-card p-3">
@@ -468,25 +474,31 @@ function PerformanceRadarTab({
               <Radar
                 name="MIDT"
                 dataKey="MIDT"
-                stroke="hsl(var(--primary))"
-                fill="hsl(var(--primary))"
+                stroke={MIDT_COLOR}
+                fill={MIDT_COLOR}
                 fillOpacity={0.25}
+                strokeWidth={2}
+                isAnimationActive
               />
               <Radar
                 name="Supervisor"
                 dataKey="Supervisor"
-                stroke="hsl(var(--success, 142 71% 45%))"
-                fill="hsl(var(--success, 142 71% 45%))"
-                fillOpacity={0.2}
+                stroke={SUP_COLOR}
+                fill={SUP_COLOR}
+                fillOpacity={0.25}
+                strokeWidth={2}
+                isAnimationActive
               />
               <Radar
                 name="Parent"
                 dataKey="Parent"
-                stroke="hsl(var(--warning, 38 92% 50%))"
-                fill="hsl(var(--warning, 38 92% 50%))"
-                fillOpacity={0.2}
+                stroke={PARENT_COLOR}
+                fill={PARENT_COLOR}
+                fillOpacity={0.25}
+                strokeWidth={2}
+                isAnimationActive
               />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
