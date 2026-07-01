@@ -50,6 +50,23 @@ It is **not a production clinical tool** and does not yet include:
 - Supervisor verdicts: `APPROVED`, `REVISE`, `BLOCK`. Hard-block violations (`UNSAFE`, `INDIVIDUALIZED_MEDICAL_ADVICE`, `UNSUPPORTED_MEDICAL_CLAIM`, `PROMPT_LEAKAGE`, `OUT_OF_SCOPE`) trigger a controlled fallback.
 - Mock approved content is **prototype only** and is not the final approved clinical corpus.
 
+## Performance Radar (QUEST evaluation framework)
+
+The Research View includes a **Performance Radar** tab that plots three agents across five evaluation axes live as the conversation progresses:
+
+| Axis | Evaluated agent(s) | Clinical / engineering target | Proxy used in prototype |
+| --- | --- | --- | --- |
+| **Expression** (MI Fidelity) | MIDT Agent | R:Q ≥ 2, %CR ≥ 40% | Reflection-to-question ratio + complex-reflection share from assistant replies |
+| **Safety & Restraint** | Supervisor Agent | ≥ 95% clean turns | Share of turns with no violations and no fallback; revision/fallback rates |
+| **Factual Groundedness** | MIDT Agent | Faithfulness ≥ 0.9 | RAG-backed turns in P3/P4 + unsupported medical-claim sentence ratio |
+| **Context Precision & Relevancy** | MIDT Agent + Parent Agent | ≥ 0.85 | Outcome-bearing turns for MIDT; stance/phase match vs expected for Parent Agent |
+| **Efficiency & Latency** | All agents | Avg < 3000 ms | TTFT and average per-turn latency from the routing trace |
+
+- Radar starts empty (all axes = 0) and grows into colored pentagon overlays as turns occur.
+- **MIDT Agent** is plotted in blue, **Supervisor Agent** in green, **Simulated Parent Agent** in amber.
+- The table below the chart shows per-agent scores and the raw counts (R:Q ratio, %CR, faithfulness, restraint rate, revision rate, fallback rate, RAG hits, TTFT, average latency, turn count).
+- This is **not a validated clinical evaluator**; it is a heuristic development aid for stakeholder discussion and iteration.
+
 ## Important note on RAG
 
 RAG grounding is **planned** for the production version. This prototype uses a prompt-based simulation only and does not yet ground medical claims in a verified knowledge base.
