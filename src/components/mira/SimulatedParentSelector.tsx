@@ -1,4 +1,4 @@
-import { CheckCircle2, HelpCircle, ShieldAlert, X, FlaskConical, Circle } from "lucide-react";
+import { CheckCircle2, X, FlaskConical } from "lucide-react";
 import {
   SIMULATED_PARENT_SCENARIOS,
   type SimulatedParentType,
@@ -8,12 +8,6 @@ interface SimulatedParentSelectorProps {
   value: SimulatedParentType | null;
   onChange: (value: SimulatedParentType | null) => void;
 }
-
-const PERSONA_ICONS: Record<SimulatedParentType, React.ReactNode> = {
-  willing: <CheckCircle2 className="h-4 w-4" />,
-  ambivalent: <HelpCircle className="h-4 w-4" />,
-  opposed: <ShieldAlert className="h-4 w-4" />,
-};
 
 export function SimulatedParentSelector({ value, onChange }: SimulatedParentSelectorProps) {
   const order: SimulatedParentType[] = ["willing", "ambivalent", "opposed"];
@@ -41,7 +35,7 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground hover:bg-secondary"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-xs font-medium text-primary hover:bg-primary/20"
           >
             <X className="h-3 w-3" /> Clear selection
           </button>
@@ -60,7 +54,7 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
               aria-label={`${s.label} — ${s.description}`}
               onClick={() => onChange(selected ? null : id)}
               className={[
-                "group flex h-full min-h-[4.5rem] flex-col gap-2 rounded-xl border p-4 text-left transition-colors",
+                "group flex h-full min-h-[4.5rem] flex-col gap-1 rounded-xl border p-4 text-left transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 selected
                   ? "border-primary bg-card ring-1 ring-primary"
@@ -77,30 +71,10 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
                   ].join(" ")}
                   aria-hidden="true"
                 >
-                  {selected ? (
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                  ) : (
-                    <Circle className="h-2 w-2 text-muted-foreground/40 group-hover:text-primary/40" />
-                  )}
+                  <CheckCircle2 className="h-3.5 w-3.5" />
                 </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                      <span
-                        className={`flex h-6 w-6 items-center justify-center rounded-full ${
-                          selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-                        }`}
-                      >
-                        {PERSONA_ICONS[id]}
-                      </span>
-                      {s.label}
-                    </span>
-                    {selected && (
-                      <span className="rounded-full bg-accent/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-                        Selected
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-sm font-medium text-foreground">{s.label}</span>
                   <p className="text-xs leading-relaxed text-muted-foreground">{s.description}</p>
                 </div>
               </div>
