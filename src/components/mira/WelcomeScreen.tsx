@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ArrowRight, HeartPulse, Info, Lock, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./StepIndicator";
@@ -19,8 +18,6 @@ export function WelcomeScreen({
   simulatedPersona,
   onSimulatedPersonaChange,
 }: WelcomeScreenProps) {
-  const [showLearn, setShowLearn] = useState(false);
-
   const startLabel = simulatedPersona
     ? `Run ${SIMULATED_PARENT_SCENARIOS[simulatedPersona].id} parent simulation`
     : "Start conversation";
@@ -43,79 +40,54 @@ export function WelcomeScreen({
           <StepIndicator current={1} />
         </header>
 
-        <section className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Talk through questions about the HPV vaccine
-          </h1>
-          <p className="mt-3 text-base text-muted-foreground">
-            MiraChat is a prototype of a text-based digital twin designed to support parents as
-            they think through HPV vaccination for their child. The conversation uses motivational
-            interviewing principles: listening, reflecting, supporting autonomy, and sharing
-            information with permission.
-          </p>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <section className="p-6 sm:p-8">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Talk through questions about the HPV vaccine
+            </h1>
+            <p className="mt-3 text-base text-muted-foreground">
+              MiraChat is a prototype of a text-based digital twin designed to support parents as
+              they think through HPV vaccination for their child. The conversation uses motivational
+              interviewing principles: listening, reflecting, supporting autonomy, and sharing
+              information with permission.
+            </p>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <InfoCard
-              icon={<Lock className="h-4 w-4" />}
-              title="Private prototype"
-              body="Do not enter names, dates of birth, medical record numbers, or other personal identifiers."
-            />
-            <InfoCard
-              icon={<Info className="h-4 w-4" />}
-              title="AI-supported conversation"
-              body="You are interacting with an AI prototype, not a human clinician."
-            />
-            <InfoCard
-              icon={<Stethoscope className="h-4 w-4" />}
-              title="Educational support"
-              body="This tool does not diagnose, prescribe, or replace your child's healthcare provider."
-            />
-          </div>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <InfoCard
+                icon={<Lock className="h-4 w-4" />}
+                title="Private prototype"
+                body="Do not enter names, dates of birth, medical record numbers, or other personal identifiers."
+              />
+              <InfoCard
+                icon={<Info className="h-4 w-4" />}
+                title="AI-supported conversation"
+                body="You are interacting with an AI prototype, not a human clinician."
+              />
+              <InfoCard
+                icon={<Stethoscope className="h-4 w-4" />}
+                title="Educational support"
+                body="This tool does not diagnose, prescribe, or replace your child's healthcare provider."
+              />
+            </div>
+          </section>
 
-          <div className="mt-6">
-            <Button
-              variant="ghost"
-              size="lg"
-              onClick={() => setShowLearn((v) => !v)}
-              className="text-foreground"
-            >
-              {showLearn ? "Hide details" : "View Prototype Notes"}
-            </Button>
-          </div>
-
-          {showLearn && (
-            <div className="mt-5 rounded-xl border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-foreground">
-              <p>
-                This is a visual and functional prototype for stakeholder discussion as part of the
-                Digital Twin MI and HPV pilot. It simulates a text-based motivational interviewing
-                conversation about HPV vaccination. It is <strong>not</strong> the final clinical
-                system and does not yet include the approved RAG knowledge base, trained project
-                model, study authentication, survey storage, or production data handling.
-              </p>
-              <p className="mt-2 text-muted-foreground">
-                Designed for parents or caregivers of 9- to 12-year-old children. This prototype is
-                not collecting real study data.
+          <section className="border-t border-border p-6 sm:p-8">
+            <SimulatedParentSelector
+              value={simulatedPersona}
+              onChange={onSimulatedPersonaChange}
+            />
+            <div className="mt-6">
+              <Button size="lg" onClick={() => onStart()} className="gap-2 capitalize">
+                {startLabel} <ArrowRight className="h-4 w-4" />
+              </Button>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {simulatedPersona
+                  ? "MiraChat will run the selected parent scenario automatically."
+                  : "Leave all options unselected to type your own responses."}
               </p>
             </div>
-          )}
-        </section>
-
-        <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <SimulatedParentSelector
-            value={simulatedPersona}
-            onChange={onSimulatedPersonaChange}
-          />
-          <div className="mt-6">
-            <Button size="lg" onClick={() => onStart()} className="gap-2 capitalize">
-              {startLabel} <ArrowRight className="h-4 w-4" />
-            </Button>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {simulatedPersona
-                ? "MiraChat will run the selected parent scenario automatically."
-                : "Leave all options unselected to type your own responses."}
-            </p>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );
