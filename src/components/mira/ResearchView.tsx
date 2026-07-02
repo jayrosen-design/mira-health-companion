@@ -455,8 +455,8 @@ function RadarAxisLabels(props: {
           const r = (radiusNum * v) / 100;
           const x = cxNum + r * Math.cos(angle);
           const y = cyNum - r * Math.sin(angle);
-          // nudge labels slightly outward so they sit on the grid lines
-          const offset = 4;
+          // nudge labels inward so they sit inside the grid lines and away from axis names
+          const offset = -5;
           const ox = x + offset * Math.cos(angle);
           const oy = y - offset * Math.sin(angle);
           return (
