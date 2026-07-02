@@ -465,7 +465,7 @@ function PerformanceRadarTab({
               <PolarGrid gridType="polygon" stroke="var(--border)" radialLines />
               <PolarAngleAxis
                 dataKey="axis"
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               />
               <PolarRadiusAxis
                 angle={90}
