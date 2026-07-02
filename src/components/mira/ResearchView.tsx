@@ -29,6 +29,7 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
   Legend,
+  Customized,
 } from "recharts";
 import {
   RADAR_AXES,
@@ -427,6 +428,55 @@ function Tag({
   );
 }
 
+function RadarAxisLabels(props: {
+  cx?: number | string;
+  cy?: number | string;
+  width?: number;
+  height?: number;
+  outerRadius?: number | string;
+}) {
+  const { cx, cy, width = 0, height = 0, outerRadius } = props;
+
+  const cxNum = typeof cx === "number" ? cx : width / 2;
+  const cyNum = typeof cy === "number" ? cy : height / 2;
+  const radiusNum =
+    typeof outerRadius === "number"
+      ? outerRadius
+      : (Math.min(width, height) / 2) * (parseFloat(String(outerRadius)) / 100);
+
+  const values = [20, 40, 60, 80, 100];
+  const axisCount = RADAR_AXES.length;
+
+  return (
+    <g>
+      {RADAR_AXES.map((axis, i) => {
+        const angle = Math.PI / 2 - (i * 2 * Math.PI) / axisCount;
+        return values.map((v) => {
+          const r = (radiusNum * v) / 100;
+          const x = cxNum + r * Math.cos(angle);
+          const y = cyNum - r * Math.sin(angle);
+          // nudge labels slightly outward so they sit on the grid lines
+          const offset = 4;
+          const ox = x + offset * Math.cos(angle);
+          const oy = y - offset * Math.sin(angle);
+          return (
+            <text
+              key={`${axis.key}-${v}`}
+              x={ox}
+              y={oy}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="text-[9px] fill-muted-foreground"
+            >
+              {v}
+            </text>
+          );
+        });
+      })}
+    </g>
+  );
+}
+
 function PerformanceRadarTab({
   traceEvents,
   simResults,
@@ -460,17 +510,19 @@ function PerformanceRadarTab({
       <div className="rounded-xl border border-border bg-card p-3">
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={data} outerRadius="75%">
-              <PolarGrid stroke="hsl(var(--border))" />
+            <RadarChart data={data} outerRadius="65%">
+              <PolarGrid gridType="polygon" stroke="hsl(var(--border))" />
               <PolarAngleAxis
                 dataKey="axis"
                 tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               />
               <PolarRadiusAxis
-                angle={90}
                 domain={[0, 100]}
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                tickCount={6}
+                tick={false}
+                axisLine={false}
               />
+              <Customized component={RadarAxisLabels} />
               <Radar
                 name="MIDT"
                 dataKey="MIDT"
