@@ -29,7 +29,7 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
   Legend,
-  Customized,
+  Tooltip,
 } from "recharts";
 import {
   RADAR_AXES,
@@ -508,21 +508,21 @@ function PerformanceRadarTab({
       </p>
 
       <div className="rounded-xl border border-border bg-card p-3">
-        <div className="h-72 w-full">
+        <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={data} outerRadius="65%">
-              <PolarGrid gridType="polygon" stroke="hsl(var(--border))" />
+            <RadarChart data={data} outerRadius="72%">
+              <PolarGrid gridType="polygon" stroke="var(--border)" radialLines />
               <PolarAngleAxis
                 dataKey="axis"
                 tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
               />
               <PolarRadiusAxis
+                angle={90}
                 domain={[0, 100]}
                 tickCount={6}
-                tick={false}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
                 axisLine={false}
               />
-              <Customized component={RadarAxisLabels} />
               <Radar
                 name="MIDT"
                 dataKey="MIDT"
@@ -549,6 +549,18 @@ function PerformanceRadarTab({
                 fillOpacity={0.25}
                 strokeWidth={2}
                 isAnimationActive
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 6,
+                  fontSize: 12,
+                }}
+                formatter={(value: number | string, name: string) => [
+                  `${Math.round(Number(value))}`,
+                  name,
+                ]}
               />
               <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
             </RadarChart>
