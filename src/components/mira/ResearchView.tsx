@@ -428,55 +428,6 @@ function Tag({
   );
 }
 
-function RadarAxisLabels(props: {
-  cx?: number | string;
-  cy?: number | string;
-  width?: number;
-  height?: number;
-  outerRadius?: number | string;
-}) {
-  const { cx, cy, width = 0, height = 0, outerRadius } = props;
-
-  const cxNum = typeof cx === "number" ? cx : width / 2;
-  const cyNum = typeof cy === "number" ? cy : height / 2;
-  const radiusNum =
-    typeof outerRadius === "number"
-      ? outerRadius
-      : (Math.min(width, height) / 2) * (parseFloat(String(outerRadius)) / 100);
-
-  const values = [20, 40, 60, 80];
-  const axisCount = RADAR_AXES.length;
-
-  return (
-    <g>
-      {RADAR_AXES.map((axis, i) => {
-        const angle = Math.PI / 2 - (i * 2 * Math.PI) / axisCount;
-        return values.map((v) => {
-          const r = (radiusNum * v) / 100;
-          const x = cxNum + r * Math.cos(angle);
-          const y = cyNum - r * Math.sin(angle);
-          // nudge labels inward so they sit inside the grid lines and away from axis names
-          const offset = -6;
-          const ox = x + offset * Math.cos(angle);
-          const oy = y - offset * Math.sin(angle);
-          return (
-            <text
-              key={`${axis.key}-${v}`}
-              x={ox}
-              y={oy}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              className="text-[9px] fill-muted-foreground"
-            >
-              {v}
-            </text>
-          );
-        });
-      })}
-    </g>
-  );
-}
-
 function PerformanceRadarTab({
   traceEvents,
   simResults,
