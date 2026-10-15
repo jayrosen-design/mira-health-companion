@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   } });
   const setTheme = (next: ColorScheme) => {
     // Router replacement uses history.replaceState and keeps its location in sync.
-    void router.navigate({ search: (previous) => ({ ...previous, theme: next }), replace: true });
+    void router.navigate({ to: ".", search: (previous) => ({ ...previous, theme: next }), replace: true });
   };
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 }
