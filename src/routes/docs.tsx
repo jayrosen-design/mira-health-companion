@@ -403,14 +403,14 @@ const endpointGroups: { group: string; endpoints: Endpoint[] }[] = [
 
 function MethodBadge({ method }: { method: Endpoint["method"] }) {
   const colors: Record<Endpoint["method"], string> = {
-    GET: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
-    POST: "bg-sky-500/10 text-sky-700 border-sky-500/30",
-    PATCH: "bg-amber-500/10 text-amber-700 border-amber-500/30",
-    DELETE: "bg-rose-500/10 text-rose-700 border-rose-500/30",
+    GET: "bg-meta-sage text-meta-sage-foreground border-transparent",
+    POST: "bg-meta-sky text-meta-sky-foreground border-transparent",
+    PATCH: "bg-meta-amber text-meta-amber-foreground border-transparent",
+    DELETE: "bg-meta-rose text-meta-rose-foreground border-transparent",
   };
   return (
     <span
-      className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase ${colors[method]}`}
+      className={`inline-flex items-center rounded-full border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase ${colors[method]}`}
     >
       {method}
     </span>
@@ -467,7 +467,7 @@ const TOC_GROUPS: { label: string; items: { id: string; label: string }[] }[] = 
 function DocsSidebar() {
   const [endpointsOpen, setEndpointsOpen] = useState(true);
   return (
-    <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 overflow-y-auto rounded-2xl border border-border bg-card/60 p-4 text-sm lg:block">
+    <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-soft text-sm lg:block">
       <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         On this page
       </div>
@@ -539,15 +539,15 @@ function DocsSidebar() {
 
 function DocsPageInner() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-      <div className="border-b border-border bg-primary/95 text-primary-foreground">
+    <div className="min-h-screen bg-background">
+      <div className="border-b border-border bg-research-bar text-research-bar-foreground">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
           <span className="truncate font-medium uppercase tracking-wide">
             University research prototype · Not for clinical use
           </span>
           <Link
             to="/"
-            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
           >
             <ArrowLeft className="h-3 w-3" /> Back to chat
           </Link>
@@ -580,7 +580,7 @@ function DocsPageInner() {
           </p>
         </header>
 
-        <section className="rounded-2xl border border-warning/30 bg-warning/5 p-4 text-sm text-foreground">
+        <section className="rounded-2xl border border-warning/15 bg-safety p-4 text-sm text-foreground">
           <div className="flex items-start gap-2">
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground" />
             <p>
@@ -696,7 +696,7 @@ function DocsPageInner() {
             is intended as a development aid and planning artifact; scores are heuristic proxies, not
             validated clinical metrics.
           </p>
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
             <table className="w-full text-left text-sm">
               <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <tr>
@@ -790,7 +790,7 @@ function DocsPageInner() {
             the routing engine recomputes them each turn. In production this object must be
             persisted server-side and keyed by session, not sent from the browser.
           </p>
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
             <table className="w-full text-left text-sm">
               <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <tr>
@@ -904,7 +904,7 @@ function DocsPageInner() {
             through the live orchestrator. They are the primary regression harness for routing
             and supervisor behavior.
           </p>
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
             <table className="w-full text-left text-sm">
               <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <tr>
@@ -977,7 +977,7 @@ SIMULATION_MAX_TURNS              = 12`}
             Research View → Sim Parent renders a per-turn results table comparing expected vs.
             actual routing:
           </p>
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
             <table className="w-full text-left text-sm">
               <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <tr>
@@ -1044,7 +1044,7 @@ SIMULATION_MAX_TURNS              = 12`}
             production build requires.
           </p>
           <MermaidDiagram chart={prodBoundaryChart} />
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
             <table className="w-full text-left text-sm">
               <thead className="bg-secondary/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <tr>
@@ -1110,7 +1110,7 @@ SIMULATION_MAX_TURNS              = 12`}
             <h2 className="text-xl font-semibold tracking-tight">API endpoints</h2>
           </div>
           {endpointGroups.map((group) => (
-            <div key={group.group} className="overflow-hidden rounded-2xl border border-border bg-card">
+            <div key={group.group} className="overflow-x-auto rounded-2xl border border-border/60 bg-card shadow-soft">
               <div className="border-b border-border bg-secondary/50 px-4 py-2 text-sm font-semibold">
                 {group.group}
               </div>
@@ -1123,7 +1123,7 @@ SIMULATION_MAX_TURNS              = 12`}
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <MethodBadge method={ep.method} />
-                      <code className="font-mono text-sm font-medium text-foreground">
+                      <code className="break-all font-mono text-sm font-medium text-foreground">
                         {ep.path}
                       </code>
                       <span className="ml-auto text-[11px] uppercase tracking-wide text-muted-foreground">

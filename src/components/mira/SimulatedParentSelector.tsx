@@ -14,12 +14,12 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
   return (
     <section
       aria-label="Optional simulated parent test"
-      className="rounded-2xl border border-border bg-accent/5 p-6 shadow-sm"
+      className="rounded-2xl border border-dashed border-input bg-muted/30 p-4 sm:p-6"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full border border-accent/50 bg-accent/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full border border-warning/20 bg-meta-amber px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-meta-amber-foreground">
               <FlaskConical className="h-3 w-3" /> Synthetic test mode
             </span>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -35,7 +35,7 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-xs font-medium text-primary hover:bg-primary/20"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-1 text-xs font-medium text-primary hover:bg-primary/20"
           >
             <X className="h-3 w-3" /> Clear selection
           </button>
@@ -57,8 +57,8 @@ export function SimulatedParentSelector({ value, onChange }: SimulatedParentSele
                 "group flex h-full min-h-[4.5rem] flex-col gap-1 rounded-xl border p-4 text-left transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 selected
-                  ? "border-primary bg-card ring-1 ring-primary"
-                  : "border-border bg-card hover:border-primary/40 hover:bg-accent/10",
+                  ? "border-primary bg-secondary ring-1 ring-primary"
+                  : "border-border bg-card hover:border-primary/40 hover:bg-secondary/60",
               ].join(" ")}
             >
               <div className="flex items-start gap-3">

@@ -9,7 +9,7 @@ export function CompletionPrompt({
   onKeepChatting: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-accent/30 bg-accent/10 p-4 sm:p-5">
+    <div className="rounded-2xl border border-secondary bg-secondary/70 p-4 sm:p-5">
       <h3 className="text-sm font-semibold text-foreground">
         Would you like to wrap up and complete a short feedback survey?
       </h3>

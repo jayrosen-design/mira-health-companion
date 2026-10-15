@@ -92,7 +92,7 @@ export function SettingsSidebar({
         </SheetHeader>
 
         <Tabs defaultValue="model" className="flex flex-col gap-3">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl sm:grid-cols-6">
             <TabsTrigger value="model">Model</TabsTrigger>
             <TabsTrigger value="foundation">MI</TabsTrigger>
             <TabsTrigger value="phase">Phases</TabsTrigger>
@@ -104,7 +104,7 @@ export function SettingsSidebar({
           <TabsContent value="model" className="flex flex-col gap-3">
             <Label htmlFor="model-select">Model</Label>
             <ModelSelect value={model} onChange={onModelChange} disabled={disabled} />
-            <div className="mt-2 flex items-center justify-between rounded-lg border border-border bg-card p-3">
+            <div className="mt-2 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
               <div className="text-sm">
                 <div className="font-medium">Show developer routing inspector</div>
                 <p className="text-xs text-muted-foreground">
@@ -116,7 +116,7 @@ export function SettingsSidebar({
                 onCheckedChange={(v) => onDeveloperModeChange?.(v)}
               />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
               <div className="text-sm">
                 <div className="font-medium">Show meta chips</div>
                 <p className="text-xs text-muted-foreground">
@@ -128,7 +128,7 @@ export function SettingsSidebar({
                 onCheckedChange={(v) => onShowMetaChange?.(v)}
               />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-border bg-card p-3">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
               <div className="text-sm">
                 <div className="font-medium">Show simulated parent player</div>
                 <p className="text-xs text-muted-foreground">
@@ -167,7 +167,7 @@ export function SettingsSidebar({
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{draft.length.toLocaleString()} characters</span>
-              {dirty && <span className="text-amber-600 dark:text-amber-400">Unsaved</span>}
+              {dirty && <span className="text-warning">Unsaved</span>}
             </div>
             <Label className="mt-2">Shared MI foundation (read-only preview)</Label>
             <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-md border border-border bg-secondary/30 p-2 text-[11px] leading-relaxed">
@@ -182,7 +182,7 @@ export function SettingsSidebar({
             </p>
             <div className="flex flex-col gap-2">
               {Object.values(ROUTING_NODES).map((n) => (
-                <details key={n.nodeId} className="rounded-md border border-border bg-card p-2">
+                <details key={n.nodeId} className="rounded-xl border border-border bg-card p-3">
                   <summary className="cursor-pointer text-sm font-medium">
                     {n.nodeId} · {n.title}
                   </summary>
@@ -212,7 +212,7 @@ export function SettingsSidebar({
           </TabsContent>
 
           <TabsContent value="routing" className="flex flex-col gap-2 text-sm">
-            <div className="rounded-md border border-border bg-card p-3 text-xs">
+            <div className="rounded-md border border-border/60 bg-card p-3 shadow-soft text-xs">
               <div>
                 Routing version: <span className="font-mono">{ROUTING_VERSION}</span>
               </div>
@@ -235,7 +235,7 @@ export function SettingsSidebar({
           </TabsContent>
 
           <TabsContent value="simparent" className="flex flex-col gap-2 text-xs">
-            <div className="rounded-md border border-border bg-card p-3 text-xs">
+            <div className="rounded-md border border-border/60 bg-card p-3 shadow-soft text-xs">
               <div>Scenario version: <span className="font-mono">{SIMULATED_PARENT_VERSION}</span></div>
               <div>Default response delay: <span className="font-mono">{SIMULATED_PARENT_DEFAULT_DELAY_MS} ms</span></div>
               <div>Autoplay: <span className="font-mono">enabled</span></div>
@@ -248,7 +248,7 @@ export function SettingsSidebar({
             </p>
             <div className="flex flex-col gap-2">
               {Object.values(SIMULATED_PARENT_SCENARIOS).map((s) => (
-                <details key={s.id} className="rounded-md border border-border bg-card p-2">
+                <details key={s.id} className="rounded-xl border border-border bg-card p-3">
                   <summary className="cursor-pointer text-sm font-medium">
                     {s.label} <span className="text-muted-foreground">· {s.turns.length} turns</span>
                   </summary>

@@ -725,7 +725,7 @@ export function MiraChat() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-gradient-to-b from-background via-background to-secondary/30">
+    <div className="flex h-[100dvh] flex-col bg-background">
       <TopBanner
         onHome={() => setPhase("welcome")}
         onSignOut={signOut}
@@ -744,8 +744,8 @@ export function MiraChat() {
               </Button>
               <div className="flex items-center gap-2">
                 <MiraAvatar size="md" />
-                <h1 className="text-base font-semibold text-foreground">Mira</h1>
-                <span className="rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-[10px] text-muted-foreground">AI assistant</span>
+                <h1 className="font-display text-xl font-medium text-foreground">Mira</h1>
+                <span className="rounded-full border border-transparent bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">AI assistant</span>
               </div>
             </div>
             <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
@@ -803,7 +803,7 @@ export function MiraChat() {
 
       <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="hidden items-start gap-2 border-b border-primary/20 bg-primary/5 px-3 py-2 text-xs leading-relaxed text-foreground sm:flex sm:rounded-xl sm:border sm:p-3">
+          <div className="hidden items-start gap-2 border-b border-secondary bg-secondary/70 px-3 py-2 text-xs leading-relaxed text-foreground sm:flex sm:rounded-xl sm:border sm:p-3">
             <Stethoscope className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <p>
               You are chatting with an AI prototype designed to use motivational interviewing. It
@@ -813,7 +813,7 @@ export function MiraChat() {
 
           <div
             ref={scrollRef}
-            className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-card/60 sm:p-5 sm:shadow-sm"
+            className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto bg-background px-3 py-4 sm:mt-4 sm:rounded-2xl sm:border sm:border-border sm:bg-background sm:p-5 sm:shadow-soft"
           >
             {visible.map((m, i) => {
               const meta = messageMeta.get(i) ?? null;
@@ -843,7 +843,7 @@ export function MiraChat() {
             {isSending && (
               <div className="flex items-center gap-3" aria-live="polite" aria-label="Mira is typing…">
                 <MiraAvatar size="sm" />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 rounded-2xl rounded-tl-md border border-border bg-card px-4 py-3 text-sm text-muted-foreground shadow-soft">
                   <span>Mira is typing…</span>
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.3s]" />
@@ -871,7 +871,7 @@ export function MiraChat() {
             {/* Concern chips removed per design — keep the chat surface uncluttered. */}
           </div>
 
-          <div className="shrink-0 border-t border-border bg-card p-2 sm:mt-3 sm:rounded-2xl sm:border sm:p-3 sm:shadow-md">
+          <div className="shrink-0 rounded-2xl border border-border/60 bg-card p-2 shadow-soft sm:mt-3 sm:p-3">
             {simulatedPersona && simActive && showSimControls && (
               <SimulationControls
                 status={simStatus}
@@ -914,7 +914,7 @@ export function MiraChat() {
                 disabled={inputDisabled || !input.trim()}
                 size="icon"
                 aria-label="Send message"
-                className="h-10 w-10"
+                className="h-11 w-11 shrink-0 rounded-full"
               >
                 <Send className="h-4 w-4" />
               </Button>
@@ -925,7 +925,7 @@ export function MiraChat() {
             <div className="hidden flex-wrap gap-2 px-3 pt-2 pb-3 sm:flex sm:px-0">
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 className="gap-1.5"
                 onClick={() => setShowSummary((v) => !v)}
               >
@@ -934,7 +934,7 @@ export function MiraChat() {
               </Button>
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 className="gap-1.5"
                 onClick={() => setPhase("survey")}
               >
@@ -949,7 +949,7 @@ export function MiraChat() {
             </div>
           )}
 
-          <footer className="hidden items-start gap-2 rounded-xl border border-warning/30 bg-warning/5 p-3 text-[11px] leading-relaxed text-warning-foreground sm:flex">
+          <footer className="hidden items-start gap-2 rounded-xl border border-warning/15 bg-safety p-3 text-[11px] leading-relaxed text-warning-foreground sm:flex">
             <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <p>
               Do not enter personal health identifiers. For medical advice, talk with your child's
@@ -961,8 +961,8 @@ export function MiraChat() {
 
         <aside className="hidden w-72 shrink-0 flex-col gap-4 lg:flex">
           <GoalsPanel />
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-            <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
+            <div className="flex items-center gap-2 font-display text-lg font-medium text-foreground">
               <FlaskConical className="h-4 w-4 text-accent-foreground" /> Prototype controls
             </div>
             <p className="mt-1 text-[11px] text-muted-foreground">
@@ -989,7 +989,7 @@ export function MiraChat() {
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+    <span className="rounded-full border border-transparent bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
       {children}
     </span>
   );
@@ -1015,7 +1015,7 @@ function TopBanner({
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   return (
-    <div className="shrink-0 border-b border-border bg-primary/95 text-primary-foreground">
+    <div className="shrink-0 border-b border-border bg-research-bar text-research-bar-foreground">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
           <span className="sm:hidden"><ParentVaccineTalkLogo /></span>
@@ -1030,35 +1030,35 @@ function TopBanner({
             <button
               type="button"
               onClick={onHome}
-              className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+              className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
             >
               <Home className="h-3 w-3" /> Welcome
             </button>
           )}
           <Link
             to="/docs"
-            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
           >
             <BookOpen className="h-3 w-3" /> API Docs
           </Link>
           <button
             type="button"
             onClick={onResearch}
-            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
           >
             Research View
           </button>
           <button
             type="button"
             onClick={onDev}
-            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
           >
             Developer Settings
           </button>
           <button
             type="button"
             onClick={onSignOut}
-            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-white/10"
+            className="rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
           >
             Sign out
           </button>
@@ -1070,7 +1070,7 @@ function TopBanner({
             <button
               type="button"
               aria-label="Open menu"
-              className="inline-flex h-7 w-7 items-center justify-center rounded hover:bg-white/10 sm:hidden"
+              className="inline-flex h-7 w-7 items-center justify-center rounded hover:bg-research-bar-foreground/10 sm:hidden"
             >
               <Menu className="h-4 w-4" />
             </button>

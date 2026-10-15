@@ -38,10 +38,10 @@ export function PasswordGate({ onAuthenticated }: PasswordGateProps) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-secondary/40 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-md rounded-2xl border border-border bg-card p-7 shadow-sm"
+        className="w-full max-w-md rounded-2xl border border-border bg-card p-7 shadow-soft"
       >
         <div className="mb-5 flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">

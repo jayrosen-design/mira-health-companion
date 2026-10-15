@@ -24,7 +24,7 @@ export function WelcomeScreen({
     : "Start conversation";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/40 px-4 py-8">
+    <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -39,12 +39,12 @@ export function WelcomeScreen({
           <StepIndicator current={1} />
         </header>
 
-        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
           <section className="p-6 sm:p-8">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            <h1 className="text-2xl font-semibold font-display leading-tight text-foreground sm:text-3xl">
               Talk through questions about the HPV vaccine
             </h1>
-            <p className="mt-3 text-base text-muted-foreground">
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
               Mira is an AI assistant from Parent Vaccine Talk, designed to support parents as
               they think through HPV vaccination for their child. The conversation uses motivational
               interviewing principles: listening, reflecting, supporting autonomy, and sharing
@@ -103,9 +103,9 @@ function InfoCard({
   body: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-secondary/40 p-4">
+    <div className="rounded-xl border border-secondary bg-secondary/70 p-4">
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
           {icon}
         </span>
         {title}
