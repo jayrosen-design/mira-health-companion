@@ -6,6 +6,7 @@ import {
   SIMULATED_PARENT_SCENARIOS,
   type SimulatedParentType,
 } from "@/lib/mira/simulated-parent-scenarios";
+import { MIRA_DEFAULT_MODEL } from "@/lib/mira/system-prompt";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Body = {
@@ -117,17 +118,29 @@ export const Route = createFileRoute("/api/simulate-parent")({
           },
         ];
 
-        try {
-          const upstream = await fetch("https://api.ai.it.ufl.edu/chat/completions", {
+        const callParent = (m: string) =>
+          fetch("https://api.ai.it.ufl.edu/chat/completions", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${apiKey}`,
             },
-            body: JSON.stringify({ model, messages, temperature: 0.9 }),
+            body: JSON.stringify({ model: m, messages, temperature: 0.9 }),
             signal: AbortSignal.timeout(20_000),
           });
-          const text = await upstream.text();
+
+        try {
+          let upstream = await callParent(model);
+          let text = await upstream.text();
+          if (
+            !upstream.ok &&
+            model !== MIRA_DEFAULT_MODEL &&
+            /team_model_access_denied|not allowed to access model/i.test(text)
+          ) {
+            // The gateway no longer allows this model; retry with the default.
+            upstream = await callParent(MIRA_DEFAULT_MODEL);
+            text = await upstream.text();
+          }
           if (!upstream.ok) {
             return Response.json(
               { error: `Upstream ${upstream.status}: ${text.slice(0, 500)}` },

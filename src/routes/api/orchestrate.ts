@@ -2,6 +2,7 @@ import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { isAuthorized } from "@/lib/mira/auth.server";
 import { checkRateLimit, getClientKey } from "@/lib/mira/rate-limit.server";
+import { MIRA_DEFAULT_MODEL } from "@/lib/mira/system-prompt";
 import { decideRouting } from "@/lib/mira/mi-routing-engine";
 import {
   PROMPT_VERSION,
@@ -24,7 +25,7 @@ import { findMockSource } from "@/lib/mira/mock-approved-content";
 
 type UpstreamMessage = { role: "system" | "user" | "assistant"; content: string };
 
-async function callModel(
+async function callModelRaw(
   apiKey: string,
   model: string,
   messages: UpstreamMessage[],
@@ -41,6 +42,26 @@ async function callModel(
   if (!res.ok) throw new Error(`Upstream ${res.status}: ${text.slice(0, 300)}`);
   const data = JSON.parse(text);
   return (data?.choices?.[0]?.message?.content ?? "") as string;
+}
+
+async function callModel(
+  apiKey: string,
+  model: string,
+  messages: UpstreamMessage[],
+): Promise<string> {
+  try {
+    return await callModelRaw(apiKey, model, messages);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "";
+    if (
+      model !== MIRA_DEFAULT_MODEL &&
+      /team_model_access_denied|not allowed to access model/i.test(msg)
+    ) {
+      // The gateway no longer allows this model; retry with the default.
+      return await callModelRaw(apiKey, MIRA_DEFAULT_MODEL, messages);
+    }
+    throw e;
+  }
 }
 
 const KNOWN_VIOLATIONS: SupervisorViolation[] = [

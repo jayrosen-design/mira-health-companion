@@ -50,7 +50,6 @@ export const Route = createFileRoute("/api/chat")({
           return Response.json({ error: "model and messages are required" }, { status: 400 });
         }
 
-        try {
         const callChat = (model: string) =>
           fetch("https://api.ai.it.ufl.edu/chat/completions", {
             method: "POST",
