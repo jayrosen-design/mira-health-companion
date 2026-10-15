@@ -66,6 +66,11 @@
 }
 
 :root {
+  --identity-teal: oklch(0.62 0.09 185);
+  --identity-sage: oklch(0.77 0.07 150);
+  --identity-apricot: oklch(0.83 0.09 60);
+  --identity-monogram: oklch(1 0 0);
+  --identity-avatar-gradient: linear-gradient(135deg, var(--identity-teal), var(--identity-sage));
   --radius: 0.625rem;
   /* Healthcare prototype palette: very light blue background, deep blue + teal accents */
   --background: oklch(0.985 0.008 235);
@@ -151,3 +156,11 @@
     color: var(--color-foreground);
   }
 }
+
+.mira-avatar {
+  background: var(--identity-avatar-gradient);
+  color: var(--identity-monogram);
+  font-family: Georgia, "Times New Roman", serif;
+}
+.pvt-bubble-teal { fill: var(--identity-teal); }
+.pvt-bubble-apricot { fill: var(--identity-apricot); }

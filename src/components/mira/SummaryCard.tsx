@@ -4,7 +4,7 @@ export function SummaryCard({ topics }: { topics: string[] }) {
   return (
     <div className="rounded-2xl border border-border bg-secondary/40 p-4 sm:p-5">
       <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-        <FileText className="h-4 w-4 text-primary" /> Conversation Summary
+        <FileText className="h-4 w-4 text-primary" /> Conversation with Mira · Summary
         <span className="ml-auto rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
           Prototype
         </span>

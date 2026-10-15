@@ -5,18 +5,17 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "MiraChat – HPV Vaccine Conversation Prototype" },
-      {
-        name: "description",
-        content:
-          "A private, text-based motivational interviewing prototype to help parents of 9- to 12-year-olds think through HPV vaccination.",
-      },
-      { property: "og:title", content: "MiraChat – HPV Vaccine Conversation Prototype" },
-      {
-        property: "og:description",
-        content: "Parent-facing motivational interviewing prototype for the Digital Twin MI and HPV pilot.",
-      },
+      { title: "Chat with Mira · Parent Vaccine Talk" },
+      { name: "description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
+      { property: "og:title", content: "Chat with Mira · Parent Vaccine Talk" },
+      { property: "og:description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Chat with Mira · Parent Vaccine Talk" },
+      { name: "twitter:description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
+      { property: "og:url", content: "https://chat.parentvaccinetalk.org" },
     ],
+    links: [{ rel: "canonical", href: "https://chat.parentvaccinetalk.org" }],
   }),
 });
 

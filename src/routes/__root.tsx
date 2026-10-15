@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
@@ -32,7 +33,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
 
@@ -72,18 +73,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MiraChat – Digital Twin Conversation Prototype" },
-      { name: "description", content: "A secure prototype of a motivational interviewing digital twin for parents considering HPV vaccination for 9- to 12-year-old children." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "MiraChat – Digital Twin Conversation Prototype" },
-      { property: "og:description", content: "A secure prototype of a motivational interviewing digital twin for parents considering HPV vaccination for 9- to 12-year-old children." },
+      { title: "Chat with Mira · Parent Vaccine Talk" },
+      { name: "description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
+      { property: "og:title", content: "Chat with Mira · Parent Vaccine Talk" },
+      { property: "og:description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
+      { property: "og:site_name", content: "Parent Vaccine Talk" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "MiraChat – Digital Twin Conversation Prototype" },
-      { name: "twitter:description", content: "MI digital twin prototype for parents considering HPV vaccination." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/942d05e8-fa4c-422e-9eda-3d9b5334c1ba" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/942d05e8-fa4c-422e-9eda-3d9b5334c1ba" },
+      { name: "twitter:title", content: "Chat with Mira · Parent Vaccine Talk" },
+      { name: "twitter:description", content: "Talk through questions about the HPV vaccine with Mira, an AI assistant from Parent Vaccine Talk. University research prototype." },
     ],
     links: [
       {
