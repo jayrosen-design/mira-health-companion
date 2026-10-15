@@ -36,6 +36,24 @@
   --color-meta-rose: var(--meta-rose);
   --color-meta-rose-foreground: var(--meta-rose-foreground);
   --color-safety: var(--safety);
+  --color-heading: var(--heading);
+  --color-body-secondary: var(--body-secondary);
+  --color-rail: var(--rail);
+  --color-avatar-from: var(--avatar-from);
+  --color-avatar-to: var(--avatar-to);
+  --color-avatar-ring: var(--avatar-ring);
+  --color-logo-primary: var(--logo-primary);
+  --color-logo-accent: var(--logo-accent);
+  --color-callout: var(--callout);
+  --color-callout-foreground: var(--callout-foreground);
+  --color-user-bubble: var(--user-bubble);
+  --color-user-bubble-foreground: var(--user-bubble-foreground);
+  --color-safety-icon: var(--safety-icon);
+  --color-tile-icon-bg: var(--tile-icon-bg);
+  --color-tile-icon-foreground: var(--tile-icon-foreground);
+  --color-goal-check: var(--goal-check);
+  --color-chart-3-stroke: var(--chart-3-stroke);
+
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-bubble-corner: 0.375rem;
@@ -84,8 +102,25 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-:root {
+:root, [data-theme="warm"] {
   --radius: 1rem;
+  --heading: var(--foreground);
+  --body-secondary: var(--muted-foreground);
+  --rail: var(--border);
+  --avatar-from: var(--identity-teal);
+  --avatar-to: var(--identity-sage);
+  --avatar-ring: transparent;
+  --logo-primary: var(--identity-teal);
+  --logo-accent: var(--accent);
+  --callout: var(--secondary);
+  --callout-foreground: var(--foreground);
+  --user-bubble: var(--primary);
+  --user-bubble-foreground: var(--primary-foreground);
+  --safety-icon: var(--warning-foreground);
+  --tile-icon-bg: color-mix(in oklab, var(--primary) 10%, transparent);
+  --tile-icon-foreground: var(--primary);
+  --goal-check: var(--success);
+  --chart-3-stroke: var(--chart-3);
   --background: oklch(0.9771 0.0074 80.72);
   --foreground: oklch(0.2764 0.0169 222.09);
   --card: oklch(1.0000 0.0000 89.88);
@@ -205,18 +240,131 @@
 }
 
 .mira-avatar {
-  background: var(--identity-avatar-gradient);
+  background: linear-gradient(135deg, var(--avatar-from), var(--avatar-to));
+  box-shadow: inset 0 0 0 2px var(--avatar-ring);
   color: var(--identity-monogram);
   font-family: Georgia, "Times New Roman", serif;
 }
-.pvt-bubble-teal { fill: var(--identity-teal); }
-.pvt-bubble-apricot { fill: var(--identity-apricot); }
+.pvt-logo-primary { fill: var(--logo-primary); }
+.pvt-logo-accent { fill: var(--logo-accent); }
 
 @layer base {
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0; color: var(--heading); }
 }
 @utility shadow-soft { box-shadow: var(--shadow-soft); }
 @utility shadow-panel { box-shadow: var(--shadow-panel); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+[data-theme="ufhealth"] {
+  --background: oklch(0.966590 0.008637 264.5220);
+  --card: oklch(1.000000 0.000000 89.8756);
+  --popover: oklch(1.000000 0.000000 89.8756);
+  --heading: oklch(0.299574 0.079463 261.6205);
+  --foreground: oklch(0.345578 0.013938 226.3975);
+  --muted: oklch(0.947342 0.010847 256.6959);
+  --muted-foreground: oklch(0.483616 0.022381 248.2894);
+  --border: oklch(0.897013 0.017947 253.3480);
+  --input: oklch(0.897013 0.017947 253.3480);
+  --primary: oklch(0.441092 0.127973 250.9146);
+  --primary-foreground: oklch(1.000000 0.000000 89.8756);
+  --ring: oklch(0.441092 0.127973 250.9146);
+  --secondary: oklch(0.941510 0.017253 248.0111);
+  --secondary-foreground: oklch(0.357347 0.098660 252.5673);
+  --accent: oklch(0.692400 0.181245 46.2130);
+  --research-bar: oklch(0.299574 0.079463 261.6205);
+  --avatar-from: oklch(0.441092 0.127973 250.9146);
+  --avatar-to: oklch(0.614457 0.090051 241.8629);
+  --success: oklch(0.531430 0.094553 161.8608);
+  --warning: oklch(0.554191 0.116908 75.0084);
+  --destructive: oklch(0.501282 0.178318 28.7047);
+  --safety: oklch(0.982620 0.011941 67.6872);
+  --safety-icon: oklch(0.563479 0.150053 45.2630);
+  --chart-1: oklch(0.441092 0.127973 250.9146);
+  --chart-2: oklch(0.666371 0.082795 196.3720);
+  --chart-3: oklch(0.692400 0.181245 46.2130);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --accent-foreground: var(--secondary-foreground);
+  --logo-primary: var(--primary);
+  --logo-accent: var(--accent);
+  --callout: var(--secondary);
+  --callout-foreground: var(--secondary-foreground);
+  --success-foreground: var(--success);
+  --warning-foreground: var(--warning);
+  --destructive-foreground: var(--primary-foreground);
+  --meta-sky: var(--secondary);
+  --meta-sky-foreground: var(--secondary-foreground);
+  --meta-lavender: var(--secondary);
+  --meta-lavender-foreground: var(--secondary-foreground);
+  --meta-sage: color-mix(in oklab, var(--success) 10%, var(--card));
+  --meta-sage-foreground: var(--success);
+  --meta-amber: color-mix(in oklab, var(--warning) 10%, var(--card));
+  --meta-amber-foreground: var(--warning);
+  --meta-rose: color-mix(in oklab, var(--destructive) 10%, var(--card));
+  --meta-rose-foreground: var(--destructive);
+  --chart-4: var(--secondary-foreground);
+  --chart-5: var(--destructive);
+}
+
+[data-theme="sparc"] {
+  --background: oklch(0.975577 0.008617 264.5224);
+  --card: oklch(1.000000 0.000000 89.8756);
+  --popover: oklch(1.000000 0.000000 89.8756);
+  --heading: oklch(0.246660 0.044430 273.4187);
+  --foreground: oklch(0.246660 0.044430 273.4187);
+  --muted: oklch(0.937852 0.019575 260.1696);
+  --body-secondary: oklch(0.311561 0.039933 275.9003);
+  --muted-foreground: oklch(0.392533 0.048254 267.0905);
+  --border: oklch(0.874382 0.038666 264.3532);
+  --input: oklch(0.874382 0.038666 264.3532);
+  --rail: oklch(0.728496 0.070111 261.6048);
+  --primary: oklch(0.436505 0.170911 259.2062);
+  --primary-foreground: oklch(1.000000 0.000000 89.8756);
+  --ring: oklch(0.436505 0.170911 259.2062);
+  --secondary: oklch(0.937852 0.019575 260.1696);
+  --secondary-foreground: oklch(0.372686 0.146933 259.3450);
+  --accent: oklch(0.827651 0.143654 78.3100);
+  --research-bar: oklch(0.436505 0.170911 259.2062);
+  --avatar-from: oklch(0.436505 0.170911 259.2062);
+  --avatar-to: oklch(0.436505 0.170911 259.2062);
+  --avatar-ring: oklch(0.827651 0.143654 78.3100);
+  --success: oklch(0.514979 0.111541 156.4084);
+  --warning: oklch(0.554191 0.116908 75.0084);
+  --destructive: oklch(0.501282 0.178318 28.7047);
+  --safety: oklch(0.977814 0.023930 85.7871);
+  --safety-icon: oklch(0.554191 0.116908 75.0084);
+  --chart-1: oklch(0.436505 0.170911 259.2062);
+  --chart-2: oklch(0.728496 0.070111 261.6048);
+  --chart-3: oklch(0.827651 0.143654 78.3100);
+  --chart-3-stroke: oklch(0.679785 0.139176 75.5250);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --accent-foreground: var(--secondary-foreground);
+  --logo-primary: var(--primary);
+  --logo-accent: var(--accent);
+  --callout: var(--secondary);
+  --callout-foreground: var(--secondary-foreground);
+  --success-foreground: var(--success);
+  --warning-foreground: var(--warning);
+  --destructive-foreground: var(--primary-foreground);
+  --meta-sky: var(--secondary);
+  --meta-sky-foreground: var(--secondary-foreground);
+  --meta-lavender: var(--secondary);
+  --meta-lavender-foreground: var(--secondary-foreground);
+  --meta-sage: color-mix(in oklab, var(--success) 10%, var(--card));
+  --meta-sage-foreground: var(--success);
+  --meta-amber: color-mix(in oklab, var(--warning) 10%, var(--card));
+  --meta-amber-foreground: var(--warning);
+  --meta-rose: color-mix(in oklab, var(--destructive) 10%, var(--card));
+  --meta-rose-foreground: var(--destructive);
+  --chart-4: var(--secondary-foreground);
+  --chart-5: var(--destructive);
+  --tile-icon-bg: var(--accent);
+  --tile-icon-foreground: var(--secondary-foreground);
+  --goal-check: var(--accent);
+}
+
+/* Theme swatches inherit only their own palette, not document typography. */
+.scheme-swatch { color: var(--foreground); }

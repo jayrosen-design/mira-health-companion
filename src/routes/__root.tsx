@@ -6,10 +6,12 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  retainSearchParams,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { ThemeProvider, useColorScheme, isColorScheme } from "@/components/ThemeProvider";
 
 function NotFoundComponent() {
   return (
@@ -69,6 +71,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  validateSearch: (search: Record<string, unknown>): { theme?: "warm" | "ufhealth" | "sparc" } => ({ theme: isColorScheme(search.theme) ? search.theme : undefined }),
+  search: { middlewares: [retainSearchParams(["theme"])] },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -100,8 +104,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  return <ThemeProvider><ThemedDocument>{children}</ThemedDocument></ThemeProvider>;
+}
+
+function ThemedDocument({ children }: { children: React.ReactNode }) {
+  const { theme } = useColorScheme();
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <head>
         <HeadContent />
       </head>

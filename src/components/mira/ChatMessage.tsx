@@ -43,7 +43,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
           className={cn(
             "whitespace-pre-wrap break-words text-[15px] leading-relaxed",
             isUser
-              ? "rounded-2xl rounded-br-bubble-corner bg-primary px-4 py-3 text-primary-foreground shadow-soft"
+              ? "rounded-2xl rounded-br-bubble-corner bg-user-bubble px-4 py-3 text-user-bubble-foreground shadow-soft"
               : "rounded-2xl rounded-tl-bubble-corner border border-border bg-card px-4 py-3 text-card-foreground shadow-soft",
           )}
         >
@@ -63,7 +63,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
               <>
                 {meta?.state?.phase && (
                   <span
-                    className="inline-flex items-center rounded-full border border-transparent bg-meta-sky px-2 py-0.5 text-meta-sky-foreground"
+                    className="inline-flex items-center rounded-full border border-transparent bg-secondary px-2 py-0.5 text-secondary-foreground"
                     title={`Routing node: ${meta.state.nodeId}`}
                   >
                     {meta.state.phase} · {meta.state.nodeId}
@@ -111,7 +111,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
                 )}
                 {meta?.supervisor?.revisionRequested && (
                   <span
-                    className="inline-flex items-center rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-amber-700 dark:text-amber-300"
+                    className="inline-flex items-center rounded-full border border-warning/40 bg-meta-amber px-2 py-0.5 text-meta-amber-foreground"
                     title="Reply was revised after supervisor feedback"
                   >
                     revised
@@ -119,7 +119,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
                 )}
                 {meta?.supervisor?.fallbackUsed && (
                   <span
-                    className="inline-flex items-center rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-red-700 dark:text-red-300"
+                    className="inline-flex items-center rounded-full border border-destructive/40 bg-meta-rose px-2 py-0.5 text-meta-rose-foreground"
                     title="Controlled fallback reply was used"
                   >
                     fallback
@@ -128,7 +128,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
                 {meta?.supervisor?.violations?.slice(0, 3).map((v) => (
                   <span
                     key={v}
-                    className="inline-flex items-center rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-red-700 dark:text-red-300"
+                    className="inline-flex items-center rounded-full border border-destructive/40 bg-meta-rose px-2 py-0.5 text-meta-rose-foreground"
                     title="Supervisor violation"
                   >
                     ⚠ {v.toLowerCase().replaceAll("_", " ")}

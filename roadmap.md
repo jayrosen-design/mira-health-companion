@@ -18,3 +18,8 @@
 - [x] Remove prototype labels and update requested app copy and metadata without changing styling or behavior.
 - [x] Preserve disclosures, safety text, excluded screens, research values, and all prompt/config files.
 - [x] Verify signed-in welcome, chat, research/developer panels, and mobile disclosure.
+
+# Color scheme comparison
+- [x] Add URL-driven root theme context, semantic scheme tokens, and desktop/mobile selectors.
+- [x] Replace logo mark and theme all screens, charts, and diagrams without changing content or logic.
+- [x] Add the three-phone comparison page and verify switching, navigation, and all three schemes.

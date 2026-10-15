@@ -462,7 +462,7 @@ function PerformanceRadarTab({
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={data} outerRadius="60%">
-              <PolarGrid gridType="polygon" stroke="var(--border)" radialLines />
+              <PolarGrid gridType="polygon" stroke="var(--rail)" radialLines />
               <PolarAngleAxis
                 dataKey="axis"
                 tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
@@ -495,7 +495,7 @@ function PerformanceRadarTab({
               <Radar
                 name="Parent"
                 dataKey="Parent"
-                stroke={PARENT_COLOR}
+                stroke="var(--chart-3-stroke)"
                 fill={PARENT_COLOR}
                 fillOpacity={0.25}
                 strokeWidth={2}
@@ -504,6 +504,7 @@ function PerformanceRadarTab({
               <Tooltip
                 contentStyle={{
                   background: "var(--card)",
+                  color: "var(--foreground)",
                   border: "1px solid var(--border)",
                   borderRadius: 6,
                   fontSize: 12,
@@ -513,7 +514,7 @@ function PerformanceRadarTab({
                   name,
                 ]}
               />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} formatter={(value) => <span className="text-foreground">{value}</span>} />
             </RadarChart>
           </ResponsiveContainer>
         </div>

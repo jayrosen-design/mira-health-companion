@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Link } from "@tanstack/react-router";
+import { ColorSchemeControl } from "@/components/ColorSchemeControl";
 import {
   Send,
   LogOut,
@@ -745,7 +746,7 @@ export function MiraChat() {
               </Button>
               <div className="flex items-center gap-2">
                 <MiraAvatar size="md" />
-                <h1 className="font-display text-xl font-medium text-foreground">Mira</h1>
+                <h1 className="font-display text-xl font-medium text-heading">Mira</h1>
                 <span className="rounded-full border border-transparent bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">AI assistant</span>
               </div>
             </div>
@@ -803,7 +804,7 @@ export function MiraChat() {
 
       <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex shrink-0 items-start gap-2 border-b border-secondary bg-secondary/70 px-3 py-2 text-[10px] leading-tight text-foreground sm:rounded-xl sm:border sm:p-3 sm:text-xs sm:leading-relaxed">
+          <div className="flex shrink-0 items-start gap-2 border-b border-secondary bg-callout/70 px-3 py-2 text-[10px] leading-tight text-callout-foreground sm:rounded-xl sm:border sm:p-3 sm:text-xs sm:leading-relaxed">
             <Stethoscope className="mt-0.5 hidden h-4 w-4 shrink-0 text-primary sm:block" />
             <p>
               You are chatting with Mira, an AI assistant designed to use motivational interviewing. It
@@ -950,7 +951,7 @@ export function MiraChat() {
           )}
 
           <footer className="hidden items-start gap-2 rounded-xl border border-warning/15 bg-safety p-3 text-[11px] leading-relaxed text-warning-foreground sm:flex">
-            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-safety-icon" />
             <p>
               Do not enter personal health identifiers. For medical advice, talk with your child's
               healthcare provider. In an emergency, call 911. Conversations are not stored;
@@ -1056,6 +1057,7 @@ function TopBanner({
           >
             Developer Settings
           </button>
+          <ColorSchemeControl />
           <button
             type="button"
             onClick={onSignOut}
@@ -1134,6 +1136,7 @@ function TopBanner({
                   onReset();
                 }}
               />
+              <ColorSchemeControl mobile onNavigate={close} />
               <MenuItem
                 icon={<LogOut className="h-4 w-4" />}
                 label="Sign out"
