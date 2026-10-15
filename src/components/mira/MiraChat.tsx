@@ -4,7 +4,6 @@ import {
   Send,
   LogOut,
   Code2,
-  HeartPulse,
   FlaskConical,
   ShieldAlert,
   Stethoscope,
@@ -24,6 +23,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { MiraAvatar, ParentVaccineTalkLogo, ParentVaccineTalkFooter } from "./BrandIdentity";
 import { ChatMessage, type ChatMessageMeta } from "./ChatMessage";
 import { PasswordGate } from "./PasswordGate";
 import { SettingsSidebar } from "./SettingsSidebar";
@@ -738,23 +738,16 @@ export function MiraChat() {
       <header className="hidden shrink-0 border-b border-border bg-card/70 backdrop-blur sm:block">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
           <div className="flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setPhase("welcome")}
-              className="flex items-center gap-3 min-w-0 rounded-lg p-1 -m-1 text-left transition-colors hover:bg-primary/5"
-              title="Back to welcome"
-              aria-label="Back to welcome"
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-9 sm:w-9">
-                <HeartPulse className="h-4 w-4 sm:h-5 sm:w-5" />
-              </span>
-              <div className="min-w-0">
-                <h1 className="truncate text-base font-semibold text-foreground">MiraChat</h1>
-                <p className="hidden truncate text-xs text-muted-foreground sm:block">
-                  MI Digital Twin Conversation Prototype
-                </p>
+            <div className="flex min-w-0 flex-wrap items-center gap-4">
+              <Button variant="ghost" onClick={() => setPhase("welcome")} className="h-auto p-1" title="Back to welcome" aria-label="Back to welcome">
+                <ParentVaccineTalkLogo />
+              </Button>
+              <div className="flex items-center gap-2">
+                <MiraAvatar size="md" />
+                <h1 className="text-base font-semibold text-foreground">Mira</h1>
+                <span className="rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-[10px] text-muted-foreground">AI assistant</span>
               </div>
-            </button>
+            </div>
             <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
               <Pill>Prototype</Pill>
               <Pill>AI-supported</Pill>
@@ -848,12 +841,10 @@ export function MiraChat() {
               </div>
             )}
             {isSending && (
-              <div className="flex items-center gap-3" aria-live="polite" aria-label="Digital Twin is responding">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                  <HeartPulse className="h-4 w-4" />
-                </div>
+              <div className="flex items-center gap-3" aria-live="polite" aria-label="Mira is typing…">
+                <MiraAvatar size="sm" />
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>Digital Twin is responding</span>
+                  <span>Mira is typing…</span>
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.3s]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/70 [animation-delay:-0.15s]" />
@@ -991,6 +982,7 @@ export function MiraChat() {
           </div>
         </aside>
       </div>
+      <ParentVaccineTalkFooter />
     </div>
   );
 }
@@ -1026,7 +1018,7 @@ function TopBanner({
     <div className="shrink-0 border-b border-border bg-primary/95 text-primary-foreground">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
-          <span className="sm:hidden">MiraChat</span>
+          <span className="sm:hidden"><ParentVaccineTalkLogo /></span>
           <span className="hidden sm:inline">
             University research prototype · Not for clinical use
           </span>

@@ -10,24 +10,33 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { useState } from "react";
+import { ParentVaccineTalkLogo } from "@/components/mira/BrandIdentity";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
 
 export const Route = createFileRoute("/docs")({
   component: DocsPage,
   head: () => ({
     meta: [
-      { title: "MiraChat – API Docs & Data Model" },
+      { title: "Parent Vaccine Talk – API Docs & Data Model" },
       {
         name: "description",
         content:
-          "Planned API surface, data model, and architecture for the MiraChat motivational interviewing prototype.",
+          "Planned API surface, data model, and architecture for the Parent Vaccine Talk motivational interviewing prototype.",
       },
+      { property: "og:title", content: "Parent Vaccine Talk – API Docs & Data Model" },
+      { property: "og:description", content: "API surface, data model, and MIDT architecture for Mira, the Parent Vaccine Talk AI assistant." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Parent Vaccine Talk – API Docs & Data Model" },
+      { name: "twitter:description", content: "API surface, data model, and MIDT architecture for Mira, the Parent Vaccine Talk AI assistant." },
+      { property: "og:url", content: "https://chat.parentvaccinetalk.org/docs" },
     ],
+    links: [{ rel: "canonical", href: "https://chat.parentvaccinetalk.org/docs" }],
   }),
 });
 
 const flowChart = `flowchart TD
-  Parent([Parent / Caregiver]) -->|opens link| Web[MiraChat Web App]
+  Parent([Parent / Caregiver]) -->|opens link| Web[Parent Vaccine Talk Web App]
   Web -->|password gate| Auth[/POST /api/auth/login/]
   Auth -->|session cookie| Web
   Web -->|consent + survey| Survey[/POST /api/surveys/]
@@ -124,7 +133,7 @@ const erChart = `erDiagram
   }`;
 
 const dualAgentChart = `flowchart TD
-  Parent([Parent]) --> Browser[MiraChat Browser]
+  Parent([Parent]) --> Browser[Parent Vaccine Talk Browser]
   Browser -->|POST /api/orchestrate| Server[Server Orchestrator]
   Server --> Router{MI Routing Engine}
   Router -->|stance + permission + node| PhasePrompt[Phase Prompt Assembler]
@@ -549,6 +558,7 @@ function DocsPageInner() {
         <DocsSidebar />
         <main className="flex min-w-0 flex-1 flex-col gap-10">
         <header className="flex flex-col gap-3">
+          <ParentVaccineTalkLogo />
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
               <BookOpen className="h-3 w-3" /> MIDT Docs · API & Architecture
@@ -558,10 +568,10 @@ function DocsPageInner() {
             </span>
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            MiraChat – MIDT routing & dual-agent prototype
+            Parent Vaccine Talk – MIDT routing & dual-agent prototype
           </h1>
           <p className="max-w-3xl text-base text-muted-foreground">
-            MiraChat now demonstrates the configuration-driven MI Routing Engine and dual-agent
+            Parent Vaccine Talk now demonstrates the configuration-driven MI Routing Engine and dual-agent
             (MI Conversation Agent + Supervisor Agent) architecture proposed for MIDT. Today's
             prototype implements{" "}
             <code className="rounded bg-muted px-1 py-0.5 text-xs">/api/orchestrate</code>{" "}
@@ -574,7 +584,7 @@ function DocsPageInner() {
           <div className="flex items-start gap-2">
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground" />
             <p>
-              <strong>Prototype boundary.</strong> MiraChat is a prototype of the Digital Twin
+              <strong>Prototype boundary.</strong> Parent Vaccine Talk is a prototype of the Mira
               chatbot experience. It is not the MIRA Reviewer evaluation app, not a production
               clinical tool, and not yet connected to the final trained model, approved RAG
               knowledge base, study survey database, or production safety monitoring. Phase 2
@@ -638,7 +648,7 @@ function DocsPageInner() {
     "turnCount": 0,
     "isComplete": false,
     "routingVersion": "routing-draft-0.1",
-    "promptVersion": "mi-playbook-draft-0.1"
+    "promptVersion": "mi-playbook-draft-0.2"
   },
   "model": "...",
   "developerMode": true
@@ -801,7 +811,7 @@ function DocsPageInner() {
                   ["outcome", "CONT-P1…P5 · MOVE-P2…P5 · CLOSE", "Routing decision produced this turn."],
                   ["isComplete", "boolean", "Session closed (P5 or hard short-circuit). Blocks further orchestrator work in production."],
                   ["routingVersion", "e.g. routing-draft-0.1", "Pinned routing-engine version for this session (audit trail)."],
-                  ["promptVersion", "e.g. mi-playbook-draft-0.1", "Pinned prompt-playbook version for this session (audit trail)."],
+                  ["promptVersion", "e.g. mi-playbook-draft-0.2", "Pinned prompt-playbook version for this session (audit trail)."],
                 ].map(([f, t, m]) => (
                   <tr key={f}>
                     <td className="px-4 py-2 font-mono text-xs text-foreground">{f}</td>
@@ -1013,7 +1023,7 @@ SIMULATION_MAX_TURNS              = 12`}
           </p>
           <ul className="ml-6 list-disc text-sm text-muted-foreground">
             <li><code className="rounded bg-muted px-1 py-0.5 text-xs">ROUTING_VERSION = "routing-draft-0.1"</code></li>
-            <li><code className="rounded bg-muted px-1 py-0.5 text-xs">PROMPT_VERSION = "mi-playbook-draft-0.1"</code></li>
+            <li><code className="rounded bg-muted px-1 py-0.5 text-xs">PROMPT_VERSION = "mi-playbook-draft-0.2"</code></li>
             <li><code className="rounded bg-muted px-1 py-0.5 text-xs">SIMULATED_PARENT_VERSION = "simulated-parent-0.1"</code></li>
           </ul>
           <p className="text-xs text-muted-foreground">
@@ -1029,7 +1039,7 @@ SIMULATION_MAX_TURNS              = 12`}
             <h2 className="text-xl font-semibold tracking-tight">From prototype to production</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Map of what needs to be replaced or removed to plug MiraChat into a production study
+            Map of what needs to be replaced or removed to plug Parent Vaccine Talk into a production study
             deployment. Left column is what ships in this prototype; right column is what a
             production build requires.
           </p>

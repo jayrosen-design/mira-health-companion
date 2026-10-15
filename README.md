@@ -1,10 +1,12 @@
-# MiraChat – Digital Twin Conversation Prototype
+# Parent Vaccine Talk – Chat with Mira (prototype)
 
-MiraChat is a prototype interface for the **Digital Twin MI and HPV pilot**. It simulates a parent-facing, text-based motivational interviewing conversation about HPV vaccination using the **UF Navigator Toolkit** (`https://api.ai.it.ufl.edu`) and a system prompt. It is intended for stakeholder discussion and development testing only.
+Parent Vaccine Talk (parentvaccinetalk.org) provides this chat product at chat.parentvaccinetalk.org. Parents talk with **Mira**, an AI assistant, not a human or clinician. A separate reviewer app is planned at review.parentvaccinetalk.org.
 
-> This app is separate from the **MIRA Reviewer** prototype. MIRA Reviewer supports blinded response comparison and rating. **MiraChat** demonstrates the interactive digital twin chatbot experience.
+Parent Vaccine Talk is a prototype interface for the **Digital Twin MI and HPV pilot**. It simulates a parent-facing, text-based motivational interviewing conversation about HPV vaccination using the **UF Navigator Toolkit** (`https://api.ai.it.ufl.edu`) and a system prompt. It is intended for stakeholder discussion and development testing only.
+
+> This app is separate from the **MIRA Reviewer** prototype. MIRA Reviewer supports blinded response comparison and rating. **Parent Vaccine Talk** demonstrates the interactive Mira chatbot experience.
 >
-> **Conceptual boundary:** MiraChat is a prototype of the Digital Twin chatbot experience. It is not the MIRA Reviewer evaluation app, not a production clinical tool, and not yet connected to the final trained model, approved RAG knowledge base, study survey database, or production safety monitoring.
+> **Conceptual boundary:** Parent Vaccine Talk is a prototype of the Mira chatbot experience. It is not the MIRA Reviewer evaluation app, not a production clinical tool, and not yet connected to the final trained model, approved RAG knowledge base, study survey database, or production safety monitoring.
 
 ## Privacy & security architecture
 
@@ -81,7 +83,7 @@ End-to-end flow:
 
 ```mermaid
 flowchart TD
-  Parent([Parent / Caregiver]) -->|opens link| Web[MiraChat Web App]
+  Parent([Parent / Caregiver]) -->|opens link| Web[Parent Vaccine Talk Web App]
   Web -->|password gate| Auth[/POST /api/auth/login/]
   Auth -->|session cookie| Web
   Web -->|consent + survey| Survey[/POST /api/surveys/]
@@ -144,7 +146,7 @@ Travels with every `/api/orchestrate` request/response. The server recomputes ph
 | `outcome` | `CONT-P1…P5` · `MOVE-P2…P5` · `CLOSE` | Routing decision this turn. |
 | `isComplete` | boolean | Session closed. Blocks further orchestrator work in production. |
 | `routingVersion` | `routing-draft-0.1` | Pinned routing-engine version. |
-| `promptVersion` | `mi-playbook-draft-0.1` | Pinned prompt-playbook version. |
+| `promptVersion` | `mi-playbook-draft-0.2` | Pinned prompt-playbook version. |
 
 ### `RoutingNode` schema (Developer Settings → Phases)
 
