@@ -247,6 +247,8 @@
 }
 .pvt-logo-primary { fill: var(--logo-primary); }
 .pvt-logo-accent { fill: var(--logo-accent); }
+.pvt-logo-reversed { fill: oklch(1 0 0); }
+.pvt-logo-reversed-text { color: oklch(1 0 0); }
 
 @layer base {
   h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0; color: var(--heading); }

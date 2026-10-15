@@ -1022,7 +1022,7 @@ function TopBanner({
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
           <span className="sm:hidden">
-            {chatHeader ? <span className="flex items-center gap-2 normal-case tracking-normal"><MiraAvatar size="sm" /><span className="font-display text-xl">Mira</span><span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">AI assistant</span></span> : <ParentVaccineTalkLogo />}
+            {chatHeader ? <span className="flex items-center gap-2 normal-case tracking-normal"><MiraAvatar size="sm" /><span className="font-display text-xl">Mira</span><span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">AI assistant</span></span> : <ParentVaccineTalkLogo reversed />}
           </span>
         </span>
 
@@ -1068,7 +1068,7 @@ function TopBanner({
         </div>
 
         {/* Mobile hamburger */}
-        {chatHeader && <span className="ml-auto sm:hidden"><ParentVaccineTalkLogo iconOnly /></span>}
+        {chatHeader && <span className="ml-auto sm:hidden"><ParentVaccineTalkLogo iconOnly reversed /></span>}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button
