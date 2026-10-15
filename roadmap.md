@@ -7,4 +7,4 @@
 # Warm visual restyle
 - [x] Apply warm semantic tokens, requested fonts, soft surfaces and pill controls.
 - [x] Restyle existing welcome/chat/messages/panels without changing copy or logic.
-- [ ] Verify desktop and 390px chat, panel access, and horizontal overflow.
+- [x] Verify desktop and 390px chat, panel access, and horizontal overflow.
