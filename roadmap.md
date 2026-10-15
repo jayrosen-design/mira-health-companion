@@ -12,4 +12,4 @@
 # Restyle polish
 - [x] Place survey question legends inside cards and add shared branding to both survey states.
 - [x] Add mobile Mira identity, compact disclosure, safe-area footer, and distinct bubble corners.
-- [ ] Verify the polished screens at phone and desktop widths.
+- [x] Verify the polished screens at phone and desktop widths.
