@@ -461,7 +461,7 @@ function PerformanceRadarTab({
       <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={data} outerRadius="72%">
+            <RadarChart data={data} outerRadius="60%">
               <PolarGrid gridType="polygon" stroke="var(--border)" radialLines />
               <PolarAngleAxis
                 dataKey="axis"
