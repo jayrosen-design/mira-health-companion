@@ -2,6 +2,7 @@ import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { isAuthorized } from "@/lib/mira/auth.server";
 import { checkRateLimit, getClientKey } from "@/lib/mira/rate-limit.server";
+import { MIRA_DEFAULT_MODEL } from "@/lib/mira/system-prompt";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 type Body = { model?: string; messages?: ChatMessage[] };
@@ -50,16 +51,28 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         try {
-          const upstream = await fetch("https://api.ai.it.ufl.edu/chat/completions", {
+        const callChat = (model: string) =>
+          fetch("https://api.ai.it.ufl.edu/chat/completions", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${apiKey}`,
             },
-            body: JSON.stringify({ model: body.model, messages: body.messages }),
+            body: JSON.stringify({ model, messages: body.messages }),
           });
 
-          const text = await upstream.text();
+        try {
+          let upstream = await callChat(body.model);
+          let text = await upstream.text();
+          if (
+            !upstream.ok &&
+            body.model !== MIRA_DEFAULT_MODEL &&
+            /team_model_access_denied|not allowed to access model/i.test(text)
+          ) {
+            // The gateway no longer allows this model; retry with the default.
+            upstream = await callChat(MIRA_DEFAULT_MODEL);
+            text = await upstream.text();
+          }
           if (!upstream.ok) {
             return Response.json(
               { error: `Upstream ${upstream.status}: ${text.slice(0, 500)}` },
