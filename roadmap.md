@@ -20,6 +20,6 @@
 - [x] Verify signed-in welcome, chat, research/developer panels, and mobile disclosure.
 
 # Color scheme comparison
-- [ ] Add URL-driven root theme context, semantic scheme tokens, and desktop/mobile selectors.
-- [ ] Replace logo mark and theme all screens, charts, and diagrams without changing content or logic.
-- [ ] Add the three-phone comparison page and verify switching, navigation, and all three schemes.
+- [x] Add URL-driven root theme context, semantic scheme tokens, and desktop/mobile selectors.
+- [x] Replace logo mark and theme all screens, charts, and diagrams without changing content or logic.
+- [x] Add the three-phone comparison page and verify switching, navigation, and all three schemes.
