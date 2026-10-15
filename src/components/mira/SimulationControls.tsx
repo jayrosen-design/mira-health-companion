@@ -32,10 +32,10 @@ export function SimulationControls({
     <div
       role="region"
       aria-label="Simulated parent controls"
-      className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-accent/50 bg-accent/10 px-3 py-2 text-xs"
+      className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-secondary bg-secondary/70 px-3 py-2 text-xs"
     >
-      <div className="flex items-center gap-2">
-        <span className="rounded-full bg-accent/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-meta-sage px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-meta-sage-foreground">
           Simulated Parent
         </span>
         <span className="font-medium text-foreground">{personaLabel}</span>

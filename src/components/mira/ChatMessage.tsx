@@ -27,33 +27,33 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
   const verdict = meta?.supervisor?.verdict;
   const verdictClass =
     verdict === "APPROVED"
-      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      ? "border-transparent bg-meta-sage text-meta-sage-foreground"
       : verdict === "REVISE"
-        ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+        ? "border-transparent bg-meta-amber text-meta-amber-foreground"
         : verdict === "BLOCK"
-          ? "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
-          : "border-border bg-muted/40 text-muted-foreground";
+          ? "border-transparent bg-meta-rose text-meta-rose-foreground"
+          : "border-transparent bg-muted text-muted-foreground";
   return (
     <div className={cn("flex w-full gap-3", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
         <MiraAvatar size="sm" />
       )}
-      <div className={cn("flex max-w-[80%] flex-col gap-1", isUser ? "items-end" : "items-start")}>
+      <div className={cn("flex min-w-0 max-w-[80%] flex-col gap-1", isUser ? "items-end" : "items-start")}>
         <div
           className={cn(
-            "whitespace-pre-wrap text-[15px] leading-relaxed",
+            "whitespace-pre-wrap break-words text-[15px] leading-relaxed",
             isUser
-              ? "rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-primary-foreground shadow-sm"
-              : "rounded-2xl rounded-bl-md border border-border bg-card px-4 py-3 text-card-foreground shadow-sm",
+              ? "rounded-2xl rounded-br-md bg-primary px-4 py-3 text-primary-foreground shadow-soft"
+              : "rounded-2xl rounded-tl-md border border-border bg-card px-4 py-3 text-card-foreground shadow-soft",
           )}
         >
           {content}
         </div>
         {showChips && (
-          <div className="ml-1 flex flex-wrap gap-1 pt-0.5 text-[10px] font-medium uppercase tracking-wide">
+          <div className="ml-1 flex flex-wrap gap-1 pt-0.5 text-[10px] font-mono font-medium uppercase tracking-normal">
             {!isUser && miTag && (
               <span
-                className="inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/15 px-2 py-0.5 text-accent-foreground/80"
+                className="inline-flex items-center gap-1 rounded-full border border-transparent bg-meta-lavender px-2 py-0.5 text-meta-lavender-foreground"
                 title="Motivational Interviewing technique (prototype tag)"
               >
                 MI · {miTag}
@@ -63,7 +63,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
               <>
                 {meta?.state?.phase && (
                   <span
-                    className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary"
+                    className="inline-flex items-center rounded-full border border-transparent bg-meta-sky px-2 py-0.5 text-meta-sky-foreground"
                     title={`Routing node: ${meta.state.nodeId}`}
                   >
                     {meta.state.phase} · {meta.state.nodeId}

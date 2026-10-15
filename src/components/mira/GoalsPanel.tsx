@@ -3,12 +3,12 @@ import { CONVERSATION_GOALS } from "@/lib/mira/system-prompt";
 
 export function GoalsPanel() {
   return (
-    <aside className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+    <aside className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
       <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/30 text-accent-foreground">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
           <Target className="h-3.5 w-3.5" />
         </span>
-        <h2 className="text-sm font-semibold text-foreground">Conversation Goals</h2>
+        <h2 className="font-display text-lg font-medium text-foreground">Conversation Goals</h2>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
         Informed decision-making, on your terms.

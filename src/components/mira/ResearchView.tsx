@@ -111,7 +111,7 @@ export function ResearchView({
         </SheetHeader>
 
         <Tabs defaultValue="routing" className="mt-4">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6">
+          <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl sm:grid-cols-6">
             <TabsTrigger value="routing">MI Routing</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
             <TabsTrigger value="simulation">Sim Lab</TabsTrigger>
@@ -181,7 +181,7 @@ export function ResearchView({
               </p>
             )}
             {traceEvents.map((evt, i) => (
-              <div key={i} className="rounded-xl border border-border bg-card p-3 text-xs">
+              <div key={i} className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Turn {evt.turn}</span>
                   <span className="text-muted-foreground">
@@ -284,7 +284,7 @@ export function ResearchView({
               <Row k="Elapsed (s)" v={String(elapsed)} />
             </Section>
 
-            <div className="rounded-xl border border-border bg-card p-3 text-xs">
+            <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft text-xs">
               <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Turn-by-turn results
               </h3>
@@ -458,7 +458,7 @@ function PerformanceRadarTab({
         Turn {metrics.raw.turnCount} · updates live as the conversation progresses.
       </p>
 
-      <div className="rounded-xl border border-border bg-card p-3">
+      <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={data} outerRadius="72%">
@@ -524,7 +524,7 @@ function PerformanceRadarTab({
         )}
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-3">
+      <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft">
         <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
           Per-agent scores
         </h3>
@@ -554,7 +554,7 @@ function PerformanceRadarTab({
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-3 text-xs">
+      <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft text-xs">
         <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
           Raw metrics
         </h3>

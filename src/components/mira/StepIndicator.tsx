@@ -22,8 +22,8 @@ export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
               <span
                 className={cn(
                   "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors sm:h-6 sm:w-6 sm:text-[11px]",
-                  done && "bg-success text-success-foreground",
-                  active && "bg-primary text-primary-foreground ring-2 ring-primary/15 sm:ring-4",
+                  done && "bg-meta-sage text-meta-sage-foreground",
+                  active && "bg-primary text-primary-foreground ring-2 ring-accent/70 sm:ring-4",
                   !done && !active && "bg-muted text-muted-foreground",
                 )}
                 aria-current={active ? "step" : undefined}
