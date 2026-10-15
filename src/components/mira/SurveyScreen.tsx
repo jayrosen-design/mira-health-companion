@@ -3,6 +3,7 @@ import { CheckCircle2, ArrowLeft, Gift, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StepIndicator } from "./StepIndicator";
+import { ParentVaccineTalkLogo, ParentVaccineTalkFooter } from "./BrandIdentity";
 
 const LIKERT = [
   "Strongly disagree",
@@ -44,6 +45,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
   if (submitted) {
     return (
       <div className="min-h-screen bg-background px-4 py-12">
+        <header className="mx-auto mb-8 w-full max-w-xl"><ParentVaccineTalkLogo /></header>
         <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-8 text-center shadow-soft">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success">
             <CheckCircle2 className="h-7 w-7" />
@@ -78,6 +80,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             </p>
           </div>
         </div>
+        <div className="mt-8"><ParentVaccineTalkFooter /></div>
       </div>
     );
   }
@@ -86,6 +89,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
         <header className="flex flex-col gap-3">
+          <ParentVaccineTalkLogo />
           <StepIndicator current={3} />
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Tell us about your experience
@@ -107,8 +111,8 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
               key={q}
               className="rounded-2xl border border-border bg-card p-4 shadow-soft"
             >
-              <legend className="px-1 text-sm font-medium text-foreground">{q}</legend>
-              <div className="mt-3 grid grid-cols-5 gap-1.5">
+              <legend className="float-left block w-full text-sm font-medium text-foreground">{q}</legend>
+              <div className="clear-both grid grid-cols-5 gap-1.5 pt-3">
                 {LIKERT.map((label, i) => {
                   const value = i + 1;
                   const selected = answers[idx] === value;
@@ -134,16 +138,15 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
           ))}
 
           <fieldset className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-            <legend className="px-1 text-sm font-medium text-foreground">
+            <legend className="float-left block w-full text-sm font-medium text-foreground">
               What, if anything, would improve this experience?
             </legend>
-            <Textarea
+            <div className="clear-both pt-3"><Textarea
               value={open}
               onChange={(e) => setOpen(e.target.value)}
               rows={4}
-              className="mt-3"
               placeholder="Optional"
-            />
+            /></div>
           </fieldset>
 
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -155,6 +158,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             </Button>
           </div>
         </form>
+        <ParentVaccineTalkFooter />
       </div>
     </div>
   );

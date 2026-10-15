@@ -43,8 +43,8 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
           className={cn(
             "whitespace-pre-wrap break-words text-[15px] leading-relaxed",
             isUser
-              ? "rounded-2xl rounded-br-md bg-primary px-4 py-3 text-primary-foreground shadow-soft"
-              : "rounded-2xl rounded-tl-md border border-border bg-card px-4 py-3 text-card-foreground shadow-soft",
+              ? "rounded-2xl rounded-br-bubble-corner bg-primary px-4 py-3 text-primary-foreground shadow-soft"
+              : "rounded-2xl rounded-tl-bubble-corner border border-border bg-card px-4 py-3 text-card-foreground shadow-soft",
           )}
         >
           {content}
