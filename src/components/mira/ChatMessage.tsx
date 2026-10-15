@@ -1,4 +1,4 @@
-import { HeartPulse } from "lucide-react";
+import { MiraAvatar } from "./BrandIdentity";
 import { cn } from "@/lib/utils";
 import type {
   MiSessionState,
@@ -36,9 +36,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
   return (
     <div className={cn("flex w-full gap-3", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm">
-          <HeartPulse className="h-4 w-4" aria-hidden />
-        </div>
+        <MiraAvatar size="sm" />
       )}
       <div className={cn("flex max-w-[80%] flex-col gap-1", isUser ? "items-end" : "items-start")}>
         <div

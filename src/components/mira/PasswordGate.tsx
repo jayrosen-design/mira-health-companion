@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { HeartPulse, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
+import { ParentVaccineTalkLogo } from "./BrandIdentity";
 
 interface PasswordGateProps {
   onAuthenticated: () => void;
@@ -44,16 +45,14 @@ export function PasswordGate({ onAuthenticated }: PasswordGateProps) {
       >
         <div className="mb-5 flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-              <HeartPulse className="h-3 w-3" /> MiraChat
-            </span>
+            <ParentVaccineTalkLogo />
             <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning-foreground">
               Prototype only
             </span>
           </div>
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-foreground">
-              MiraChat Prototype
+              Chat with Mira
             </h1>
             <p className="mt-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Restricted development preview
@@ -91,7 +90,7 @@ export function PasswordGate({ onAuthenticated }: PasswordGateProps) {
         </Button>
         <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
           This is not a production clinical system and should not be used with real patient
-          information. MiraChat is a prototype of the Digital Twin chatbot experience — separate
+          information. Parent Vaccine Talk is a prototype of the Mira chatbot experience — separate
           from the MIRA Reviewer evaluation app — and is not yet connected to the final trained
           model, approved RAG knowledge base, study survey database, or production safety
           monitoring.

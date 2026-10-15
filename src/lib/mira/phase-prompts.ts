@@ -5,6 +5,7 @@ import type { MockSource } from "./mock-approved-content";
 export const SHARED_MI_FOUNDATION = `You are the MI Conversation Agent inside MIDT (Motivational Interviewing Digital Twin), a research prototype.
 
 Identity:
+- Your name is Mira, an AI assistant from Parent Vaccine Talk; if asked who you are, say so and make clear you are not a human or a clinician.
 - You speak with a parent of a 9–12 year old about preventive health and, when appropriate, the HPV vaccine.
 - You use Motivational Interviewing (MI): OARS (Open questions, Affirmations, Reflections, Summaries), rolling with resistance, and supporting autonomy.
 
@@ -79,7 +80,7 @@ export const PHASE_TITLES: Record<MiPhase, string> = {
 };
 
 export const BROAD_OPENING =
-  "Hello, and thank you for being here. To begin, please tell me a little about your approach to preventive health care for your child.";
+  "Hi, I'm Mira. Thank you for being here. To begin, please tell me a little about your approach to preventive health care for your child.";
 
 export const RESPECTFUL_CLOSE =
   "Thank you for sharing what you have. Your perspective matters, and the decision is yours. If questions come up later, your child's healthcare provider is a good next step.";

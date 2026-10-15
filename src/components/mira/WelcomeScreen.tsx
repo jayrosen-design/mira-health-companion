@@ -1,4 +1,5 @@
-import { ArrowRight, HeartPulse, Info, Lock, Stethoscope } from "lucide-react";
+import { ArrowRight, Info, Lock, Stethoscope } from "lucide-react";
+import { ParentVaccineTalkLogo, ParentVaccineTalkFooter } from "./BrandIdentity";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./StepIndicator";
 import { SimulatedParentSelector } from "./SimulatedParentSelector";
@@ -27,9 +28,7 @@ export function WelcomeScreen({
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-              <HeartPulse className="h-3 w-3" /> MiraChat
-            </span>
+            <ParentVaccineTalkLogo />
             <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning-foreground">
               Prototype only
             </span>
@@ -46,7 +45,7 @@ export function WelcomeScreen({
               Talk through questions about the HPV vaccine
             </h1>
             <p className="mt-3 text-base text-muted-foreground">
-              MiraChat is a prototype of a text-based digital twin designed to support parents as
+              Mira is an AI assistant from Parent Vaccine Talk, designed to support parents as
               they think through HPV vaccination for their child. The conversation uses motivational
               interviewing principles: listening, reflecting, supporting autonomy, and sharing
               information with permission.
@@ -82,12 +81,13 @@ export function WelcomeScreen({
               </Button>
               <p className="mt-2 text-sm text-muted-foreground">
                 {simulatedPersona
-                  ? "MiraChat will run the selected parent scenario automatically."
-                  : "Click the button above to start a real conversation with MiraChat."}
+                  ? "The selected parent scenario will run automatically with Mira."
+                  : "Click the button above to start a conversation with Mira."}
               </p>
             </div>
           </section>
         </div>
+        <ParentVaccineTalkFooter />
       </div>
     </div>
   );

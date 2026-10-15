@@ -14,7 +14,7 @@ export function CompletionPrompt({
         Would you like to wrap up and complete a short feedback survey?
       </h3>
       <p className="mt-1 text-xs text-muted-foreground">
-        It's a few quick questions about this prototype. No personal information is collected.
+        It's a few quick questions about this conversation with Mira. No personal information is collected.
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Button size="sm" onClick={onSurvey} className="gap-1.5">

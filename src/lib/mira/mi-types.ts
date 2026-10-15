@@ -107,7 +107,7 @@ export interface OrchestrateResponse {
 }
 
 export const ROUTING_VERSION = "routing-draft-0.1";
-export const PROMPT_VERSION = "mi-playbook-draft-0.1";
+export const PROMPT_VERSION = "mi-playbook-draft-0.2";
 
 export function createInitialSessionState(sessionId: string): MiSessionState {
   return {

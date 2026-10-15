@@ -91,7 +91,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             Tell us about your experience
           </h1>
           <p className="text-sm text-muted-foreground">
-            A few quick questions about this prototype conversation.
+            A few quick questions about this conversation with Mira from Parent Vaccine Talk.
           </p>
         </header>
 
