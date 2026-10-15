@@ -8,7 +8,7 @@ export function GoalsPanel() {
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
           <Target className="h-3.5 w-3.5" />
         </span>
-        <h2 className="font-display text-lg font-medium text-foreground">Conversation Goals</h2>
+        <h2 className="font-display text-lg font-medium text-heading">Conversation Goals</h2>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
         Informed decision-making, on your terms.

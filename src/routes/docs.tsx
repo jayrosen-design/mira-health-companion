@@ -566,7 +566,7 @@ function DocsPageInner() {
               Prototype · routing & supervisor live
             </span>
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-3xl font-semibold tracking-tight text-heading">
             Parent Vaccine Talk – MIDT routing & dual-agent prototype
           </h1>
           <p className="max-w-3xl text-base text-muted-foreground">

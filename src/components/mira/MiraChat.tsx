@@ -746,7 +746,7 @@ export function MiraChat() {
               </Button>
               <div className="flex items-center gap-2">
                 <MiraAvatar size="md" />
-                <h1 className="font-display text-xl font-medium text-foreground">Mira</h1>
+                <h1 className="font-display text-xl font-medium text-heading">Mira</h1>
                 <span className="rounded-full border border-transparent bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">AI assistant</span>
               </div>
             </div>

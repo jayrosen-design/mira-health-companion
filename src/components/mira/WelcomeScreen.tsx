@@ -35,7 +35,7 @@ export function WelcomeScreen({
 
         <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
           <section className="p-6 sm:p-8">
-            <h1 className="text-2xl font-semibold font-display leading-tight text-foreground sm:text-3xl">
+            <h1 className="text-2xl font-semibold font-display leading-tight text-heading sm:text-3xl">
               Talk through questions about the HPV vaccine
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
