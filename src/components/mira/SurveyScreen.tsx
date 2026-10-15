@@ -43,8 +43,8 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/40 px-4 py-12">
-        <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+      <div className="min-h-screen bg-background px-4 py-12">
+        <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-8 text-center shadow-soft">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success">
             <CheckCircle2 className="h-7 w-7" />
           </div>
@@ -55,7 +55,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             No personal data is stored. You can close this window.
           </p>
 
-          <div className="mt-6 rounded-xl border border-primary/30 bg-primary/5 p-5 text-left">
+          <div className="mt-6 rounded-xl border border-secondary bg-secondary/70 p-5 text-left">
             <div className="flex items-center gap-2 text-primary">
               <Gift className="h-5 w-5" />
               <h2 className="text-sm font-semibold">
@@ -83,7 +83,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/40 px-4 py-8">
+    <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
         <header className="flex flex-col gap-3">
           <StepIndicator current={3} />
@@ -105,7 +105,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
           {QUESTIONS.map((q, idx) => (
             <fieldset
               key={q}
-              className="rounded-2xl border border-border bg-card p-4 shadow-sm"
+              className="rounded-2xl border border-border bg-card p-4 shadow-soft"
             >
               <legend className="px-1 text-sm font-medium text-foreground">{q}</legend>
               <div className="mt-3 grid grid-cols-5 gap-1.5">
@@ -133,7 +133,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             </fieldset>
           ))}
 
-          <fieldset className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+          <fieldset className="rounded-2xl border border-border bg-card p-4 shadow-soft">
             <legend className="px-1 text-sm font-medium text-foreground">
               What, if anything, would improve this experience?
             </legend>

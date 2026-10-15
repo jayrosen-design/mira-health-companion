@@ -380,7 +380,7 @@ export function ResearchView({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
       <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
@@ -391,13 +391,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Row({ k, v, tone }: { k: string; v: string; tone?: "success" }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 text-sm">
+    <div className="flex min-w-0 items-baseline justify-between gap-3 text-sm">
       <dt className="text-muted-foreground">{k}</dt>
       <dd
         className={
           tone === "success"
             ? "rounded-full bg-success/15 px-2 py-0.5 text-xs font-medium text-success-foreground"
-            : "text-right font-medium text-foreground"
+            : "min-w-0 break-words text-right font-medium text-foreground"
         }
       >
         {v}
@@ -443,9 +443,9 @@ function PerformanceRadarTab({
     Parent: metrics.parentFilled[a.key] ?? 0,
   }));
   const empty = traceEvents.length === 0;
-  const MIDT_COLOR = "#2563eb";
-  const SUP_COLOR = "#16a34a";
-  const PARENT_COLOR = "#f59e0b";
+  const MIDT_COLOR = "var(--chart-1)";
+  const SUP_COLOR = "var(--chart-2)";
+  const PARENT_COLOR = "var(--chart-3)";
 
   return (
     <>
@@ -558,7 +558,7 @@ function PerformanceRadarTab({
         <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
           Raw metrics
         </h3>
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <dl className="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
           <Row k="Turns" v={String(metrics.raw.turnCount)} />
           <Row k="R:Q ratio" v={fmtRaw(metrics.raw.rqRatio, "ratio")} />
           <Row k="% Complex reflections" v={fmtRaw(metrics.raw.percentComplexReflections, "pct")} />
