@@ -29,12 +29,6 @@ export function WelcomeScreen({
         <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <ParentVaccineTalkLogo />
-            <span className="inline-flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-warning-foreground">
-              Prototype only
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-              Not for clinical use
-            </span>
           </div>
           <StepIndicator current={1} />
         </header>
@@ -54,13 +48,13 @@ export function WelcomeScreen({
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               <InfoCard
                 icon={<Lock className="h-4 w-4" />}
-                title="Private prototype"
+                title="Private conversation"
                 body="Do not enter names, dates of birth, medical record numbers, or other personal identifiers."
               />
               <InfoCard
                 icon={<Info className="h-4 w-4" />}
                 title="AI-supported conversation"
-                body="You are interacting with an AI prototype, not a human clinician."
+                body="You are talking with Mira, an AI assistant, not a human clinician."
               />
               <InfoCard
                 icon={<Stethoscope className="h-4 w-4" />}

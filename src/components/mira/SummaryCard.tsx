@@ -5,17 +5,13 @@ export function SummaryCard({ topics }: { topics: string[] }) {
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-2 font-display text-lg font-medium text-foreground">
         <FileText className="h-4 w-4 text-primary" /> Conversation with Mira · Summary
-        <span className="ml-auto rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-          Prototype
-        </span>
       </div>
       <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
         <Field label="Main concern discussed">
           {topics[0] ?? "Not yet identified in this conversation."}
         </Field>
         <Field label="Information shared">
-          General educational context about the HPV vaccine. RAG grounding is planned for the
-          production version.
+          General educational context about the HPV vaccine.
         </Field>
         <Field label="Questions for your provider">
           Vaccine timing, side effects, and cancer prevention benefits.

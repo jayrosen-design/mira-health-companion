@@ -51,7 +51,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
             <CheckCircle2 className="h-7 w-7" />
           </div>
           <h1 className="mt-4 text-xl font-semibold text-foreground">
-            Thank you. Your feedback has been recorded for this prototype.
+            Thank you. Your feedback has been recorded.
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             No personal data is stored. You can close this window.

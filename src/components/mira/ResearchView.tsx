@@ -106,7 +106,7 @@ export function ResearchView({
         <SheetHeader>
           <SheetTitle>Research View</SheetTitle>
           <SheetDescription>
-            MIDT prototype routing trace. Not part of the parent experience.
+            MIDT routing trace. Not part of the parent experience.
           </SheetDescription>
         </SheetHeader>
 
@@ -576,7 +576,7 @@ function PerformanceRadarTab({
       </div>
 
       <p className="text-[10px] text-muted-foreground">
-        Prototype metrics computed client-side from the routing trace. Not a validated
+        Metrics computed client-side from the routing trace. Not a validated
         MITI/Ragas evaluator; do not use for clinical or grant reporting without human review.
       </p>
     </>
