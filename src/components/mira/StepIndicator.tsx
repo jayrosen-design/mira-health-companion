@@ -41,7 +41,7 @@ export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
                 <span
                   className={cn(
                     "ml-1 h-px flex-1",
-                    done ? "bg-success/60" : "bg-border",
+                    done ? "bg-success/60" : "bg-rail",
                   )}
                   aria-hidden
                 />

@@ -16,7 +16,7 @@ export function GoalsPanel() {
       <ul className="mt-4 flex flex-col gap-2.5">
         {CONVERSATION_GOALS.map((goal) => (
           <li key={goal} className="flex items-start gap-2 text-sm leading-snug text-foreground">
-            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
+            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-goal-check" />
             <span>{goal}</span>
           </li>
         ))}

@@ -99,7 +99,7 @@ function InfoCard({
   return (
     <div className="rounded-xl border border-secondary bg-secondary/70 p-4">
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-tile-icon-bg text-tile-icon-foreground">
           {icon}
         </span>
         {title}

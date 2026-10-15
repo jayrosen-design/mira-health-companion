@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { ParentVaccineTalkLogo } from "@/components/mira/BrandIdentity";
 import { MermaidDiagram } from "@/components/mira/MermaidDiagram";
+import { ColorSchemeControl } from "@/components/ColorSchemeControl";
 
 export const Route = createFileRoute("/docs")({
   component: DocsPage,
@@ -542,6 +543,7 @@ function DocsPageInner() {
     <div className="min-h-screen bg-background">
       <div className="border-b border-border bg-research-bar text-research-bar-foreground">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
+          <ColorSchemeControl />
           <Link
             to="/"
             className="ml-auto inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] uppercase tracking-wide hover:bg-research-bar-foreground/10"
@@ -579,7 +581,7 @@ function DocsPageInner() {
 
         <section className="rounded-2xl border border-warning/15 bg-safety p-4 text-sm text-foreground">
           <div className="flex items-start gap-2">
-            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground" />
+            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-safety-icon" />
             <p>
               <strong>Prototype boundary.</strong> Parent Vaccine Talk is a prototype of the Mira
               chatbot experience. It is not the MIRA Reviewer evaluation app, not a production

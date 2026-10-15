@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import mermaid from "mermaid";
-
-let initialized = false;
+import { useColorScheme } from "@/components/ThemeProvider";
 
 interface MermaidDiagramProps {
   chart: string;
@@ -9,21 +8,42 @@ interface MermaidDiagramProps {
 }
 
 export function MermaidDiagram({ chart, className }: MermaidDiagramProps) {
+  const { theme } = useColorScheme();
   const reactId = useId().replace(/[:]/g, "");
   const id = `mermaid-${reactId}`;
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!initialized) {
+    const token = (name: string) => {
+      const probe = document.createElement("span");
+      probe.style.color = `var(--${name})`;
+      document.body.appendChild(probe);
+      const value = getComputedStyle(probe).color;
+      probe.remove();
+      // Mermaid's color parser accepts RGB, not OKLCH; canvas converts without changing the palette.
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) return value;
+      context.fillStyle = value;
+      context.fillRect(0, 0, 1, 1);
+      const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+      return `rgb(${r}, ${g}, ${b})`;
+    };
       mermaid.initialize({
         startOnLoad: false,
-        theme: "neutral",
+        theme: "base",
         securityLevel: "strict",
         fontFamily: "inherit",
+        themeVariables: {
+          primaryColor: token("secondary"), primaryTextColor: token("foreground"), primaryBorderColor: token("primary"),
+          secondaryColor: token("muted"), secondaryTextColor: token("foreground"), secondaryBorderColor: token("border"),
+          tertiaryColor: token("card"), tertiaryTextColor: token("foreground"), tertiaryBorderColor: token("border"),
+          lineColor: token("muted-foreground"), textColor: token("foreground"), mainBkg: token("secondary"),
+          nodeBorder: token("primary"), clusterBkg: token("background"), clusterBorder: token("border"),
+          edgeLabelBackground: token("card"), background: token("card"),
+        },
       });
-      initialized = true;
-    }
     let cancelled = false;
     mermaid
       .render(id, chart)
@@ -38,7 +58,7 @@ export function MermaidDiagram({ chart, className }: MermaidDiagramProps) {
     return () => {
       cancelled = true;
     };
-  }, [chart, id]);
+  }, [chart, id, theme]);
 
   if (error) {
     return (
