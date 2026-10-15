@@ -27,7 +27,7 @@ export function WelcomeScreen({
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <header className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="hidden flex-wrap items-center gap-2 sm:flex">
             <ParentVaccineTalkLogo />
           </div>
           <StepIndicator current={1} />

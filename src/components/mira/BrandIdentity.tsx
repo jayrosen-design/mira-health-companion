@@ -12,14 +12,16 @@ export function MiraAvatar({ size = "sm" }: { size?: "sm" | "md" }) {
   );
 }
 
-export function ParentVaccineTalkLogo({ className, iconOnly = false }: { className?: string; iconOnly?: boolean }) {
+export function ParentVaccineTalkLogo({ className, iconOnly = false, reversed = false }: { className?: string; iconOnly?: boolean; reversed?: boolean }) {
   return (
     <span aria-label={iconOnly ? "Parent Vaccine Talk" : undefined} role={iconOnly ? "img" : undefined} className={cn("inline-flex shrink-0 items-center gap-2", className)}>
-      <svg viewBox="0 0 44 36" className="h-8 w-10 shrink-0" aria-hidden="true">
-        <path className="pvt-logo-primary" d="M10 2h24a8 8 0 0 1 8 8v13a8 8 0 0 1-8 8H16l-8 4v-4a8 8 0 0 1-6-8V10a8 8 0 0 1 8-8Z" />
-        <path className="pvt-logo-accent" d="M22 24 14.8 17a4.6 4.6 0 0 1 7.2-5.7 4.6 4.6 0 0 1 7.2 5.7Z" />
-      </svg>
-      {!iconOnly && <span className="text-sm font-semibold normal-case tracking-normal">Parent Vaccine Talk</span>}
+      <span className="flex h-8 w-10 shrink-0 items-center justify-center">
+        <svg viewBox="0 0 44 36" className="size-full" aria-hidden="true">
+          <path className={reversed ? "pvt-logo-reversed" : "pvt-logo-primary"} d="M10 2h24a8 8 0 0 1 8 8v13a8 8 0 0 1-8 8H16l-8 4v-4a8 8 0 0 1-6-8V10a8 8 0 0 1 8-8Z" />
+          <path className="pvt-logo-accent" d="M22 24 14.8 17a4.6 4.6 0 0 1 7.2-5.7 4.6 4.6 0 0 1 7.2 5.7Z" />
+        </svg>
+      </span>
+      {!iconOnly && <span className={cn("text-sm font-semibold normal-case tracking-normal", reversed && "pvt-logo-reversed-text")}>Parent Vaccine Talk</span>}
     </span>
   );
 }

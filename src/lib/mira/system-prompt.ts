@@ -45,9 +45,8 @@ export const MIRA_MODELS = [
   "nemotron-3-super-120b-a12b",
   "gpt-oss-20b",
   "llama-3.3-70b-instruct",
-  "llama-3.1-nemotron-nano-8B-v1",
-  "llama-3.1-8b-instruct",
-  "llama-3.1-70b-instruct",
+  "gemma-4-31b-it",
+  "mistral-small-3.1",
 ] as const;
 
 export const MIRA_DEFAULT_MODEL = "gpt-oss-120b";

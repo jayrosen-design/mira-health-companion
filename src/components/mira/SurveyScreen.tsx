@@ -45,7 +45,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
   if (submitted) {
     return (
       <div className="min-h-screen bg-background px-4 py-12">
-        <header className="mx-auto mb-8 w-full max-w-xl"><ParentVaccineTalkLogo /></header>
+        <header className="mx-auto mb-8 hidden w-full max-w-xl sm:block"><ParentVaccineTalkLogo /></header>
         <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-8 text-center shadow-soft">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success">
             <CheckCircle2 className="h-7 w-7" />
@@ -89,7 +89,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
         <header className="flex flex-col gap-3">
-          <ParentVaccineTalkLogo />
+          <ParentVaccineTalkLogo className="hidden sm:inline-flex" />
           <StepIndicator current={3} />
           <h1 className="text-2xl font-semibold tracking-tight text-heading">
             Tell us about your experience
