@@ -750,7 +750,6 @@ export function MiraChat() {
               </div>
             </div>
             <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
-              <Pill>Prototype</Pill>
               <Pill>AI-supported</Pill>
               <Pill>No data stored</Pill>
               <Button
@@ -807,7 +806,7 @@ export function MiraChat() {
           <div className="flex shrink-0 items-start gap-2 border-b border-secondary bg-secondary/70 px-3 py-2 text-[10px] leading-tight text-foreground sm:rounded-xl sm:border sm:p-3 sm:text-xs sm:leading-relaxed">
             <Stethoscope className="mt-0.5 hidden h-4 w-4 shrink-0 text-primary sm:block" />
             <p>
-              You are chatting with an AI prototype designed to use motivational interviewing. It
+              You are chatting with Mira, an AI assistant designed to use motivational interviewing. It
               provides educational support and cannot replace a healthcare provider.
             </p>
           </div>
@@ -964,7 +963,7 @@ export function MiraChat() {
           <GoalsPanel />
           <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-soft">
             <div className="flex items-center gap-2 font-display text-lg font-medium text-foreground">
-              <FlaskConical className="h-4 w-4 text-accent-foreground" /> Prototype controls
+              <FlaskConical className="h-4 w-4 text-accent-foreground" /> Research tools
             </div>
             <p className="mt-1 text-[11px] text-muted-foreground">
               Stakeholder views — hidden from parents.
@@ -1023,9 +1022,6 @@ function TopBanner({
         <span className="truncate font-medium uppercase tracking-wide">
           <span className="sm:hidden">
             {chatHeader ? <span className="flex items-center gap-2 normal-case tracking-normal"><MiraAvatar size="sm" /><span className="font-display text-xl">Mira</span><span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">AI assistant</span></span> : <ParentVaccineTalkLogo />}
-          </span>
-          <span className="hidden sm:inline">
-            University research prototype · Not for clinical use
           </span>
         </span>
 
@@ -1110,7 +1106,7 @@ function TopBanner({
               </Link>
               <div className="my-2 h-px bg-border" />
               <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Prototype controls
+                Research tools
               </p>
               <MenuItem
                 icon={<FlaskConical className="h-4 w-4" />}

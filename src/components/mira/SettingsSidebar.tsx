@@ -86,8 +86,7 @@ export function SettingsSidebar({
         <SheetHeader>
           <SheetTitle>Developer Settings</SheetTitle>
           <SheetDescription>
-            Developer-only controls. These settings are for prototype testing and would not be
-            visible in the production parent-facing application.
+            Developer-only controls for testing. Not visible to parents.
           </SheetDescription>
         </SheetHeader>
 
@@ -229,7 +228,7 @@ export function SettingsSidebar({
               Reset routing configuration to default
             </Button>
             <p className="text-[11px] text-muted-foreground">
-              The active routing configuration is bundled with this prototype build. Changes
+              The active routing configuration is bundled with this app. Changes
               to nodes require a code update.
             </p>
           </TabsContent>

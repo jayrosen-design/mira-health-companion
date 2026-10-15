@@ -13,3 +13,8 @@
 - [x] Place survey question legends inside cards and add shared branding to both survey states.
 - [x] Add mobile Mira identity, compact disclosure, safe-area footer, and distinct bubble corners.
 - [x] Verify the polished screens at phone and desktop widths.
+
+# Symposium copy cleanup
+- [x] Remove prototype labels and update requested app copy and metadata without changing styling or behavior.
+- [x] Preserve disclosures, safety text, excluded screens, research values, and all prompt/config files.
+- [x] Verify signed-in welcome, chat, research/developer panels, and mobile disclosure.

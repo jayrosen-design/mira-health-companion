@@ -54,7 +54,7 @@ export function ChatMessage({ role, content, miTag, meta, showMeta = true }: Cha
             {!isUser && miTag && (
               <span
                 className="inline-flex items-center gap-1 rounded-full border border-transparent bg-meta-lavender px-2 py-0.5 text-meta-lavender-foreground"
-                title="Motivational Interviewing technique (prototype tag)"
+                title="Motivational Interviewing technique"
               >
                 MI · {miTag}
               </span>

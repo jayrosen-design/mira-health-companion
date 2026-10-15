@@ -10,7 +10,6 @@ export function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
         <span>
           Step {current} of 3: {STEPS[current - 1]}
         </span>
-        <span className="hidden sm:inline">University research prototype</span>
       </div>
       <ol className="flex items-center gap-1.5 sm:gap-2">
         {STEPS.map((label, i) => {
