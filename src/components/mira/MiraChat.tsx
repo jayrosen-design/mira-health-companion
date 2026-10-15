@@ -733,6 +733,7 @@ export function MiraChat() {
         onResearch={openResearch}
         onReset={resetChat}
         canReset={!isSending && userTurns.length > 0}
+        chatHeader
       />
 
       <header className="hidden shrink-0 border-b border-border bg-card/70 backdrop-blur sm:block">
@@ -803,8 +804,8 @@ export function MiraChat() {
 
       <div className="mx-auto flex w-full max-w-5xl min-h-0 flex-1 gap-6 sm:px-4 sm:py-6">
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="hidden items-start gap-2 border-b border-secondary bg-secondary/70 px-3 py-2 text-xs leading-relaxed text-foreground sm:flex sm:rounded-xl sm:border sm:p-3">
-            <Stethoscope className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div className="flex shrink-0 items-start gap-2 border-b border-secondary bg-secondary/70 px-3 py-2 text-[10px] leading-tight text-foreground sm:rounded-xl sm:border sm:p-3 sm:text-xs sm:leading-relaxed">
+            <Stethoscope className="mt-0.5 hidden h-4 w-4 shrink-0 text-primary sm:block" />
             <p>
               You are chatting with an AI prototype designed to use motivational interviewing. It
               provides educational support and cannot replace a healthcare provider.
@@ -1003,6 +1004,7 @@ function TopBanner({
   onResearch,
   onReset,
   canReset,
+  chatHeader = false,
 }: {
   onHome: () => void;
   showHome?: boolean;
@@ -1011,6 +1013,7 @@ function TopBanner({
   onResearch: () => void;
   onReset: () => void;
   canReset: boolean;
+  chatHeader?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -1018,7 +1021,9 @@ function TopBanner({
     <div className="shrink-0 border-b border-border bg-research-bar text-research-bar-foreground">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-3 py-1.5 text-[11px] sm:px-4">
         <span className="truncate font-medium uppercase tracking-wide">
-          <span className="sm:hidden"><ParentVaccineTalkLogo /></span>
+          <span className="sm:hidden">
+            {chatHeader ? <span className="flex items-center gap-2 normal-case tracking-normal"><MiraAvatar size="sm" /><span className="font-display text-xl">Mira</span><span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">AI assistant</span></span> : <ParentVaccineTalkLogo />}
+          </span>
           <span className="hidden sm:inline">
             University research prototype · Not for clinical use
           </span>
@@ -1065,6 +1070,7 @@ function TopBanner({
         </div>
 
         {/* Mobile hamburger */}
+        {chatHeader && <span className="ml-auto sm:hidden"><ParentVaccineTalkLogo iconOnly /></span>}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button

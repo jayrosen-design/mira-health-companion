@@ -38,6 +38,7 @@
   --color-safety: var(--safety);
 
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-bubble-corner: 0.375rem;
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
