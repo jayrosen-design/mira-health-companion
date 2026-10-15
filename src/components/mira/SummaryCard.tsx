@@ -3,7 +3,7 @@ import { FileText } from "lucide-react";
 export function SummaryCard({ topics }: { topics: string[] }) {
   return (
     <div className="rounded-2xl border border-border/60 bg-card shadow-soft p-4 sm:p-5">
-      <div className="flex flex-wrap items-center gap-2 font-display text-lg font-medium text-foreground">
+      <div className="flex flex-wrap items-center gap-2 font-display text-lg font-medium text-heading">
         <FileText className="h-4 w-4 text-primary" /> Conversation with Mira · Summary
       </div>
       <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">

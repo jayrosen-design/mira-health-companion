@@ -50,7 +50,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success">
             <CheckCircle2 className="h-7 w-7" />
           </div>
-          <h1 className="mt-4 text-xl font-semibold text-foreground">
+          <h1 className="mt-4 text-xl font-semibold text-heading">
             Thank you. Your feedback has been recorded.
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -91,7 +91,7 @@ export function SurveyScreen({ onSubmit, onBack, submitted }: SurveyScreenProps)
         <header className="flex flex-col gap-3">
           <ParentVaccineTalkLogo />
           <StepIndicator current={3} />
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight text-heading">
             Tell us about your experience
           </h1>
           <p className="text-sm text-muted-foreground">
